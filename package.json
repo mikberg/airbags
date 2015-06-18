@@ -1,0 +1,21 @@
+{
+  "name": "airbags",
+  "version": "0.1.0-dev",
+  "description": "An isomorphic react based generator of sites",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --ext .jsx --ext .js src"
+  },
+  "keywords": [
+    "static",
+    "site",
+    "generator"
+  ],
+  "author": "Mikael Berg",
+  "license": "ISC",
+  "devDependencies": {
+    "airbnb-style": "^2.0.0",
+    "eslint": "^0.23.0"
+  }
+}
