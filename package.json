@@ -16,6 +16,14 @@
   "license": "ISC",
   "devDependencies": {
     "airbnb-style": "^2.0.0",
-    "eslint": "^0.23.0"
+    "babel-eslint": "^3.1.17",
+    "eslint": "^0.23.0",
+    "eslint-plugin-react": "^2.5.2",
+    "gulp": "^3.9.0"
+  },
+  "dependencies": {
+    "babel": "^5.5.8",
+    "gulp-file": "^0.2.0",
+    "react": "^0.13.3"
   }
 }
