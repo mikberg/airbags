@@ -1,5 +1,9 @@
 import through from 'through2';
 
+/**
+ * Add a doctype to a file.
+ * @param {string} doctype (optional), default: `<!doctype html>`
+ */
 export default function addDoctype(doctype) {
   let finalDoctype = doctype || '<!doctype html>\n';
 
