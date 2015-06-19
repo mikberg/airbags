@@ -54,7 +54,7 @@ export default function renderComponentWithFile(Component, options) {
         return cb(new gutil.PluginError('RenderPages', err));
       }
       filePush(rendered);
-    };
+    }
 
     renderPage(props, callback);
   });

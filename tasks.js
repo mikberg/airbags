@@ -5,6 +5,7 @@ import React from 'react';
 import Site from './src/components/Site';
 import Page from './src/components/Page';
 import renderComponentWithFile from './src/tasks/renderComponentWithFile';
+import addDoctype from './src/tasks/addDoctype';
 
 const CONFIG = {
   DEST: {
@@ -21,12 +22,14 @@ gulp.task('renderSite', function runRenderSite() {
   let rendered = React.renderToString(<Site />);
 
   return gfile('site.html', rendered, {src: true})
+    .pipe(addDoctype())
     .pipe(gulp.dest(CONFIG.DEST.ROOT));
 });
 
 gulp.task('renderPages', function runRenderPages() {
   return gulp.src('./pages/*.md')
     .pipe(renderComponentWithFile(Page))
+    .pipe(addDoctype())
     .pipe(gulp.dest(CONFIG.DEST.PAGES));
 });
 
