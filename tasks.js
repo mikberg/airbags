@@ -5,6 +5,7 @@ import gutil from 'gulp-util';
 import React from 'react';
 import through from 'through2';
 import path from 'path';
+import {assign} from 'lodash';
 
 import Site from './src/components/Site';
 import Page from './src/components/Page';
@@ -29,13 +30,27 @@ function renderPages(options) {
     callback(null, rendered);
   }
 
-  return through.obj(function inner(file, enc, cb) {
-    let callback;
-
-    let props = {
+  function defaultProps(file) {
+    return {
       contents: file.contents.toString(),
       path: path.relative(__dirname, file.path)
     };
+  }
+
+  let defaultOptions = {
+    props: defaultProps
+  };
+
+  let finalOptions = assign({}, defaultOptions, options);
+
+  return through.obj(function inner(file, enc, cb) {
+    let callback;
+    let props = finalOptions.props(file);
+
+    if (!finalOptions.component) {
+      return cb(new gutil.PluginError('RenderPages',
+        'component needs to be specified in options given'));
+    }
 
     function filePush(rendered) {
       file.contents = new Buffer(rendered, enc);
@@ -68,8 +83,18 @@ gulp.task('renderSite', function runRenderSite() {
 });
 
 gulp.task('renderPages', function runRenderPages() {
+  let options = {
+    component: Page,
+    props: (file) => {
+      return {
+        contents: file.contents.toString(),
+        path: path.relative(__dirname, file.path)
+      };
+    }
+  };
+
   return gulp.src('./pages/*.md')
-    .pipe(renderPages())
+    .pipe(renderPages(options))
     .pipe(gulp.dest(CONFIG.DEST.PAGES));
 });
 
