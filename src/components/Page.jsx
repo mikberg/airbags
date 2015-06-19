@@ -9,3 +9,7 @@ export default class Page extends React.Component {
     return <p>{this.props.contents}</p>;
   }
 }
+
+Page.propTypes = {
+  contents: React.propTypes.string
+};

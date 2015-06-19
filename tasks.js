@@ -19,7 +19,7 @@ gulp.task('clean', function runClean(cb) {
 });
 
 gulp.task('renderSite', function runRenderSite() {
-  let rendered = React.renderToString(<Site />);
+  let rendered = React.renderToString(<Site pagesDir="pages/" />);
 
   return gfile('site.html', rendered, {src: true})
     .pipe(addDoctype())
