@@ -29,21 +29,17 @@ export default function renderComponentWithFile(Component, options) {
     callback(null, rendered);
   }
 
-  function defaultProps(file) {
-    return {
-      contents: file.contents.toString(),
-      path: path.relative(__dirname, file.path)
-    };
-  }
-
   let defaultOptions = {
-    props: defaultProps
+    props: (file) => {
+      return {
+        contents: file.contents.toString(),
+        path: path.relative(process.cwd(), file.path)
+      };
+    }
   };
-
   let finalOptions = assign({}, defaultOptions, options);
 
   return through.obj(function inner(file, enc, cb) {
-    let callback;
     let props = finalOptions.props(file);
 
     function filePush(rendered) {
@@ -53,7 +49,7 @@ export default function renderComponentWithFile(Component, options) {
       cb(null, file);
     }
 
-    callback = (err, rendered) => {
+    function callback(err, rendered) {
       if (err) {
         return cb(new gutil.PluginError('RenderPages', err));
       }
