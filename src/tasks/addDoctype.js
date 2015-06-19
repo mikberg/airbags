@@ -2,10 +2,10 @@ import through from 'through2';
 
 /**
  * Add a doctype to a file.
- * @param {string} doctype (optional), default: `<!doctype html>`
+ * @param {string} doctype (optional), default: `<!DOCTYPE html>`
  */
 export default function addDoctype(doctype) {
-  let finalDoctype = doctype || '<!doctype html>\n';
+  let finalDoctype = doctype || '<!DOCTYPE html>\n';
 
   return through.obj((file, enc, cb) => {
     file.contents = Buffer.concat([
