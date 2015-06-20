@@ -2,10 +2,10 @@ import gulp from 'gulp';
 import gfile from 'gulp-file';
 import del from 'del';
 import React from 'react';
-import Site from './src/components/Site';
-import Page from './src/components/Page';
-import renderComponentWithFile from './src/tasks/renderComponentWithFile';
-import addDoctype from './src/tasks/addDoctype';
+import Site from '../src/components/Site';
+import Page from '../src/components/Page';
+import renderComponentWithFile from '../src/tasks/renderComponentWithFile';
+import addDoctype from '../src/tasks/addDoctype';
 
 const CONFIG = {
   DEST: {
