@@ -11,5 +11,5 @@ export default class Page extends React.Component {
 }
 
 Page.propTypes = {
-  contents: React.propTypes.string
+  contents: React.PropTypes.string
 };
