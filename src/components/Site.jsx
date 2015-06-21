@@ -3,6 +3,10 @@ import Menu from './Menu';
 import Router from './Router';
 
 export default class Site extends React.Component {
+  renderRouter() {
+    return <Router path={this.props.path} />;
+  }
+
   render() {
     return (
       <html>
@@ -12,7 +16,7 @@ export default class Site extends React.Component {
         <body>
           <h1>Site</h1>
           <Menu />
-          <Router path={this.props.path} />
+          {this.renderRouter()}
         </body>
       </html>
     );
