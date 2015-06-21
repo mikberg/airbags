@@ -2,10 +2,15 @@ import gulp from 'gulp';
 import gfile from 'gulp-file';
 import del from 'del';
 import React from 'react';
-import Site from '../src/components/Site';
-import Page from '../src/components/Page';
-import renderComponentWithFile from '../src/tasks/renderComponentWithFile';
+
+import App from './components/App';
+import Home from './components/Home';
+import Router from 'react-router';
+
 import addDoctype from '../src/tasks/addDoctype';
+
+let Route = Router.Route;
+let DefaultRoute = Router.DefaultRoute;
 
 const CONFIG = {
   DEST: {
@@ -19,23 +24,23 @@ gulp.task('clean', function runClean(cb) {
 });
 
 gulp.task('renderSite', function runRenderSite() {
-  let rendered = React.renderToString(<Site pagesDir="pages/" />);
+  let routes = (
+    <Route handler={App}>
+      <DefaultRoute handler={Home} />
+    </Route>
+  );
 
-  return gfile('site.html', rendered, {src: true})
-    .pipe(addDoctype())
-    .pipe(gulp.dest(CONFIG.DEST.ROOT));
-});
+  Router.run(routes, '/', (Root) => {
+    let rendered = React.renderToString(<Root />);
 
-gulp.task('renderPages', function runRenderPages() {
-  return gulp.src('./pages/*.md')
-    .pipe(renderComponentWithFile(Page))
-    .pipe(addDoctype())
-    .pipe(gulp.dest(CONFIG.DEST.PAGES));
+    return gfile('site.html', rendered, {src: true})
+      .pipe(addDoctype())
+      .pipe(gulp.dest(CONFIG.DEST.ROOT));
+  });
 });
 
 gulp.task('render', [
-  'renderSite',
-  'renderPages'
+  'renderSite'
 ]);
 
 gulp.task('default', ['clean'], function runDefault() {
