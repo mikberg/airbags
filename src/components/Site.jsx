@@ -1,6 +1,7 @@
 import React from 'react';
 import {chain} from 'lodash';
 import Menu from './Menu';
+import Router from './Router';
 
 let fs;
 let path;
@@ -10,6 +11,8 @@ if (!process.browser) {
   path = require('path');
 }
 
+const pagesDir = 'pages/';
+
 export default class Site extends React.Component {
   getPages() {
     if (!process.browser) {
@@ -18,10 +21,10 @@ export default class Site extends React.Component {
   }
 
   serverGetPages() {
-    return chain(fs.readdirSync(this.props.pagesDir))
+    return chain(fs.readdirSync(pagesDir))
       .map((filename) => {
         return {
-          path: path.join(this.props.pagesDir, filename)
+          path: path.join(pagesDir, filename)
         };
       })
       .indexBy('path')
@@ -39,12 +42,9 @@ export default class Site extends React.Component {
         <body>
           <h1>Site</h1>
           <Menu pages={pages} />
+          <Router path={this.props.path} />
         </body>
       </html>
     );
   }
 }
-
-Site.propTypes = {
-  pagesDir: React.PropTypes.string
-};

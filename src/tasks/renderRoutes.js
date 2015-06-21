@@ -1,13 +1,12 @@
 import gutil from 'gulp-util';
 import through from 'through2';
+import React from 'react';
 import path from 'path';
 
-export default function renderRoutes(routes, Router, React) {
+export default function renderRoutes(Site) {
   function renderRoute(location, callback) {
-    Router.run(routes, location, (Root) => {
-      let rendered = React.renderToString(<Root />);
-      callback(null, rendered);
-    });
+    let rendered = React.renderToString(<Site path={location} />);
+    callback(null, rendered);
   }
 
   function locationFromPath(filePath) {
