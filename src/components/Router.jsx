@@ -1,5 +1,6 @@
 import React from 'react';
 import {RouterMixin} from 'react-mini-router';
+import Page from './Page';
 
 export default React.createClass({
   mixins: [RouterMixin],
@@ -18,6 +19,6 @@ export default React.createClass({
   },
 
   page: (location) => {
-    return <div>Yes, this is page {location}</div>;
+    return <Page location={'pages/' + location} />;
   }
 });

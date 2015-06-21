@@ -1,15 +1,17 @@
 import React from 'react';
+import {getFileContents} from '../utils/fileUtils';
 
 export default class Page extends React.Component {
-  constructor() {
-    super();
+  getMarkdown(location) {
+    return getFileContents(location + '.md');
   }
 
   render() {
-    return <p>{this.props.contents}</p>;
+    let contents = this.getMarkdown(this.props.location);
+    return <div>{contents}</div>;
   }
 }
 
 Page.propTypes = {
-  contents: React.PropTypes.string
+  location: React.PropTypes.string
 };

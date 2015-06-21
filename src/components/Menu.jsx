@@ -18,7 +18,7 @@ export default class Menu extends React.Component {
 
     return (
       <ul className="Menu">
-        <li><a href="/">Home</a></li>
+        <li key="home"><a href="/">Home</a></li>
         {listElements}
       </ul>
     );
