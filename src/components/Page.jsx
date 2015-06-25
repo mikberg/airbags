@@ -1,14 +1,16 @@
 import React from 'react';
 import {getFileContents} from '../utils/fileUtils';
+import markdown from '../utils/markdown';
 
 export default class Page extends React.Component {
   getMarkdown(location) {
-    return getFileContents(location + '.md');
+    let contents = getFileContents(location + '.md');
+    return markdown(contents);
   }
 
   render() {
     let contents = this.getMarkdown(this.props.location);
-    return <div>{contents}</div>;
+    return <div dangerouslySetInnerHTML={{__html: contents}}></div>;
   }
 }
 
