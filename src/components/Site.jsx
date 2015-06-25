@@ -3,6 +3,10 @@ import Menu from './Menu';
 import Router from './Router';
 
 export default class Site extends React.Component {
+  getContextVars() {
+    return this.props;
+  }
+
   renderRouter() {
     return <Router path={this.props.path} />;
   }
@@ -13,6 +17,13 @@ export default class Site extends React.Component {
     return cssFilenames.map((filename) => {
       return <link href={filename} key={filename} rel="stylesheet" />;
     });
+  }
+
+  // @TODO Only do this on server, probably?
+  renderContextVarsScript() {
+    let jsonProps = JSON.stringify(this.getContextVars());
+    let defineScript = `var SITE_CONTEXT_VARS = ${jsonProps};`;
+    return <script dangerouslySetInnerHTML={{__html: defineScript}}></script>;
   }
 
   render() {
@@ -26,6 +37,7 @@ export default class Site extends React.Component {
           <h1>Site</h1>
           <Menu />
           {this.renderRouter()}
+          {this.renderContextVarsScript()}
         </body>
       </html>
     );
