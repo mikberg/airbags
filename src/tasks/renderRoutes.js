@@ -2,10 +2,12 @@ import gutil from 'gulp-util';
 import through from 'through2';
 import React from 'react';
 import path from 'path';
+import {assign} from 'lodash';
 
-export default function renderRoutes(Site) {
+export default function renderRoutes(Site, givenProps) {
   function renderRoute(location, callback) {
-    let rendered = React.renderToString(<Site path={location} />);
+    let props = assign({}, {path: location}, givenProps);
+    let rendered = React.renderToString(<Site {...props} />);
     callback(null, rendered);
   }
 
