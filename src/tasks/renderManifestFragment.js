@@ -6,7 +6,6 @@ export default function renderManifestFragment(component, propsFromFragment) {
     let frag = JSON.parse(file.contents.toString());
     let props = propsFromFragment(frag);
 
-    console.log(props);
     let rendered = renderComponentWithProps(component, props);
 
     file.contents = new Buffer(rendered, enc);
