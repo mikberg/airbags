@@ -11,6 +11,7 @@ export default function renderRoutes(Site, givenProps) {
     callback(null, rendered);
   }
 
+  // @TODO: Use from taskUtils
   function locationFromPath(filePath) {
     return '/' +
       path.relative(process.cwd(), filePath).replace(/\.[^/.]+$/, '');
