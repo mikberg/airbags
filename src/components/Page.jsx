@@ -4,7 +4,7 @@ import markdown from '../utils/markdown';
 
 export default class Page extends React.Component {
   getMarkdown(location) {
-    let contents = getFileContents(location + '.md');
+    let contents = getFileContents(location.replace('.html', '.md'));
     return markdown(contents);
   }
 

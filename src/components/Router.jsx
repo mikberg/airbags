@@ -6,8 +6,8 @@ export default React.createClass({
   mixins: [RouterMixin],
 
   routes: {
-    '/index': 'home',
-    '/pages/:text': 'page'
+    'index.html': 'home',
+    'pages/:text': 'page'
   },
 
   render: function render() {
