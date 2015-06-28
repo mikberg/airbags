@@ -19,7 +19,8 @@ export default class Site extends React.Component {
     });
   }
 
-  // @TODO Only do this on server, probably?
+  // @TODO Replace with bundling manifest into javascript? Makes no sense w/o
+  // javascript on the client side anyway, and gets rid of code from code.
   renderContextVarsScript() {
     let jsonProps = JSON.stringify(this.getContextVars());
     let defineScript = `var SITE_CONTEXT_VARS = ${jsonProps};`;
