@@ -1,7 +1,7 @@
 import through from 'through2';
 import gutil from 'gulp-util';
 import {isArray} from 'lodash';
-import {fileManifestFromFile} from '../utils/taskUtils';
+import {manifestFragmentFromFile} from '../utils/content';
 
 export default function addToManifest(manifest, property) {
   return through.obj((file, enc, cb) => {
@@ -15,7 +15,7 @@ export default function addToManifest(manifest, property) {
         `manifest.${property} must be array`));
     }
 
-    fileManifestFromFile(file, enc, (err, fileManifest) => {
+    manifestFragmentFromFile(file, enc, (err, fileManifest) => {
       if (err) {
         return cb(new gutil.PluginError('addToManifest', err));
       }

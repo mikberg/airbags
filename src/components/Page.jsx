@@ -1,10 +1,10 @@
 import React from 'react';
-import {getFileContents} from '../utils/fileUtils';
+import {getContentFileContents} from '../utils/content';
 import markdown from '../utils/markdown';
 
 export default class Page extends React.Component {
   getMarkdown(path) {
-    let contents = getFileContents(path.replace('.html', '.md'));
+    let contents = getContentFileContents(path.replace('.html', '.md'));
     return markdown(contents);
   }
 

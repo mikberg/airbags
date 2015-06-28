@@ -19,7 +19,7 @@ export default function createManifestStream(manifest) {
     let file = new gutil.File({
       cwd: '',
       base: '',
-      path: pageManifest.path,
+      path: pageManifest.path.replace(/\.[^/.]+$/, '.html'),
       contents: new Buffer(JSON.stringify(pageManifest))
     });
 
