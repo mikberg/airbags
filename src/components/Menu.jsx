@@ -1,14 +1,12 @@
 import React from 'react';
-import {map} from 'lodash';
-import {getUrls} from '../utils/fileUtils';
 
 export default class Menu extends React.Component {
   getPages() {
-    return getUrls('pages/');
+    return this.context.manifest.pages;
   }
 
   render() {
-    let listElements = map(this.getPages(), (page) => {
+    let listElements = this.getPages().map((page) => {
       return (
         <li key={page.path}>
           <a href={page.path}>{page.path}</a>
@@ -25,6 +23,6 @@ export default class Menu extends React.Component {
   }
 }
 
-Menu.propTypes = {
-  pagesDir: React.PropTypes.string
+Menu.contextTypes = {
+  manifest: React.PropTypes.object
 };

@@ -8,3 +8,4 @@ indent_style = space
 [*.{js,jsx}]
 charset = utf-8
 indent_size = 2
+insert_final_newline = true
