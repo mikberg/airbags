@@ -3,6 +3,12 @@ import Menu from './Menu';
 import Router from './Router';
 
 export default class Site extends React.Component {
+  getChildContext() {
+    return {
+      manifest: this.props.manifest
+    };
+  }
+
   renderRouter() {
     return <Router path={this.props.path} />;
   }
@@ -45,4 +51,8 @@ Site.propTypes = {
   cssFilenames: React.PropTypes.array,
   manifest: React.PropTypes.object.isRequired,
   path: React.PropTypes.string
+};
+
+Site.childContextTypes = {
+  manifest: React.PropTypes.object
 };
