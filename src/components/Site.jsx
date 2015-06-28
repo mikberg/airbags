@@ -38,7 +38,7 @@ export default class Site extends React.Component {
         </head>
         <body>
           <h1>Site</h1>
-          <Menu />
+          <Menu manifest={this.props.manifest} />
           {this.renderRouter()}
           {this.renderManifestDeclaration()}
         </body>

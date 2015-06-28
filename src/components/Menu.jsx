@@ -2,7 +2,7 @@ import React from 'react';
 
 export default class Menu extends React.Component {
   getPageManifestFragments() {
-    return this.context.manifest.pages;
+    return this.props.manifest.pages;
   }
 
   getListElements() {
@@ -30,6 +30,6 @@ export default class Menu extends React.Component {
   }
 }
 
-Menu.contextTypes = {
+Menu.propTypes = {
   manifest: React.PropTypes.object
 };
