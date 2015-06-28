@@ -3,10 +3,6 @@ import Menu from './Menu';
 import Router from './Router';
 
 export default class Site extends React.Component {
-  getContextVars() {
-    return this.props;
-  }
-
   renderRouter() {
     return <Router path={this.props.path} />;
   }
@@ -21,8 +17,8 @@ export default class Site extends React.Component {
 
   // @TODO Replace with bundling manifest into javascript? Makes no sense w/o
   // javascript on the client side anyway, and gets rid of code from code.
-  renderContextVarsScript() {
-    let jsonProps = JSON.stringify(this.getContextVars());
+  renderManifestDeclaration() {
+    let jsonProps = JSON.stringify(this.props.manifest);
     let defineScript = `var SITE_CONTEXT_VARS = ${jsonProps};`;
     return <script dangerouslySetInnerHTML={{__html: defineScript}}></script>;
   }
@@ -38,7 +34,7 @@ export default class Site extends React.Component {
           <h1>Site</h1>
           <Menu />
           {this.renderRouter()}
-          {this.renderContextVarsScript()}
+          {this.renderManifestDeclaration()}
         </body>
       </html>
     );
@@ -47,5 +43,6 @@ export default class Site extends React.Component {
 
 Site.propTypes = {
   cssFilenames: React.PropTypes.array,
+  manifest: React.PropTypes.object.isRequired,
   path: React.PropTypes.string
 };
