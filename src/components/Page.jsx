@@ -1,10 +1,14 @@
 import React from 'react';
-import {getContentFileContents} from '../utils/content';
 import markdown from '../utils/markdown';
 
 export default class Page extends React.Component {
   getMarkdown(path) {
-    let contents = getContentFileContents(path.replace('.html', '.md'));
+    let contents = this.context.manifest.pages.filter((page) => {
+      return page.url === '/' + path;
+    })[0].contents;
+
+    console.log(contents);
+
     return markdown(contents);
   }
 
@@ -16,4 +20,8 @@ export default class Page extends React.Component {
 
 Page.propTypes = {
   path: React.PropTypes.string
+};
+
+Page.contextTypes = {
+  manifest: React.PropTypes.object
 };

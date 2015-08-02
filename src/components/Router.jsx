@@ -1,9 +1,9 @@
 import React from 'react';
-import {RouterMixin} from 'react-mini-router';
+// import {RouterMixin} from 'react-mini-router';
 import Page from './Page';
 
 export default React.createClass({
-  mixins: [RouterMixin],
+  // mixins: [RouterMixin],
 
   routes: {
     'index.html': 'home',
@@ -11,7 +11,8 @@ export default React.createClass({
   },
 
   render: function render() {
-    return this.renderCurrentRoute();
+    // return this.renderCurrentRoute();
+    return this.page('colophon.html');
   },
 
   home: () => {
