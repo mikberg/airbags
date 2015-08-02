@@ -7,12 +7,15 @@ import through from 'through2';
 export default function addDoctype(doctype) {
   let finalDoctype = doctype || '<!DOCTYPE html>\n';
 
-  return through.obj((file, enc, cb) => {
-    file.contents = Buffer.concat([
-      new Buffer(finalDoctype, enc),
-      file.contents
-    ]);
+  return through.obj(function inner(file, enc, cb) {
+    if (/\.html$/.test(file.path)) {
+      file.contents = Buffer.concat([
+        new Buffer(finalDoctype, enc),
+        file.contents
+      ]);
+    }
 
-    cb(null, file);
+    this.push(file);
+    cb();
   });
 }
