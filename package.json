@@ -16,12 +16,14 @@
   "license": "ISC",
   "devDependencies": {
     "airbnb-style": "^2.0.0",
-    "babel-eslint": "^3.1.17",
-    "eslint": "^0.23.0",
+    "babel-eslint": "^3.1.23",
+    "bpb": "^0.1.1",
+    "eslint": "^0.24.0",
     "eslint-plugin-react": "^2.5.2",
     "gulp": "^3.9.0",
     "gulp-util": "^3.0.5",
-    "through2": "^2.0.0"
+    "through2": "^2.0.0",
+    "unreachable-branch-transform": "^0.3.0"
   },
   "dependencies": {
     "babel": "^5.5.8",
@@ -33,7 +35,9 @@
   },
   "browserify": {
     "transform": [
-      "babelify"
+      "babelify",
+      "bpb",
+      "unreachable-branch-transform"
     ]
   }
 }
