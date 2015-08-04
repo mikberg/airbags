@@ -71,6 +71,10 @@ airbags.renderWithReactComponent = function renderWithReactComponent(Component) 
       path: changeExtension(sourceFile.path, '.html')
     });
 
+    if (cache[relPath]) {
+      cache[relPath].renderedPath = relativePath(renderedFile.path);
+    }
+
     let props = {
       path: relPath,
       airbagsApi: airbagsCacheApi

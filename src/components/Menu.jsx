@@ -5,7 +5,7 @@ export default class Menu extends React.Component {
     return this.context.airbagsApi.getPages().map((frontMatter) => {
       return (
         <li key={frontMatter.title}>
-          <a href={frontMatter.path}>{frontMatter.title}</a>
+          <a href={'/' + frontMatter.renderedPath}>{frontMatter.title}</a>
         </li>
       );
     });
