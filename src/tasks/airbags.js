@@ -6,6 +6,7 @@ import React from 'react';
 import addDoctype from './addDoctype';
 
 let cache = {};
+let contentCache = {};
 
 function relativePath(filePath) {
   return path.relative(process.cwd(), filePath);
@@ -14,6 +15,16 @@ function relativePath(filePath) {
 function changeExtension(filePath, toExtension) {
   return filePath.replace(/\.[^/.]+$/, toExtension);
 }
+
+let api = {
+  getFrontMatter: (url) => {
+    return cache[url];
+  },
+
+  getContents: (url) => {
+    return contentCache[url];
+  }
+};
 
 export default function airbags() {
   function register(file, enc, cb) {
@@ -24,6 +35,7 @@ export default function airbags() {
     delete frontMatter.__content;
 
     cache[relPath] = frontMatter;
+    contentCache[relPath] = contents;
 
     file.contents = new Buffer(contents, enc);
 
@@ -53,8 +65,8 @@ airbags.renderWithReactComponent = function renderWithReactComponent(Component) 
     });
 
     let props = {
-      contents: cache,
-      path: relPath
+      path: relPath,
+      api
     };
 
     let rendered = React.renderToString(
