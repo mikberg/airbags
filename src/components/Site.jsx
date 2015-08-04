@@ -27,11 +27,15 @@ export default class Site extends React.Component {
       <html>
         <head>
           <title>Site</title>
+          <link href="/style/style.css" rel="stylesheet" />
         </head>
         <body>
           <h1>Site</h1>
           <Menu />
           {this.ghettoRouter()}
+
+          <script src="/javascript/vendors.js" />
+          <script src="/javascript/bundle.js" />
         </body>
       </html>
     );
