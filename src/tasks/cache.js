@@ -1,0 +1,4 @@
+export default {
+  cache: {},
+  contentCache: {}
+};

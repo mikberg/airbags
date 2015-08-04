@@ -1,35 +1,10 @@
-import path from 'path';
 import through from 'through2';
 import gutil from 'gulp-util';
-import {map} from 'lodash';
 import yamlFront from 'yaml-front-matter';
-import React from 'react';
 import addDoctype from './addDoctype';
-
-let cache = {};
-let contentCache = {};
-
-function relativePath(filePath) {
-  return path.relative(process.cwd(), filePath);
-}
-
-function changeExtension(filePath, toExtension) {
-  return filePath.replace(/\.[^/.]+$/, toExtension);
-}
-
-let airbagsCacheApi = {
-  getFrontMatter: (url) => {
-    return cache[url];
-  },
-
-  getContents: (url) => {
-    return contentCache[url];
-  },
-
-  getPages: () => {
-    return map(cache, (p) => p);
-  }
-};
+import {cache, contentCache} from './cache';
+import renderWithReactComponent from './renderWithReactComponent';
+import {relativePath} from '../utils/taskUtils';
 
 export default function airbags() {
   function register(file, enc, cb) {
@@ -61,40 +36,5 @@ export default function airbags() {
   return through.obj(register, flush);
 }
 
-airbags.renderWithReactComponent = function renderWithReactComponent(Component) {
-  function render(sourceFile, enc, cb) {
-    let relPath = relativePath(sourceFile.path);
-
-    let renderedFile = new gutil.File({
-      base: sourceFile.base,
-      cwd: sourceFile.cwd,
-      path: changeExtension(sourceFile.path, '.html')
-    });
-
-    if (cache[relPath]) {
-      cache[relPath].renderedPath = relativePath(renderedFile.path);
-    }
-
-    let props = {
-      path: relPath,
-      airbagsApi: airbagsCacheApi
-    };
-
-    let rendered = React.renderToString(
-      <Component {...props} />
-    );
-
-    renderedFile.contents = new Buffer(rendered, enc);
-
-    gutil.log(`Airbags rendered '${relativePath(sourceFile.path)}'`);
-
-    this.push(renderedFile);
-    this.push(sourceFile);
-
-    cb();
-  }
-
-  return through.obj(render);
-};
-
+airbags.renderWithReactComponent = renderWithReactComponent;
 airbags.addDoctype = addDoctype;
