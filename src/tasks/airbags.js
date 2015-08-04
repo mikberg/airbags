@@ -1,6 +1,7 @@
 import path from 'path';
 import through from 'through2';
 import gutil from 'gulp-util';
+import {map} from 'lodash';
 import yamlFront from 'yaml-front-matter';
 import React from 'react';
 import addDoctype from './addDoctype';
@@ -16,13 +17,17 @@ function changeExtension(filePath, toExtension) {
   return filePath.replace(/\.[^/.]+$/, toExtension);
 }
 
-let api = {
+let airbagsCacheApi = {
   getFrontMatter: (url) => {
     return cache[url];
   },
 
   getContents: (url) => {
     return contentCache[url];
+  },
+
+  getPages: () => {
+    return map(cache, (p) => p);
   }
 };
 
@@ -66,7 +71,7 @@ airbags.renderWithReactComponent = function renderWithReactComponent(Component) 
 
     let props = {
       path: relPath,
-      api
+      airbagsApi: airbagsCacheApi
     };
 
     let rendered = React.renderToString(

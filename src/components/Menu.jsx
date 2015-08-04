@@ -1,23 +1,14 @@
 import React from 'react';
 
 export default class Menu extends React.Component {
-  getPageManifestFragments() {
-    return this.props.manifest.pages;
-  }
-
   getListElements() {
-    return this.getPageManifestFragments().map((frag) => {
-      return this.renderListElement(frag);
+    return this.context.airbagsApi.getPages().map((frontMatter) => {
+      return (
+        <li key={frontMatter.title}>
+          <a href={frontMatter.path}>{frontMatter.title}</a>
+        </li>
+      );
     });
-  }
-
-  renderListElement(frag) {
-    let title = frag.frontMatter.title || frag.path;
-    return (
-      <li key={frag.path}>
-        <a href={frag.url}>{title}</a>
-      </li>
-    );
   }
 
   render() {
@@ -30,6 +21,6 @@ export default class Menu extends React.Component {
   }
 }
 
-Menu.propTypes = {
-  manifest: React.PropTypes.object
+Menu.contextTypes = {
+  airbagsApi: React.PropTypes.object
 };

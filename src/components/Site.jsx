@@ -5,28 +5,8 @@ import Router from './Router';
 export default class Site extends React.Component {
   getChildContext() {
     return {
-      manifest: this.props.manifest
+      airbagsApi: this.props.airbagsApi
     };
-  }
-
-  renderRouter() {
-    return <Router path={this.props.path} />;
-  }
-
-  renderCss() {
-    let cssFilenames = this.props.cssFilenames ? this.props.cssFilenames : [];
-
-    return cssFilenames.map((filename) => {
-      return <link href={filename} key={filename} rel="stylesheet" />;
-    });
-  }
-
-  // @TODO Replace with bundling manifest into javascript? Makes no sense w/o
-  // javascript on the client side anyway, and gets rid of code from code.
-  renderManifestDeclaration() {
-    let jsonProps = JSON.stringify(this.props.manifest);
-    let defineScript = `var SITE_CONTEXT_VARS = ${jsonProps};`;
-    return <script dangerouslySetInnerHTML={{__html: defineScript}}></script>;
   }
 
   render() {
@@ -34,13 +14,10 @@ export default class Site extends React.Component {
       <html>
         <head>
           <title>Site</title>
-          {this.renderCss()}
         </head>
         <body>
           <h1>Site</h1>
-          <Menu manifest={this.props.manifest} />
-          {this.renderRouter()}
-          {this.renderManifestDeclaration()}
+          <Menu />
         </body>
       </html>
     );
@@ -48,11 +25,10 @@ export default class Site extends React.Component {
 }
 
 Site.propTypes = {
-  cssFilenames: React.PropTypes.array,
-  manifest: React.PropTypes.object.isRequired,
+  airbagsApi: React.PropTypes.object,
   path: React.PropTypes.string
 };
 
 Site.childContextTypes = {
-  manifest: React.PropTypes.object
+  airbagsApi: React.PropTypes.object
 };
