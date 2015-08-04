@@ -2,18 +2,16 @@ import React from 'react';
 import markdown from '../utils/markdown';
 
 export default class Page extends React.Component {
-  getMarkdown(path) {
-    let contents = this.context.manifest.pages.filter((page) => {
-      return page.url === '/' + path;
-    })[0].contents;
+  getFrontMatter() {
+    return this.context.airbagsApi.getFrontMatter(this.props.path);
+  }
 
-    console.log(contents);
-
-    return markdown(contents);
+  getContents() {
+    return markdown(this.context.airbagsApi.getContents(this.props.path));
   }
 
   render() {
-    let contents = this.getMarkdown(this.props.path);
+    let contents = this.getContents();
     return <div dangerouslySetInnerHTML={{__html: contents}}></div>;
   }
 }
@@ -23,5 +21,5 @@ Page.propTypes = {
 };
 
 Page.contextTypes = {
-  manifest: React.PropTypes.object
+  airbagsApi: React.PropTypes.object
 };

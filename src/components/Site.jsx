@@ -1,32 +1,25 @@
 import React from 'react';
 import Menu from './Menu';
-import Router from './Router';
+import Page from './Page';
+// import Router from './Router';
 
 export default class Site extends React.Component {
   getChildContext() {
     return {
-      manifest: this.props.manifest
+      airbagsApi: this.props.airbagsApi
     };
   }
 
-  renderRouter() {
-    return <Router path={this.props.path} />;
-  }
+  ghettoRouter() {
+    let page;
 
-  renderCss() {
-    let cssFilenames = this.props.cssFilenames ? this.props.cssFilenames : [];
+    if (this.props.path === 'index.md') {
+      page = <div>Yes, this is index.</div>;
+    } else {
+      page = <Page path={this.props.path} />;
+    }
 
-    return cssFilenames.map((filename) => {
-      return <link href={filename} key={filename} rel="stylesheet" />;
-    });
-  }
-
-  // @TODO Replace with bundling manifest into javascript? Makes no sense w/o
-  // javascript on the client side anyway, and gets rid of code from code.
-  renderManifestDeclaration() {
-    let jsonProps = JSON.stringify(this.props.manifest);
-    let defineScript = `var SITE_CONTEXT_VARS = ${jsonProps};`;
-    return <script dangerouslySetInnerHTML={{__html: defineScript}}></script>;
+    return page;
   }
 
   render() {
@@ -34,13 +27,15 @@ export default class Site extends React.Component {
       <html>
         <head>
           <title>Site</title>
-          {this.renderCss()}
+          <link href="/style/style.css" rel="stylesheet" />
         </head>
         <body>
           <h1>Site</h1>
-          <Menu manifest={this.props.manifest} />
-          {this.renderRouter()}
-          {this.renderManifestDeclaration()}
+          <Menu />
+          {this.ghettoRouter()}
+
+          <script src="/javascript/vendors.js" />
+          <script src="/javascript/bundle.js" />
         </body>
       </html>
     );
@@ -48,11 +43,10 @@ export default class Site extends React.Component {
 }
 
 Site.propTypes = {
-  cssFilenames: React.PropTypes.array,
-  manifest: React.PropTypes.object.isRequired,
+  airbagsApi: React.PropTypes.object,
   path: React.PropTypes.string
 };
 
 Site.childContextTypes = {
-  manifest: React.PropTypes.object
+  airbagsApi: React.PropTypes.object
 };
