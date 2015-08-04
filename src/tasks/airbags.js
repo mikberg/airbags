@@ -50,18 +50,20 @@ export default function airbags() {
     cb();
   }
 
-  return through.obj(register);
+  function flush(cb) {
+    let index = new gutil.File({path: 'index.md'});
+    index.contents = new Buffer('');
+
+    this.push(index);
+    cb();
+  }
+
+  return through.obj(register, flush);
 }
 
 airbags.renderWithReactComponent = function renderWithReactComponent(Component) {
   function render(sourceFile, enc, cb) {
     let relPath = relativePath(sourceFile.path);
-    let fromCache = cache[relPath];
-
-    if (!fromCache) {
-      return cb(new gutil.PluginError('airbags',
-        `Couldn't find ${sourceFile.path} in cache`));
-    }
 
     let renderedFile = new gutil.File({
       base: sourceFile.base,
@@ -80,7 +82,7 @@ airbags.renderWithReactComponent = function renderWithReactComponent(Component) 
 
     renderedFile.contents = new Buffer(rendered, enc);
 
-    gutil.log(`Airbags rendered '${fromCache.title || sourceFile.path}'`);
+    gutil.log(`Airbags rendered '${relativePath(sourceFile.path)}'`);
 
     this.push(renderedFile);
     this.push(sourceFile);
