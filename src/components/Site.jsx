@@ -1,6 +1,7 @@
 import React from 'react';
 import Menu from './Menu';
-import Router from './Router';
+import Page from './Page';
+// import Router from './Router';
 
 export default class Site extends React.Component {
   getChildContext() {
@@ -18,6 +19,7 @@ export default class Site extends React.Component {
         <body>
           <h1>Site</h1>
           <Menu />
+          <Page path={this.props.path} />
         </body>
       </html>
     );
