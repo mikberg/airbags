@@ -1,25 +1,46 @@
 import React from 'react';
-// import {RouterMixin} from 'react-mini-router';
 import Page from './Page';
 
-export default React.createClass({
-  // mixins: [RouterMixin],
+export default class RoutePane extends React.Component {
+  constructor() {
+    super();
 
-  routes: {
-    'index.html': 'home',
-    'pages/:text': 'page'
-  },
-
-  render: function render() {
-    // return this.renderCurrentRoute();
-    return this.page('colophon.html');
-  },
-
-  home: () => {
-    return <div>Yes, this is home</div>;
-  },
-
-  page: (path) => {
-    return <Page path={'pages/' + path} />;
+    this.rules = {
+      'index': this.home.bind(this),
+      'pages/': this.page.bind(this)
+      // '/': this.home.bind(this)
+    };
   }
-});
+
+  home() {
+    return <div>Yes, this is home</div>;
+  }
+
+  page() {
+    return <Page path={this.props.path} />;
+  }
+
+  pageNotFound() {
+    return <div>Terribly sorry, couldn't find that page.</div>;
+  }
+
+  render() {
+    let matching = Object.keys(this.rules).filter((pattern) => {
+      return this.props.path.startsWith(pattern);
+    });
+
+    if (matching.length > 0) {
+      return this.rules[matching[0]]();
+    } else {
+      return this.pageNotFound();
+    }
+  }
+}
+
+RoutePane.propTypes = {
+  path: React.PropTypes.string
+};
+
+RoutePane.contextTypes = {
+  airbagsApi: React.PropTypes.object
+};
