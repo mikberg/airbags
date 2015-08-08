@@ -26,6 +26,7 @@ export default class RoutePane extends React.Component {
 
   render() {
     let matching = Object.keys(this.rules).filter((pattern) => {
+      console.log(`Checking ${pattern} against ${this.props.path} -> ${this.props.path.startsWith(pattern)}`);
       return this.props.path.startsWith(pattern);
     });
 

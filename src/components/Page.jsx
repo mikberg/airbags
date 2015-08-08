@@ -1,5 +1,6 @@
 import React from 'react';
 import markdown from '../utils/markdown';
+import Preloaded from './Preloaded';
 
 export default class Page extends React.Component {
   getFrontMatter() {
@@ -12,7 +13,11 @@ export default class Page extends React.Component {
 
   render() {
     let contents = this.getContents();
-    return <div dangerouslySetInnerHTML={{__html: contents}}></div>;
+    return (
+      <Preloaded id="page">
+        <div dangerouslySetInnerHTML={{__html: contents}}></div>
+      </Preloaded>
+    );
   }
 }
 
