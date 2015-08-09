@@ -8,10 +8,11 @@ export default class Preloaded extends React.Component {
   }
 
   renderPreloaded() {
+    console.log('rendering with preloaded');
     return (
       <div
-        dangerouslySetInnerHTML={{__html: this.preloadedContents}}
-        id={this.props.id}>
+         dangerouslySetInnerHTML={{__html: this.preloadedContents}}
+         id={this.props.id}>
       </div>
     );
   }

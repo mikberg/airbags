@@ -10,18 +10,6 @@ export default class Site extends React.Component {
     };
   }
 
-  // ghettoRouter() {
-  //   let page;
-  //
-  //   if (this.props.path === 'index.md') {
-  //     page = <div>Yes, this is index.</div>;
-  //   } else {
-  //     page = <Page path={this.props.path} />;
-  //   }
-  //
-  //   return page;
-  // }
-
   render() {
     return (
       <html>

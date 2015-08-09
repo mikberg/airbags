@@ -21,7 +21,7 @@ export default class RoutePane extends React.Component {
   }
 
   pageNotFound() {
-    return <div>Terribly sorry, couldn't find that page.</div>;
+    return <div>Terribly sorry, couldn't find page matching {this.props.path}.</div>;
   }
 
   render() {
