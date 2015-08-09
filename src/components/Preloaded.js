@@ -1,14 +1,15 @@
 import React from 'react';
+import escapeTextContentForBrowser from 'react/lib/escapeTextContentForBrowser';
 
 export default class Preloaded extends React.Component {
   componentWillMount() {
     if (process.browser) {
       this.preloadedContents = document.getElementById(this.props.id).innerHTML;
+      this.preloadedContents = escapeTextContentForBrowser(this.preloadedContents);
     }
   }
 
   renderPreloaded() {
-    console.log('rendering with preloaded');
     return (
       <div
          dangerouslySetInnerHTML={{__html: this.preloadedContents}}
