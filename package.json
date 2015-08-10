@@ -2,7 +2,7 @@
   "name": "airbags",
   "version": "0.1.0-dev",
   "description": "An isomorphic react based generator of sites",
-  "main": "main.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --ext .jsx --ext .js src"
