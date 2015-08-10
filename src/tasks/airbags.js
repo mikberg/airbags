@@ -4,6 +4,7 @@ import yamlFront from 'yaml-front-matter';
 import addDoctype from './addDoctype';
 import {cache, contentCache} from './cache';
 import renderWithReactComponent from './renderWithReactComponent';
+import render from './render';
 import {relativePath} from '../utils/taskUtils';
 
 export default function airbags() {
@@ -37,4 +38,5 @@ export default function airbags() {
 }
 
 airbags.renderWithReactComponent = renderWithReactComponent;
+airbags.render = render;
 airbags.addDoctype = addDoctype;
