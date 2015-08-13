@@ -32,7 +32,6 @@
     "marked": "^0.3.3",
     "react": "^0.14.0-beta3",
     "react-dom": "^0.14.0-beta3",
-    "react-redux": "^0.8.0",
     "redux": "^1.0.0-rc",
     "yaml-front-matter": "^3.2.3"
   },
