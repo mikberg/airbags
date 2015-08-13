@@ -2,7 +2,7 @@
   "name": "airbags",
   "version": "0.1.0-dev",
   "description": "An isomorphic react based generator of sites",
-  "main": "main.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --ext .jsx --ext .js src"
@@ -32,6 +32,7 @@
     "marked": "^0.3.3",
     "react": "^0.14.0-beta3",
     "react-dom": "^0.14.0-beta3",
+    "redux": "^1.0.0-rc",
     "yaml-front-matter": "^3.2.3"
   },
   "browserify": {
