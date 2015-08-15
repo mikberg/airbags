@@ -2,8 +2,8 @@ import through from 'through2';
 import gutil from 'gulp-util';
 import yamlFront from 'yaml-front-matter';
 import addDoctype from './addDoctype';
-import renderWithReactComponent from './renderWithReactComponent';
 import render from './render';
+import addApiFiles from './addApiFiles';
 import {relativePath} from '../utils/taskUtils';
 
 export default function airbags() {
@@ -35,6 +35,6 @@ export default function airbags() {
   return through.obj(register, flush);
 }
 
-airbags.renderWithReactComponent = renderWithReactComponent;
 airbags.render = render;
 airbags.addDoctype = addDoctype;
+airbags.addApiFiles = addApiFiles;
