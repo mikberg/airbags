@@ -11,7 +11,7 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    AirbagsApi.getPage('blupp').then((page) => {
+    AirbagsApi.getPage('pages/colophon.json').then((page) => {
       this.setState({page});
     });
   }
@@ -25,7 +25,7 @@ export default class App extends React.Component {
       <div>
         <h1>{this.state.page.frontMatter.title}</h1>
         <small>{this.state.page.frontMatter.tags}</small>
-        <div>{this.state.page.content}</div>
+        <div>{this.state.page.contents}</div>
       </div>
     );
   }
