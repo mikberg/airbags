@@ -1,21 +1,32 @@
 import React from 'react';
+import AirbagsApi from '../api';
 
 export default class App extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      counter: 0
+      page: null
     };
   }
 
-  // componentWillMount() {
-  //   setInterval(() => {
-  //     this.setState({counter: this.state.counter + 1});
-  //   }, 1000);
-  // }
+  componentDidMount() {
+    AirbagsApi.getPage('blupp').then((page) => {
+      this.setState({page});
+    });
+  }
 
   render() {
-    return <h1>I can count to {this.state.counter}</h1>;
+    if (!this.state.page) {
+      return <div>Loading ...</div>;
+    }
+
+    return (
+      <div>
+        <h1>{this.state.page.frontMatter.title}</h1>
+        <small>{this.state.page.frontMatter.tags}</small>
+        <div>{this.state.page.content}</div>
+      </div>
+    );
   }
 }

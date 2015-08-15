@@ -1,4 +1,4 @@
-export default class AirbagsApi {
+class AirbagsApi {
   getPage(path) {
     return new Promise((resolve) => {
       resolve({
@@ -12,3 +12,5 @@ export default class AirbagsApi {
     });
   }
 }
+
+export default new AirbagsApi();
