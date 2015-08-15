@@ -2,23 +2,21 @@ import through from 'through2';
 import gutil from 'gulp-util';
 import yamlFront from 'yaml-front-matter';
 import addDoctype from './addDoctype';
-import {cache, contentCache} from './cache';
 import renderWithReactComponent from './renderWithReactComponent';
 import render from './render';
 import {relativePath} from '../utils/taskUtils';
 
 export default function airbags() {
   function register(file, enc, cb) {
-    let relPath = relativePath(file.path);
-
     let frontMatter = yamlFront.loadFront(file.contents);
     let contents = frontMatter.__content;
     delete frontMatter.__content;
 
-    cache[relPath] = frontMatter;
-    contentCache[relPath] = contents;
-
-    file.contents = new Buffer(contents, enc);
+    file.data = {
+      contents,
+      frontMatter,
+      path: relativePath(file.path)
+    };
 
     gutil.log(`Airbags registered '${frontMatter.title || file.path}'`);
 
