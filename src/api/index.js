@@ -1,4 +1,5 @@
 import http from 'http';
+import assign from 'lodash.assign';
 
 const cache = {
   pages: {}
@@ -27,6 +28,14 @@ class AirbagsApi {
     }
 
     return cache.pages[path];
+  }
+
+  getCache() {
+    return cache;
+  }
+
+  loadCache(c) {
+    assign(cache, c);
   }
 
   _getJson(url) {
