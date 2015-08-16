@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router';
 
 export default class Menu extends React.Component {
   getListElements() {
@@ -14,8 +15,12 @@ export default class Menu extends React.Component {
   render() {
     return (
       <ul className="Menu">
-        <li key="home"><a href="/">Home</a></li>
-        {this.getListElements()}
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/pages/colophon.html">Colophon</Link>
+        </li>
       </ul>
     );
   }
