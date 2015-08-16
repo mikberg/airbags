@@ -1,31 +1,21 @@
 import React from 'react';
-import AirbagsApi from '../api';
+import Home from './Home';
 
 export default class App extends React.Component {
-  constructor() {
-    super();
+  renderRoute() {
+    if (this.props.children) {
+      return this.props.children;
+    }
 
-    this.state = {
-      page: null
-    };
-  }
-
-  componentDidMount() {
-    AirbagsApi.getPage('pages/colophon.json').then((page) => {
-      this.setState({page});
-    });
+    return <Home />;
   }
 
   render() {
-    if (!this.state.page) {
-      return <div>Loading ...</div>;
-    }
-
     return (
       <div>
-        <h1>{this.state.page.frontMatter.title}</h1>
-        <small>{this.state.page.frontMatter.tags}</small>
-        <div>{this.state.page.contents}</div>
+        <h1>Site</h1>
+
+        {this.renderRoute()}
       </div>
     );
   }
