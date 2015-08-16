@@ -1,21 +1,22 @@
 import React from 'react';
+import Home from './Home';
 
 export default class App extends React.Component {
-  constructor() {
-    super();
+  renderRoute() {
+    if (this.props.children) {
+      return this.props.children;
+    }
 
-    this.state = {
-      counter: 0
-    };
+    return <Home />;
   }
 
-  // componentWillMount() {
-  //   setInterval(() => {
-  //     this.setState({counter: this.state.counter + 1});
-  //   }, 1000);
-  // }
-
   render() {
-    return <h1>I can count to {this.state.counter}</h1>;
+    return (
+      <div>
+        <h1>Site</h1>
+
+        {this.renderRoute()}
+      </div>
+    );
   }
 }

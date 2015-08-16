@@ -1,30 +1,32 @@
 import through from 'through2';
 import gutil from 'gulp-util';
-import {cache} from './cache';
+// import {cache} from './cache';
 import {changeExtension, relativePath} from '../utils/taskUtils';
 
 export default function render(renderFn) {
   function inner(sourceFile, enc, cb) {
-    let relPath = relativePath(sourceFile.path);
-
     let renderedFile = new gutil.File({
       base: sourceFile.base,
       cwd: sourceFile.cwd,
       path: changeExtension(sourceFile.path, '.html')
     });
 
-    if (cache[relPath]) {
-      cache[relPath].renderedPath = relativePath(renderedFile.path);
-    }
+    let writeContents = (err, contents) => {
+      if (err || !contents) {
+        return cb(err);
+      }
 
-    renderedFile.contents = new Buffer(renderFn(sourceFile), enc);
+      renderedFile.contents = new Buffer(contents, enc);
 
-    gutil.log(`Airbags rendered '${relativePath(sourceFile.path)}'`);
+      gutil.log(`Airbags rendered '${relativePath(sourceFile.path)}'`);
 
-    this.push(renderedFile);
-    this.push(sourceFile);
+      this.push(renderedFile);
+      this.push(sourceFile);
 
-    cb();
+      cb();
+    };
+
+    renderFn(sourceFile, writeContents);
   }
 
   return through.obj(inner);
