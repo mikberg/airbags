@@ -11,14 +11,22 @@ export default function render(renderFn) {
       path: changeExtension(sourceFile.path, '.html')
     });
 
-    renderedFile.contents = new Buffer(renderFn(sourceFile), enc);
+    let writeContents = (err, contents) => {
+      if (err || !contents) {
+        return cb(err);
+      }
 
-    gutil.log(`Airbags rendered '${relativePath(sourceFile.path)}'`);
+      renderedFile.contents = new Buffer(contents, enc);
 
-    this.push(renderedFile);
-    this.push(sourceFile);
+      gutil.log(`Airbags rendered '${relativePath(sourceFile.path)}'`);
 
-    cb();
+      this.push(renderedFile);
+      this.push(sourceFile);
+
+      cb();
+    };
+
+    renderFn(sourceFile, writeContents);
   }
 
   return through.obj(inner);
