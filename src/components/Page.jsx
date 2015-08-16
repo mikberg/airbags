@@ -11,7 +11,7 @@ export default class Page extends React.Component {
 
   componentDidMount() {
     AirbagsApi
-      .getPage('/pages/colophon.json')
+      .getPage('/pages/colophon')
       .then((page) => {
         this.setState({page});
       });

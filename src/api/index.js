@@ -2,8 +2,7 @@ import http from 'http';
 
 class AirbagsApi {
   getPage(path) {
-    let url = /^\//.test(path) ? path : '/' + path;
-    return this._getJson(url);
+    return this._getJson(AirbagsApi.pathToUrl(path));
   }
 
   _getJson(url) {
@@ -30,5 +29,7 @@ class AirbagsApi {
     });
   }
 }
+
+AirbagsApi.pathToUrl = (p) => (/^\//.test(p) ? p : '/' + p) + '.json';
 
 export default new AirbagsApi();
