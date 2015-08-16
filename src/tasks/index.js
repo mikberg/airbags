@@ -26,6 +26,7 @@ export default function airbags() {
 
   function flush(cb) {
     let index = new gutil.File({path: 'index.md'});
+    index.data = {path: '/index'};
     index.contents = new Buffer('');
 
     this.push(index);

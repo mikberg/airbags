@@ -17,9 +17,8 @@ class AirbagsApi {
     return !!cache.pages[path];
   }
 
-  // @TODO: Could use path from page itself
-  addPageToCache(path, page) {
-    cache.pages[path] = page;
+  addPageToCache(page) {
+    cache.pages[page.path] = page;
   }
 
   getPageSync(path) {
