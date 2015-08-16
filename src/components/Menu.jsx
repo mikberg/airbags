@@ -1,15 +1,22 @@
 import React from 'react';
 import {Link} from 'react-router';
+import api from '../api';
 
 export default class Menu extends React.Component {
   getListElements() {
-    return this.context.airbagsApi.getPages().map((frontMatter) => {
-      return (
-        <li key={frontMatter.title}>
-          <a href={'/' + frontMatter.renderedPath}>{frontMatter.title}</a>
-        </li>
-      );
-    });
+    let pages = api.getPagesSync();
+    return Object.keys(pages)
+      .filter((key) => pages[key].frontMatter)
+      .map((key) => {
+        let page = pages[key];
+        return (
+          <li key={page.path}>
+            <Link to={page.path + '.html'}>
+              {page.frontMatter.title || page.path}
+            </Link>
+          </li>
+        );
+      });
   }
 
   render() {
@@ -18,9 +25,7 @@ export default class Menu extends React.Component {
         <li>
           <Link to="/">Home</Link>
         </li>
-        <li>
-          <Link to="/pages/colophon.html">Colophon</Link>
-        </li>
+        {this.getListElements()}
       </ul>
     );
   }

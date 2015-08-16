@@ -6,6 +6,7 @@ const cache = {
 };
 
 class AirbagsApi {
+  // @TODO Try getting from cache
   getPage(path) {
     return this._getJson(AirbagsApi.pathToUrl(path)).then((page) => {
       this.addPageToCache(path, page);
@@ -27,6 +28,10 @@ class AirbagsApi {
     }
 
     return cache.pages[path];
+  }
+
+  getPagesSync() {
+    return cache.pages;
   }
 
   getCache() {
