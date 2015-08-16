@@ -15,7 +15,7 @@ export default function airbags() {
     file.data = {
       contents,
       frontMatter,
-      path: relativePath(file.path)
+      path: '/' + relativePath(file.path).replace(/\.md/, '')
     };
 
     gutil.log(`Airbags registered '${frontMatter.title || file.path}'`);
