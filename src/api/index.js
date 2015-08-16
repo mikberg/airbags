@@ -1,8 +1,27 @@
 import http from 'http';
 
+const cache = {
+  pages: {}
+};
+
 class AirbagsApi {
   getPage(path) {
-    return this._getJson(AirbagsApi.pathToUrl(path));
+    return this._getJson(AirbagsApi.pathToUrl(path)).then((page) => {
+      cache.pages[path] = page;
+      return page;
+    });
+  }
+
+  isPageInCache(path) {
+    return !!cache.pages[path];
+  }
+
+  getPageSync(path) {
+    if (!this.isPageInCache(path)) {
+      throw Error(`path is not in cache: ${path}`);
+    }
+
+    return cache.pages[path];
   }
 
   _getJson(url) {

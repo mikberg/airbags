@@ -4,17 +4,22 @@ import AirbagsApi from '../api';
 export default class Page extends React.Component {
   constructor() {
     super();
-    this.state = {
-      page: null
-    };
+
+    if (AirbagsApi.isPageInCache('/pages/colophon')) {
+      this.state = {page: AirbagsApi.getPageSync('/pages/colophon')};
+    } else {
+      this.state = {page: null};
+    }
   }
 
   componentDidMount() {
-    AirbagsApi
-      .getPage('/pages/colophon')
-      .then((page) => {
-        this.setState({page});
-      });
+    if (!this.state.page) {
+      AirbagsApi
+        .getPage('/pages/colophon')
+        .then((page) => {
+          this.setState({page});
+        });
+    }
   }
 
   renderWithData() {
