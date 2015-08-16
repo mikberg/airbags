@@ -7,13 +7,18 @@ const cache = {
 class AirbagsApi {
   getPage(path) {
     return this._getJson(AirbagsApi.pathToUrl(path)).then((page) => {
-      cache.pages[path] = page;
+      this.addPageToCache(path, page);
       return page;
     });
   }
 
   isPageInCache(path) {
     return !!cache.pages[path];
+  }
+
+  // @TODO: Could use path from page itself
+  addPageToCache(path, page) {
+    cache.pages[path] = page;
   }
 
   getPageSync(path) {
