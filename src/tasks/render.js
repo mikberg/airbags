@@ -12,8 +12,13 @@ export default function render(renderFn) {
     });
 
     let writeContents = (err, contents) => {
-      if (err || !contents) {
+      if (err) {
         return cb(err);
+      }
+
+      if (!contents) {
+        this.push(sourceFile);
+        return cb();
       }
 
       renderedFile.contents = new Buffer(contents, enc);
