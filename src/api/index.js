@@ -7,8 +7,9 @@ const cache = {
 
 class AirbagsApi {
   // @TODO Try getting from cache
-  getPage(path) {
-    return this._getJson(AirbagsApi.pathToUrl(path)).then((page) => {
+  getPage(pageName) {
+    let path = AirbagsApi.pathToPage(pageName);
+    return this._getJson(path).then((page) => {
       this.addPageToCache(path, page);
       return page;
     });
@@ -68,5 +69,6 @@ class AirbagsApi {
 }
 
 AirbagsApi.pathToUrl = (p) => (/^\//.test(p) ? p : '/' + p) + '.json';
+AirbagsApi.pathToPage = (n) => AirbagsApi.pathToUrl(`pages/${n}`);
 
 export default new AirbagsApi();

@@ -1,32 +1,48 @@
 import React from 'react';
 import AirbagsApi from '../api';
+import markdown from '../utils/markdown';
 
 export default class Page extends React.Component {
   constructor() {
     super();
 
-    if (AirbagsApi.isPageInCache('/pages/colophon')) {
-      this.state = {page: AirbagsApi.getPageSync('/pages/colophon')};
-    } else {
-      this.state = {page: null};
-    }
+    // if (AirbagsApi.isPageInCache('/pages/colophon')) {
+    //   this.state = {page: AirbagsApi.getPageSync('/pages/colophon')};
+    // } else {
+    //   this.state = {page: null};
+    // }
+
+    this.state = {page: null};
+  }
+
+  fetchPage() {
+    AirbagsApi
+      .getPage(this.props.params.pageName)
+      .then((page) => {
+        this.setState({page});
+      });
   }
 
   componentDidMount() {
     if (!this.state.page) {
-      AirbagsApi
-        .getPage('/pages/colophon')
-        .then((page) => {
-          this.setState({page});
-        });
+      this.fetchPage();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    let oldPageName = prevProps.params.pageName;
+    let newPageName = this.props.params.pageName;
+
+    if (oldPageName !== newPageName) {
+      this.fetchPage();
     }
   }
 
   renderWithData() {
+    let html = markdown(this.state.page.contents);
     return (
       <article>
-        <h2>{this.state.page.frontMatter.title}</h2>
-        {this.state.page.contents}
+        <div dangerouslySetInnerHTML={{__html: html}} />
       </article>
     );
   }
