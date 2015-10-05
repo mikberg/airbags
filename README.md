@@ -10,13 +10,23 @@ file (e.g. Markdown) to static HTML through an "arbitrary" React wrapper.
 
 ## Components
 
-### Content Registration
+### Collection
 
 Provides content both during the transforming phase and for the client side
 via an API.
 
 ```
-content(markdown files) -> data structure readable by API
+collect(content files) -> data structure with all content, meta data
+```
+
+This data structure can then be turned into (new) files containing the data
+in some manner.
+
+The exact manner in which the collection phase extracts content is done by an
+extractor:
+
+```
+extractor(content file) -> data structure with content, meta data
 ```
 
 ### Transform
