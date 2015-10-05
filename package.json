@@ -24,12 +24,14 @@
     "gulp": "^3.9.0",
     "gulp-util": "^3.0.5",
     "mocha": "^2.3.3",
+    "sinon": "^1.17.1",
     "through2": "^2.0.0",
     "unreachable-branch-transform": "^0.3.0"
   },
   "dependencies": {
     "babel": "^5.5.8",
     "director": "^1.2.8",
+    "isstream": "^0.1.2",
     "lodash": "^3.9.3",
     "lodash.assign": "^3.2.0",
     "lodash.omit": "^3.1.0",
