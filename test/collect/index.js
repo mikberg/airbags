@@ -41,7 +41,7 @@ describe('collect', () => {
     expect(promise.then).to.be.a('function');
   });
 
-  it('resolves to object with collection of pages', (done) => {
+  it('resolves to object with siteMap of pages', (done) => {
     let fileStream = createFileStream();
 
     fileStream.push(new File({
@@ -54,15 +54,13 @@ describe('collect', () => {
     fileStream.push(null);
 
     collect(fileStream, extractor)
-      .then((collection) => {
-        expect(collection).to.deep.equal({
-          pages: {
-            '/test/article.md': {
-              meta: {
-                title: 'test'
-              },
-              content: 'hello'
-            }
+      .then((siteMap) => {
+        expect(siteMap).to.deep.equal({
+          '/test/article.md': {
+            meta: {
+              title: 'test'
+            },
+            content: 'hello'
           }
         });
         done();

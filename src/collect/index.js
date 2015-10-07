@@ -19,9 +19,7 @@ export function extractFromFile(file, extractor) {
  * which resolves to the data structure.
  */
 export default function collect(fileStream, extractor) {
-  let siteMap = {
-    pages: {}
-  };
+  let siteMap = {};
 
   if (!isReadable(fileStream)) {
     throw new Error('fileStream must be readable stream');
@@ -38,7 +36,7 @@ export default function collect(fileStream, extractor) {
 
     fileStream.on('data', (file) => {
       try {
-        siteMap.pages[file.path] = extractFromFile(file, extractor);
+        siteMap[file.path] = extractFromFile(file, extractor);
       } catch(err) {
         reject(err);
       }
