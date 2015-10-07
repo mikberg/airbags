@@ -13,10 +13,10 @@ export default function markdownExtractor(markdown) {
     throw new Error('Needs a content string input');
   }
 
-  let parsed = loadFront(markdown);
+  const parsed = loadFront(markdown);
 
   return {
     html: marked(parsed.__content),
-    meta: omit(parsed, (value, key) => key === '__content')
+    meta: omit(parsed, (value, key) => key === '__content'),
   };
 }

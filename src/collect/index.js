@@ -18,7 +18,7 @@ export function extractFromFile(file, extractor) {
  * Remove file extension from a file path
  */
 export function removeFileExtension(filePath) {
-  let {dir, name} = path.parse(filePath);
+  const {dir, name} = path.parse(filePath);
   return `${dir}/${name}`;
 }
 
@@ -31,7 +31,7 @@ export const createNakedPath = removeFileExtension;
  * which resolves to the data structure.
  */
 export default function collect(fileStream, extractor) {
-  let files = [];
+  const files = [];
 
   if (!isReadable(fileStream)) {
     throw new Error('fileStream must be readable stream');
@@ -51,9 +51,9 @@ export default function collect(fileStream, extractor) {
         files.push({
           data: extractFromFile(file, extractor),
           originalPath: file.path,
-          nakedPath: createNakedPath(file.path)
+          nakedPath: createNakedPath(file.path),
         });
-      } catch(err) {
+      } catch (err) {
         reject(err);
       }
     });
