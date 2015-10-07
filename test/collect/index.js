@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
 import Stream from 'stream';
-import collect, {extractFromFile} from '../../src/collect';
+import collect, {extractFromFile, removeFileExtension} from '../../src/collect';
 import File from 'vinyl';
 
 const createFileStream = () => {
@@ -98,5 +98,12 @@ describe('extractFromFile', () => {
     extractFromFile(file, spy);
 
     expect(spy.calledWith(contents)).to.equal(true);
+  });
+});
+
+describe('removeFileExtension', () => {
+  it('removes correctly', () => {
+    let removed = removeFileExtension('/test/is/cool.md');
+    expect(removed).to.equal('/test/is/cool');
   });
 });

@@ -1,5 +1,6 @@
 import {isReadable} from 'isstream';
 import File from 'vinyl';
+import path from 'path';
 
 /**
  * Extract data from vinyl file given an extractor
@@ -10,6 +11,14 @@ export function extractFromFile(file, extractor) {
   }
 
   return extractor(file.contents.toString());
+}
+
+/**
+ * Remove file extension from a file path
+ */
+export function removeFileExtension(filePath) {
+  let {dir, name} = path.parse(filePath);
+  return `${dir}/${name}`;
 }
 
 /**
