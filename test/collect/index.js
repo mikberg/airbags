@@ -4,7 +4,7 @@ import Stream from 'stream';
 import collect, {
   extractFromFile,
   removeFileExtension,
-  createPublicPath
+  isSiteMapOk,
 } from '../../src/collect';
 import File from 'vinyl';
 
@@ -14,12 +14,12 @@ const createFileStream = () => {
 
 const extractor = (fileContents) => ({
   meta: { title: 'test' },
-  content: fileContents
+  content: fileContents,
 });
 
 describe('collect', () => {
   it('throws if not given a readable stream', () => {
-    let fileStream = new Stream.Writable();
+    const fileStream = new Stream.Writable();
     expect(() => collect(fileStream, extractor)).to.throw();
   });
 
@@ -28,7 +28,7 @@ describe('collect', () => {
   });
 
   it('rejects if given a non-vinyl-file object', (done) => {
-    let fileStream = createFileStream();
+    const fileStream = createFileStream();
     fileStream.push('hei');
     fileStream.push(null);
 
@@ -41,20 +41,20 @@ describe('collect', () => {
   });
 
   it('returns a promise', () => {
-    let promise = collect(createFileStream(), extractor);
+    const promise = collect(createFileStream(), extractor);
     expect(promise.then).to.be.a('function');
   });
 
   it('resolves to object with siteMap of extractions', (done) => {
-    let fileStream = createFileStream();
-    let extraction = {};
-    let stub = sinon.stub().returns(extraction);
+    const fileStream = createFileStream();
+    const extraction = {};
+    const stub = sinon.stub().returns(extraction);
 
     fileStream.push(new File({
       cwd: '/',
       base: '/test/',
       path: '/test/article.md',
-      contents: new Buffer('hello')
+      contents: new Buffer('hello'),
     }));
 
     fileStream.push(null);
@@ -69,13 +69,13 @@ describe('collect', () => {
   });
 
   it('adds field `originalPath`', (done) => {
-    let path = '/cool/path.md';
-    let fileStream = createFileStream();
-    let stub = sinon.stub().returns({});
+    const path = '/cool/path.md';
+    const fileStream = createFileStream();
+    const stub = sinon.stub().returns({});
 
     fileStream.push(new File({
       path,
-      contents: new Buffer('hello')
+      contents: new Buffer('hello'),
     }));
 
     fileStream.push(null);
@@ -89,13 +89,13 @@ describe('collect', () => {
   });
 
   it('adds field `nakedPath`', (done) => {
-    let path = '/cool/path.md';
-    let fileStream = createFileStream();
-    let stub = sinon.stub().returns({});
+    const path = '/cool/path.md';
+    const fileStream = createFileStream();
+    const stub = sinon.stub().returns({});
 
     fileStream.push(new File({
       path,
-      contents: new Buffer('hello')
+      contents: new Buffer('hello'),
     }));
 
     fileStream.push(null);
@@ -115,9 +115,9 @@ describe('extractFromFile', () => {
   });
 
   it('calls extractor with file contents', () => {
-    let contents = 'test';
-    let spy = sinon.spy(extractor);
-    let file = new File({ contents: new Buffer(contents) });
+    const contents = 'test';
+    const spy = sinon.spy(extractor);
+    const file = new File({ contents: new Buffer(contents) });
 
     extractFromFile(file, spy);
 
@@ -127,14 +127,51 @@ describe('extractFromFile', () => {
 
 describe('removeFileExtension', () => {
   it('removes correctly', () => {
-    let removed = removeFileExtension('/test/is/cool.md');
+    const removed = removeFileExtension('/test/is/cool.md');
     expect(removed).to.equal('/test/is/cool');
   });
 });
 
 describe('create naked path', () => {
   it('lacks file extension', () => {
-    let naked = removeFileExtension('/test/is/cool.md');
+    const naked = removeFileExtension('/test/is/cool.md');
     expect(naked).to.equal('/test/is/cool');
+  });
+});
+
+describe('isSiteMapOk', () => {
+  it('returns true for empty generated siteMap', (done) => {
+    const fileStream = createFileStream();
+
+    fileStream.push(null);
+
+    collect(fileStream, sinon.stub().returns({}))
+      .then((siteMap) => {
+        expect(isSiteMapOk(siteMap)).to.equal(true);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('returns true for filled generated siteMap', (done) => {
+    const fileStream = createFileStream();
+
+    fileStream.push(new File({
+      path: '/cool/file.md',
+      contents: new Buffer('hello'),
+    }));
+
+    fileStream.push(null);
+
+    collect(fileStream, sinon.stub().returns({}))
+      .then((siteMap) => {
+        expect(isSiteMapOk(siteMap)).to.equal(true);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('returns false for implausible siteMap', () => {
+    expect(isSiteMapOk({a: 'b'})).to.equal(false);
   });
 });
