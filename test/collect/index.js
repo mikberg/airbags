@@ -5,9 +5,7 @@ import collect, {extractFromFile} from '../../src/collect';
 import File from 'vinyl';
 
 const createFileStream = () => {
-  let fileStream = new Stream.Readable();
-  fileStream._read = () => {};
-  return fileStream;
+  return new Stream.Readable({ objectMode: true });
 };
 
 const extractor = (fileContents) => ({
@@ -25,22 +23,51 @@ describe('collect', () => {
     expect(() => collect(createFileStream(), 'notextractor')).to.throw();
   });
 
-  it('throws if given a non-vinyl-file object', (done) => {
+  it('rejects if given a non-vinyl-file object', (done) => {
     let fileStream = createFileStream();
     fileStream.push('hei');
     fileStream.push(null);
 
     collect(fileStream, extractor)
       .then(() => done(true))
-      .catch((reason) => {
-        expect(reason).to.contain('vinyl');
+      .catch((err) => {
+        expect(err.message).to.contain('vinyl');
         done();
       });
   });
 
   it('returns a promise', () => {
     let promise = collect(createFileStream(), extractor);
-    expect(promise.thden).to.be.defined;
+    expect(promise.then).to.be.a('function');
+  });
+
+  it('resolves to object with collection of pages', (done) => {
+    let fileStream = createFileStream();
+
+    fileStream.push(new File({
+      cwd: '/',
+      base: '/test/',
+      path: '/test/article.md',
+      contents: new Buffer('hello')
+    }));
+
+    fileStream.push(null);
+
+    collect(fileStream, extractor)
+      .then((collection) => {
+        expect(collection).to.deep.equal({
+          pages: {
+            '/test/article.md': {
+              meta: {
+                title: 'test'
+              },
+              content: 'hello'
+            }
+          }
+        });
+        done();
+      })
+      .catch(done);
   });
 });
 
