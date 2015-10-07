@@ -36,7 +36,10 @@ export default function collect(fileStream, extractor) {
 
     fileStream.on('data', (file) => {
       try {
-        siteMap[file.path] = extractFromFile(file, extractor);
+        siteMap[file.path] = {
+          data: extractFromFile(file, extractor),
+          originalPath: file.path
+        };
       } catch(err) {
         reject(err);
       }

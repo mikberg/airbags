@@ -41,8 +41,10 @@ describe('collect', () => {
     expect(promise.then).to.be.a('function');
   });
 
-  it('resolves to object with siteMap of pages', (done) => {
+  it('resolves to object with siteMap of extractions', (done) => {
     let fileStream = createFileStream();
+    let extraction = {};
+    let stub = sinon.stub().returns(extraction);
 
     fileStream.push(new File({
       cwd: '/',
@@ -53,16 +55,30 @@ describe('collect', () => {
 
     fileStream.push(null);
 
-    collect(fileStream, extractor)
+    collect(fileStream, stub)
       .then((siteMap) => {
-        expect(siteMap).to.deep.equal({
-          '/test/article.md': {
-            meta: {
-              title: 'test'
-            },
-            content: 'hello'
-          }
-        });
+        expect(siteMap).to.have.all.keys('/test/article.md');
+        expect(siteMap['/test/article.md'].data).to.equal(extraction);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('adds field `originalPath`', (done) => {
+    let path = '/cool/path.md';
+    let fileStream = createFileStream();
+    let stub = sinon.stub().returns({});
+
+    fileStream.push(new File({
+      path,
+      contents: new Buffer('hello')
+    }));
+
+    fileStream.push(null);
+
+    collect(fileStream, stub)
+      .then((siteMap) => {
+        expect(siteMap[path].originalPath).to.equal(path);
         done();
       })
       .catch(done);
