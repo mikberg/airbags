@@ -1,7 +1,11 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
 import Stream from 'stream';
-import collect, {extractFromFile, removeFileExtension} from '../../src/collect';
+import collect, {
+  extractFromFile,
+  removeFileExtension,
+  createPublicPath
+} from '../../src/collect';
 import File from 'vinyl';
 
 const createFileStream = () => {
@@ -57,8 +61,8 @@ describe('collect', () => {
 
     collect(fileStream, stub)
       .then((siteMap) => {
-        expect(siteMap).to.have.all.keys('/test/article.md');
-        expect(siteMap['/test/article.md'].data).to.equal(extraction);
+        expect(siteMap).to.have.all.keys('/test/article');
+        expect(siteMap['/test/article'].data).to.equal(extraction);
         done();
       })
       .catch(done);
@@ -78,7 +82,27 @@ describe('collect', () => {
 
     collect(fileStream, stub)
       .then((siteMap) => {
-        expect(siteMap[path].originalPath).to.equal(path);
+        expect(siteMap['/cool/path'].originalPath).to.equal(path);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('adds field `nakedPath`', (done) => {
+    let path = '/cool/path.md';
+    let fileStream = createFileStream();
+    let stub = sinon.stub().returns({});
+
+    fileStream.push(new File({
+      path,
+      contents: new Buffer('hello')
+    }));
+
+    fileStream.push(null);
+
+    collect(fileStream, stub)
+      .then((siteMap) => {
+        expect(siteMap['/cool/path'].nakedPath).to.equal('/cool/path');
         done();
       })
       .catch(done);
@@ -105,5 +129,12 @@ describe('removeFileExtension', () => {
   it('removes correctly', () => {
     let removed = removeFileExtension('/test/is/cool.md');
     expect(removed).to.equal('/test/is/cool');
+  });
+});
+
+describe('create naked path', () => {
+  it('lacks file extension', () => {
+    let naked = removeFileExtension('/test/is/cool.md');
+    expect(naked).to.equal('/test/is/cool');
   });
 });

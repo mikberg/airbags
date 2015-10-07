@@ -1,5 +1,6 @@
 import {isReadable} from 'isstream';
 import File from 'vinyl';
+import indexBy from 'lodash.indexBy';
 import path from 'path';
 
 /**
@@ -21,6 +22,8 @@ export function removeFileExtension(filePath) {
   return `${dir}/${name}`;
 }
 
+export const createNakedPath = removeFileExtension;
+
 /**
  * The collector is a function which takes a stream of files and builds up an
  * object describing all the contents it has been given. It also takes an
@@ -28,7 +31,7 @@ export function removeFileExtension(filePath) {
  * which resolves to the data structure.
  */
 export default function collect(fileStream, extractor) {
-  let siteMap = {};
+  let files = [];
 
   if (!isReadable(fileStream)) {
     throw new Error('fileStream must be readable stream');
@@ -40,15 +43,16 @@ export default function collect(fileStream, extractor) {
 
   return new Promise((resolve, reject) => {
     fileStream.on('end', () => {
-      resolve(siteMap);
+      resolve(indexBy(files, 'nakedPath'));
     });
 
     fileStream.on('data', (file) => {
       try {
-        siteMap[file.path] = {
+        files.push({
           data: extractFromFile(file, extractor),
-          originalPath: file.path
-        };
+          originalPath: file.path,
+          nakedPath: createNakedPath(file.path)
+        });
       } catch(err) {
         reject(err);
       }
