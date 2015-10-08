@@ -7,15 +7,19 @@ export function isStrategyOk(strategy) {
 export default class AirbagsApi {
   constructor(context, strategies = []) {
     if (strategies.some((strategy) => !isStrategyOk(strategy))) {
-      throw new Error('AirbagsApi expected array of strategies, got ${st}');
+      throw new Error(`AirbagsApi expected array of strategies, got ${strategies}`);
     }
 
     if (!isContextOk(context)) {
-      throw new Error('AirbagsApi expected context, got ${context}');
+      throw new Error(`AirbagsApi expected context, got ${context}`);
     }
 
     this.strategies = strategies;
     this.context = context;
+  }
+
+  getPageHtml(nakedPath) {
+    return this._applyToStrategies('getPageHtml', nakedPath);
   }
 
   /**
@@ -33,7 +37,7 @@ export default class AirbagsApi {
           reject(`No strategies could resolve ${methodName}`);
         }
 
-        this.strategies[iterator][methodName](args)
+        this.strategies[iterator][methodName](...args)
           .then((data) => {
             resolve(data);
           })

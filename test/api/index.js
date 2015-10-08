@@ -7,6 +7,8 @@ class MockStrategy {
   dummyMethod() {
     return new Promise((resolve) => resolve());
   }
+
+  getPageHtml() {}
 }
 
 const context = createContext({});
@@ -47,6 +49,19 @@ describe('AirbagsApi', () => {
         });
     });
 
+    it('calls method with arguments', (done) => {
+      const strategy = new MockStrategy();
+      sinon.spy(strategy, 'dummyMethod');
+
+      const api = new AirbagsApi(context, [strategy]);
+      api._applyToStrategies('dummyMethod', 'a', 1, Math.PI)
+        .then(() => {
+          expect(strategy.dummyMethod.calledWith('a', 1, Math.PI))
+            .to.equal(true);
+          done();
+        }).catch(done);
+    });
+
     it('calls strategies until resolving', (done) => {
       const strategy1 = new MockStrategy();
       const strategy2 = new MockStrategy();
@@ -81,6 +96,41 @@ describe('AirbagsApi', () => {
           expect(strategy2.dummyMethod.callCount).to.equal(1);
           done();
         });
+    });
+  });
+
+  describe('getPageHtml', () => {
+    it('returns a promise', () => {
+      const api = new AirbagsApi(context);
+      expect(api.getPageHtml('/cool/page').then).to.be.a('function');
+    });
+
+    it('calls strategies with `nakedPath`', (done) => {
+      const nakedPath = '/cool/page';
+      const strategy = new MockStrategy();
+      sinon.stub(strategy, 'getPageHtml')
+        .returns(new Promise((resolve) => resolve()));
+
+      const api = new AirbagsApi(context, [strategy]);
+      api.getPageHtml(nakedPath).then(() => {
+        expect(strategy.getPageHtml.callCount).to.equal(1);
+        expect(strategy.getPageHtml.calledWith(nakedPath)).to.equal(true);
+        done();
+      }).catch(done);
+    });
+
+    it('resolves to strategy\'s resolve', (done) => {
+      const html = 'hei';
+      const strategy = new MockStrategy();
+      sinon.stub(strategy, 'getPageHtml')
+        .returns(new Promise(resolve => resolve(html)));
+
+      const api = new AirbagsApi(context, [strategy]);
+      api.getPageHtml('/path')
+        .then((resolvedHtml) => {
+          expect(resolvedHtml).to.equal(html);
+          done();
+        }).catch(done);
     });
   });
 });
