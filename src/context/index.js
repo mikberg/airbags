@@ -18,3 +18,8 @@ export function createContext(siteMap, configuration = {}) {
     configuration,
   };
 }
+
+export function isContextOk(context) {
+  return typeof context === 'object'
+      && !!context.siteMap && !!context.configuration;
+}

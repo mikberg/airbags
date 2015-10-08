@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {createContext} from '../../src/context';
+import {createContext, isContextOk} from '../../src/context';
 
 describe('createContext', () => {
   it('throws if not given a plausible `siteMap`', () => {
@@ -26,5 +26,15 @@ describe('createContext', () => {
 
   it('returns a context containing `configuration`', () => {
     expect(createContext({}).configuration).to.be.an('object');
+  });
+});
+
+describe('isContextOk', () => {
+  it('returns false if given a non-plausible context', () => {
+    expect(isContextOk({})).to.equal(false);
+  });
+
+  it('returns true if given a plausible context', () => {
+    expect(isContextOk(createContext({}))).to.equal(true);
   });
 });
