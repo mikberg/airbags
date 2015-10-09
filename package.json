@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --compilers js:babel/register test/**/*.js",
-    "lint": "eslint --ext .jsx --ext .js src test"
+    "lint": "eslint --ext .jsx --ext .js src test",
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:babel/register --reporter spec test/**/*.js"
   },
   "keywords": [
     "static",
@@ -22,6 +23,7 @@
     "eslint": "^1.6.0",
     "eslint-config-airbnb": "^0.1.0",
     "eslint-plugin-react": "^3.5.1",
+    "istanbul": "^0.3.22",
     "mocha": "^2.3.3",
     "sinon": "^1.17.1"
   },
