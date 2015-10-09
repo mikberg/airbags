@@ -1,6 +1,6 @@
 import {isReadable} from 'isstream';
 import File from 'vinyl';
-import indexBy from 'lodash.indexBy';
+import indexBy from 'lodash.indexby';
 import path from 'path';
 
 /**
