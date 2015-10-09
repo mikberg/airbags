@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha --compilers js:babel/register test/**/*.js",
     "lint": "eslint --ext .jsx --ext .js src test",
-    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:babel/register --reporter spec test/**/*.js"
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:babel/register --reporter spec test/**/*.js",
+    "test-travis": "npm run test-cov"
   },
   "keywords": [
     "static",
@@ -20,6 +21,7 @@
     "babel": "^5.8.23",
     "babel-eslint": "^4.1.3",
     "chai": "^3.3.0",
+    "coveralls": "^2.11.4",
     "eslint": "^1.6.0",
     "eslint-config-airbnb": "^0.1.0",
     "eslint-plugin-react": "^3.5.1",
