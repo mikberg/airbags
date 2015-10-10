@@ -105,7 +105,7 @@ describe('AirbagsApi', () => {
       expect(api.getPageHtml('/cool/page').then).to.be.a('function');
     });
 
-    it('calls strategies with `nakedPath`', (done) => {
+    it('calls strategies with context and `nakedPath`', (done) => {
       const nakedPath = '/cool/page';
       const strategy = new MockStrategy();
       sinon.stub(strategy, 'getPageHtml')
@@ -113,8 +113,7 @@ describe('AirbagsApi', () => {
 
       const api = new AirbagsApi(context, [strategy]);
       api.getPageHtml(nakedPath).then(() => {
-        expect(strategy.getPageHtml.callCount).to.equal(1);
-        expect(strategy.getPageHtml.calledWith(nakedPath)).to.equal(true);
+        expect(strategy.getPageHtml.calledWith(context, nakedPath)).to.equal(true);
         done();
       }).catch(done);
     });

@@ -4,17 +4,11 @@ import {createContext} from '../../src/context';
 
 describe('Cache strategy', () => {
   describe('constructor', () => {
-    it('throws if not given a context', () => {
+    it('needs no arguments', () => {
       expect(() => {
         /* eslint no-new:0 */
-        new CacheStrategy({});
-      }).to.throw();
-    });
-
-    it('saves a copy of the context', () => {
-      const context = createContext({});
-      const strategy = new CacheStrategy(context);
-      expect(strategy.context).to.equal(context);
+        new CacheStrategy();
+      }).not.to.throw();
     });
   });
 
@@ -36,7 +30,13 @@ describe('Cache strategy', () => {
           data: {},
         },
       });
-      strategy = new CacheStrategy(context);
+      strategy = new CacheStrategy();
+    });
+
+    it('rejects if not given a context', (done) => {
+      strategy.getPageHtml()
+        .then(() => done('did not throw'))
+        .catch(() => done());
     });
 
     it('returns a promise', () => {
@@ -44,13 +44,13 @@ describe('Cache strategy', () => {
     });
 
     it('rejects if not given a string `nakedPath`', (done) => {
-      strategy.getPageHtml()
+      strategy.getPageHtml(context)
         .then(() => done('did not throw'))
         .catch(() => done());
     });
 
     it('resolves to path\'s html', (done) => {
-      strategy.getPageHtml('/naked/path')
+      strategy.getPageHtml(context, '/naked/path')
         .then((html) => {
           expect(html).to.equal(context.siteMap['/naked/path'].data.html);
           done();
@@ -58,13 +58,13 @@ describe('Cache strategy', () => {
     });
 
     it('rejects if given unknown path', (done) => {
-      strategy.getPageHtml('/unknown/url').catch(() => {
+      strategy.getPageHtml(context, '/unknown/url').catch(() => {
         done();
       });
     });
 
     it('rejects if given path with no html in context', (done) => {
-      strategy.getPageHtml('/path/without/html').catch(() => {
+      strategy.getPageHtml(context, '/path/without/html').catch(() => {
         done();
       });
     });

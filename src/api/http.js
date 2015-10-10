@@ -6,21 +6,20 @@ import stripOuter from 'strip-outer';
  * @NOTE: Could require URL to be set on context?
  */
 export default class HttpStrategy {
-  constructor(context, baseUrl) {
-    if (!isContextOk(context)) {
-      throw new Error(`HttpStrategy expected context, got ${context}`);
-    }
-
+  constructor(baseUrl) {
     if (typeof baseUrl !== 'string') {
       throw new Error(`HttpStrategy expected a baseUrl, got ${baseUrl}`);
     }
 
-    this.context = context;
     this.baseUrl = this._stripBaseUrl(baseUrl);
   }
 
-  getPageHtml(nakedPath) {
+  getPageHtml(context, nakedPath) {
     return new Promise((resolve, reject) => {
+      if (!isContextOk(context)) {
+        return reject(new Error('getPageHtml expected a context, got ${context}'));
+      }
+
       if (typeof nakedPath !== 'string') {
         return reject(new Error('getPageHtml expected a string `nakedPath`'));
       }

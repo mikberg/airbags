@@ -22,7 +22,7 @@ export default class AirbagsApi {
    * Fetch the HTML for a page, from its' `nakedPath`
    */
   getPageHtml(nakedPath) {
-    return this._applyToStrategies('getPageHtml', nakedPath);
+    return this._applyToStrategies('getPageHtml', this.context, nakedPath);
   }
 
   /**
