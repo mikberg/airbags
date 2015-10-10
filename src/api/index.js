@@ -1,74 +1,55 @@
-import http from 'http';
-import assign from 'lodash.assign';
+import {isContextOk} from '../context';
 
-const cache = {
-  pages: {}
-};
+export function isStrategyOk(strategy) {
+  return typeof strategy === 'object';
+}
 
-class AirbagsApi {
-  // @TODO Try getting from cache
-  getPage(pageName) {
-    let path = AirbagsApi.pathToPage(pageName);
-    return this._getJson(path).then((page) => {
-      this.addPageToCache(path, page);
-      return page;
-    });
-  }
-
-  isPageInCache(path) {
-    return !!cache.pages[path];
-  }
-
-  addPageToCache(page) {
-    cache.pages[page.path] = page;
-  }
-
-  getPageSync(path) {
-    if (!this.isPageInCache(path)) {
-      throw Error(`path is not in cache: ${path}`);
+export default class AirbagsApi {
+  constructor(context, strategies = []) {
+    if (strategies.some((strategy) => !isStrategyOk(strategy))) {
+      throw new Error(`AirbagsApi expected array of strategies, got ${strategies}`);
     }
 
-    return cache.pages[path];
+    if (!isContextOk(context)) {
+      throw new Error(`AirbagsApi expected context, got ${context}`);
+    }
+
+    this.strategies = strategies;
+    this.context = context;
   }
 
-  getPagesSync() {
-    return cache.pages;
+  /**
+   * Fetch the HTML for a page, from its' `nakedPath`
+   */
+  getPageHtml(nakedPath) {
+    return this._applyToStrategies('getPageHtml', nakedPath);
   }
 
-  getCache() {
-    return cache;
-  }
-
-  loadCache(c) {
-    assign(cache, c);
-  }
-
-  _getJson(url) {
-    return this._get(url).then((encoded) => {
-      return JSON.parse(encoded);
-    });
-  }
-
-  _get(url) {
+  /**
+   * Run a method on strategies in order until one of them resolves. Reject if
+   * no strategies resolve.
+   */
+  _applyToStrategies(methodName, ...args) {
     return new Promise((resolve, reject) => {
-      http.get({path: url}, (res) => {
-        let buf = '';
+      if (this.strategies.length === 0) {
+        reject(new Error(`No strategies to use for ${methodName}`));
+      }
 
-        res.on('data', (b) => {
-          buf += b;
-        });
+      const apply = (iterator) => {
+        if (iterator === this.strategies.length) {
+          reject(`No strategies could resolve ${methodName}`);
+        }
 
-        res.on('end', () => {
-          resolve(buf);
-        });
+        this.strategies[iterator][methodName](...args)
+          .then((data) => {
+            resolve(data);
+          })
+          .catch(() => {
+            apply(iterator + 1);
+          });
+      };
 
-        res.on('error', reject);
-      });
+      apply(0);
     });
   }
 }
-
-AirbagsApi.pathToUrl = (p) => (/^\//.test(p) ? p : '/' + p) + '.json';
-AirbagsApi.pathToPage = (n) => AirbagsApi.pathToUrl(`pages/${n}`);
-
-export default new AirbagsApi();
