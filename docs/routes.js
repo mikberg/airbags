@@ -6,7 +6,8 @@ import React from 'react';
 export default (
   <Router>
     <Route path="/" component={App}>
-      <Route path="pages/:nakedPath.html" component={Page} />
+      <Route path="/index.html" />
+      <Route path="pages/:nakedPath.html" component={Page} onEnter={Page.onEnter} />
     </Route>
   </Router>
 );

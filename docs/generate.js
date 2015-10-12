@@ -20,6 +20,7 @@ collect(vinylFs.src(['./pages/*.md'], { base: process.cwd() }), markdownExtracto
   const context = createContext(siteMap, config);
 
   renderers.forEach((renderer) => {
-    renderer(context).pipe(vinylFs.dest(outFolder));
+    renderer(context)
+      .pipe(vinylFs.dest(outFolder));
   });
 });
