@@ -3,19 +3,26 @@ import React from 'react';
 export default class Page extends React.Component {
   static propTypes = {
     params: React.PropTypes.object,
+    Page: React.PropTypes.object,
   }
 
-  static getData(params) {
-    return new Promise((resolve) => {
-      resolve({some: 'data'});
+  static getData(api, params) {
+    // @TODO: How to get rid of the "pages/" here? See routes.
+    return api.getPageHtml('pages/' + params.nakedPath).then((html) => {
+      return { __html: html };
     });
   }
 
   static dataKey = 'Page';
 
   render() {
+    const pageData = this.props.params.Page;
+
     return (
-      <div>I am page {this.props.params.nakedPath} {JSON.stringify(this.props.params)}</div>
+      <div>
+        <em>I am a page!</em>
+        <div dangerouslySetInnerHTML={pageData} />
+      </div>
     );
   }
 }
