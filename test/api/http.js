@@ -18,6 +18,13 @@ describe('Http strategy', () => {
     });
   });
 
+  describe('getPageData', () => {
+    it('rejects because its not yet implemented', (done) => {
+      const strategy = new HttpStrategy('http://localhost');
+      strategy.getPageData().catch(() => done());
+    });
+  });
+
   describe('getPageHtml', () => {
     const baseUrl = 'http://localhost/';
     const nakedPath = '/some/path';

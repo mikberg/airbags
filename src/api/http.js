@@ -14,6 +14,12 @@ export default class HttpStrategy {
     this.baseUrl = this._stripBaseUrl(baseUrl);
   }
 
+  getPageData() {
+    return new Promise((resolve, reject) => {
+      return reject(new Error(`getPageData not yet implemented for HttpStrategy`));
+    });
+  }
+
   getPageHtml(context, nakedPath) {
     return new Promise((resolve, reject) => {
       if (!isContextOk(context)) {
