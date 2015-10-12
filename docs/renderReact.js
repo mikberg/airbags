@@ -20,6 +20,7 @@ function renderPath(routes, nakedPath, api) {
         return reject(new Error(`Error while rendering ${nakedPath}: ${error}`));
       }
 
+      const data = {};
       const dataPromises = renderProps.components
         .filter((component) => {
           return typeof component === 'function' && component.getData;
@@ -27,14 +28,27 @@ function renderPath(routes, nakedPath, api) {
         .map((component) => {
           return component.getData(api, renderProps.params).then((result) => {
             if (component.dataKey) {
-              renderProps.params[component.dataKey] = result;
+              data[component.dataKey] = result;
             }
           });
         });
 
+      const routerProps = Object.assign({}, renderProps, {
+        createElement: (Component, props) => {
+          const componentData = Component.dataKey && data[Component.dataKey] ?
+            data[Component.dataKey] : {};
+
+          const customProps = {};
+          customProps[Component.dataKey] = componentData;
+
+          const finalProps = Object.assign({}, props, customProps);
+          return React.createElement(Component, finalProps);
+        },
+      });
+
       Promise.all(dataPromises)
         .then(() => {
-          const contents = renderToString(<RoutingContext {...renderProps} />);
+          const contents = renderToString(<RoutingContext {...routerProps} />);
           return resolve(new File({
             path: `${nakedPath}.html`,
             contents: new Buffer(contents),

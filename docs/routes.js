@@ -7,7 +7,7 @@ export default (
   <Router>
     <Route path="/" component={App}>
       <Route path="/index.html" />
-      <Route path="pages/:nakedPath.html" component={Page} onEnter={Page.onEnter} />
+      <Route path="pages/:pageName.html" component={Page} />
     </Route>
   </Router>
 );
