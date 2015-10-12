@@ -50,8 +50,8 @@ export default function collect(fileStream, extractor) {
       try {
         files.push({
           data: extractFromFile(file, extractor),
-          originalPath: file.path,
-          nakedPath: createNakedPath(file.path),
+          originalPath: file.relative,
+          nakedPath: createNakedPath(file.relative),
         });
       } catch (err) {
         reject(err);

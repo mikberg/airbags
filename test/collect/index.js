@@ -53,7 +53,7 @@ describe('collect', () => {
     fileStream.push(new File({
       cwd: '/',
       base: '/test/',
-      path: '/test/article.md',
+      path: '/test/some-article.md',
       contents: new Buffer('hello'),
     }));
 
@@ -61,15 +61,15 @@ describe('collect', () => {
 
     collect(fileStream, stub)
       .then((siteMap) => {
-        expect(siteMap).to.have.all.keys('/test/article');
-        expect(siteMap['/test/article'].data).to.equal(extraction);
+        expect(siteMap).to.have.all.keys('/some-article');
+        expect(siteMap['/some-article'].data).to.equal(extraction);
         done();
       })
       .catch(done);
   });
 
   it('adds field `originalPath`', (done) => {
-    const path = '/cool/path.md';
+    const path = 'cool/path.md';
     const fileStream = createFileStream();
     const stub = sinon.stub().returns({});
 
@@ -82,14 +82,14 @@ describe('collect', () => {
 
     collect(fileStream, stub)
       .then((siteMap) => {
-        expect(siteMap['/cool/path'].originalPath).to.equal(path);
+        expect(siteMap['cool/path'].originalPath).to.equal(path);
         done();
       })
       .catch(done);
   });
 
   it('adds field `nakedPath`', (done) => {
-    const path = '/cool/path.md';
+    const path = 'cool/path.md';
     const fileStream = createFileStream();
     const stub = sinon.stub().returns({});
 
@@ -102,7 +102,7 @@ describe('collect', () => {
 
     collect(fileStream, stub)
       .then((siteMap) => {
-        expect(siteMap['/cool/path'].nakedPath).to.equal('/cool/path');
+        expect(siteMap['cool/path'].nakedPath).to.equal('cool/path');
         done();
       })
       .catch(done);
@@ -157,7 +157,7 @@ describe('isSiteMapOk', () => {
     const fileStream = createFileStream();
 
     fileStream.push(new File({
-      path: '/cool/file.md',
+      path: 'cool/file.md',
       contents: new Buffer('hello'),
     }));
 
