@@ -8,20 +8,19 @@ export default class Page extends React.Component {
 
   static getData(api, params) {
     // @TODO: How to get rid of the "pages/" here? See routes.
-    return api.getPageHtml('pages/' + params.nakedPath).then((html) => {
-      return { __html: html };
-    });
+    return api.getPageData('pages/' + params.nakedPath);
   }
 
-  static dataKey = 'Page';
+  static dataKey = '__page-data';
 
   render() {
-    const pageData = this.props.params.Page;
+    const pageData = this.props.params[Page.dataKey];
+    const html = { __html: pageData.html };
 
     return (
       <div>
-        <em>I am a page!</em>
-        <div dangerouslySetInnerHTML={pageData} />
+        {pageData.meta.title ? <h1>{pageData.meta.title}</h1> : ''}
+        <div dangerouslySetInnerHTML={html} />
       </div>
     );
   }
