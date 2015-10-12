@@ -9,6 +9,7 @@ class MockStrategy {
   }
 
   getPageHtml() {}
+  getPageData() {}
 }
 
 const context = createContext({});
@@ -100,6 +101,13 @@ describe('AirbagsApi', () => {
   });
 
   describe('getPageHtml', () => {
+    it('warns that the method is deprecated', () => {
+      const api = new AirbagsApi(context);
+      const spy = sinon.spy(console, 'warn');
+      api.getPageHtml('cool/page');
+      expect(spy.callCount).to.equal(1);
+    });
+
     it('returns a promise', () => {
       const api = new AirbagsApi(context);
       expect(api.getPageHtml('/cool/page').then).to.be.a('function');
@@ -131,6 +139,21 @@ describe('AirbagsApi', () => {
           done();
         }).catch(done);
     });
+  });
+});
+
+describe('getPageData', () => {
+  it('calls strategies with context and `nakedPath`', (done) => {
+    const nakedPath = 'cool/page';
+    const strategy = new MockStrategy();
+    sinon.stub(strategy, 'getPageData')
+      .returns(new Promise((resolve) => resolve()));
+
+    const api = new AirbagsApi(context, [strategy]);
+    api.getPageData(nakedPath).then(() => {
+      expect(strategy.getPageData.calledWith(context, nakedPath)).to.equal(true);
+      done();
+    }).catch(done);
   });
 });
 

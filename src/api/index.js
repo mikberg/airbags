@@ -22,7 +22,16 @@ export default class AirbagsApi {
    * Fetch the HTML for a page, from its' `nakedPath`
    */
   getPageHtml(nakedPath) {
+    /* eslint no-console:0 */
+    console.warn(`api.getPageHtml is deprecated, please use getPageData instead`);
     return this._applyToStrategies('getPageHtml', this.context, nakedPath);
+  }
+
+  /**
+   * Fetch all data for a page, from its' `nakedPath`
+   */
+  getPageData(nakedPath) {
+    return this._applyToStrategies('getPageData', this.context, nakedPath);
   }
 
   /**
