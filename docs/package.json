@@ -1,0 +1,12 @@
+{
+  "name": "docs",
+  "main": "generate.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vinyl-fs": "^2.1.1"
+  }
+}
