@@ -12,6 +12,58 @@ describe('Cache strategy', () => {
     });
   });
 
+  describe('getPageData', () => {
+    let context;
+    let strategy;
+    beforeEach(() => {
+      context = createContext({
+        '/naked/path': {
+          nakedPath: '/naked/path',
+          originalPath: '/naked/path.md',
+          data: {
+            html: '<p>hei</p>',
+          },
+        },
+        '/path/without/html': {
+          nakedPath: '/path/without/html',
+          originalPath: '/path/without/html.md',
+          data: {},
+        },
+      });
+      strategy = new CacheStrategy();
+    });
+
+    it('rejects if not given a context', (done) => {
+      strategy.getPageData()
+        .then(() => done('did not throw'))
+        .catch(() => done());
+    });
+
+    it('returns a promise', () => {
+      expect(strategy.getPageData().then).to.be.a('function');
+    });
+
+    it('rejects if not given a string `nakedPath`', (done) => {
+      strategy.getPageData(context)
+        .then(() => done('did not throw'))
+        .catch(() => done());
+    });
+
+    it('resolves to path\'s data', (done) => {
+      strategy.getPageData(context, '/naked/path')
+        .then((html) => {
+          expect(html).to.deep.equal(context.siteMap['/naked/path'].data);
+          done();
+        }).catch(done);
+    });
+
+    it('rejects if given unknown path', (done) => {
+      strategy.getPageHtml(context, '/unknown/url').catch(() => {
+        done();
+      });
+    });
+  });
+
   describe('getPageHtml', () => {
     let context;
     let strategy;
