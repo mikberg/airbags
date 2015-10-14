@@ -16,7 +16,9 @@ const renderers = [
 const outFolder = './build/';
 
 collect(vinylFs.src(['./pages/*.md'], { base: process.cwd() }), markdownExtractor).then((siteMap) => {
-  const context = createContext({siteMap});
+  const context = createContext({siteMap, configuration: {
+    siteName: 'Airbags Docs',
+  }});
 
   renderers.forEach((renderer) => {
     renderer(context)
