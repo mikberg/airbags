@@ -19,7 +19,18 @@ const middleware = [menuMiddleware];
 
 collect(vinylFs.src(['./pages/*.md'], { base: process.cwd() }), markdownExtractor).then((siteMap) => {
   const context = createContext({
-    siteMap,
+    siteMap: Object.assign({}, siteMap, {
+      index: {
+        nakedPath: 'index',
+        originalPath: 'index.md',
+        data: {
+          meta: {
+            title: 'Home',
+            inMenu: true,
+          },
+        },
+      },
+    }),
     configuration: {
       siteName: 'Airbags Docs',
     },
