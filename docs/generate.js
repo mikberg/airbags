@@ -3,6 +3,7 @@ import vinylFs from 'vinyl-fs';
 import collect from '../src/collect';
 import markdownExtractor from '../src/extractors/markdown';
 import {createContext} from '../src/context/';
+import menuMiddleware from '../src/middleware/menuMiddleware';
 import renderJson from '../src/render/json';
 // import createJadeRenderer from './jade';
 import createReactRenderer from './renderReact';
@@ -14,11 +15,15 @@ const renderers = [
   createReactRenderer(routes),
 ];
 const outFolder = './build/';
+const middleware = [menuMiddleware];
 
 collect(vinylFs.src(['./pages/*.md'], { base: process.cwd() }), markdownExtractor).then((siteMap) => {
-  const context = createContext({siteMap, configuration: {
-    siteName: 'Airbags Docs',
-  }});
+  const context = createContext({
+    siteMap,
+    configuration: {
+      siteName: 'Airbags Docs',
+    },
+  }, middleware);
 
   renderers.forEach((renderer) => {
     renderer(context)

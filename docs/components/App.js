@@ -1,4 +1,5 @@
 import React from 'react';
+import Menu from './Menu';
 
 export default class App extends React.Component {
   static propTypes = {
@@ -10,6 +11,7 @@ export default class App extends React.Component {
     return new Promise((resolve) => {
       resolve({
         siteName: context.getConfiguration().siteName,
+        menu: context.getMenu ? context.getMenu() : null,
       });
     });
   }
@@ -22,6 +24,9 @@ export default class App extends React.Component {
     return (
       <div>
         <h1>{appData.siteName || '(no title set)'}</h1>
+
+        <Menu menu={appData.menu} />
+
         {this.props.children}
       </div>
     );
