@@ -33,7 +33,7 @@ describe('Http strategy', () => {
     let scope;
     let nakedPathEndpoint;
     beforeEach(() => {
-      context = createContext({});
+      context = createContext();
       strategy = new HttpStrategy(baseUrl);
       scope = nock(baseUrl);
 

@@ -12,7 +12,7 @@ class MockStrategy {
   getPageData() {}
 }
 
-const context = createContext({});
+const context = createContext();
 
 describe('AirbagsApi', () => {
   describe('constructor', () => {

@@ -4,17 +4,19 @@ import {createContext} from '../../src/context';
 import {Readable} from 'stream';
 import File from 'vinyl';
 
-const context = createContext({}, {});
+const context = createContext();
 const fileContext = createContext({
-  '/test/file': {
-    data: {
-      html: '<p>contents</p>',
-      meta: {},
+  siteMap: {
+    '/test/file': {
+      data: {
+        html: '<p>contents</p>',
+        meta: {},
+      },
+      originalPath: '/test/file.md',
+      nakedPath: '/test/file',
     },
-    originalPath: '/test/file.md',
-    nakedPath: '/test/file',
   },
-}, {});
+});
 
 describe('Render: json', () => {
   it('throws if not given a context', () => {

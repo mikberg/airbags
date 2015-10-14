@@ -20,12 +20,12 @@ describe('createContext', () => {
 
   it('returns a context containing `getSiteMap`', () => {
     const siteMap = {};
-    expect(createContext(siteMap).getSiteMap).to.be.a('function');
-    expect(createContext(siteMap).getSiteMap()).to.equal(siteMap);
+    expect(createContext().getSiteMap).to.be.a('function');
+    expect(createContext({siteMap}).getSiteMap()).to.equal(siteMap);
   });
 
   it('returns a context containing `getConfiguration`', () => {
-    expect(createContext({}).getConfiguration).to.be.a('function');
+    expect(createContext().getConfiguration).to.be.a('function');
   });
 });
 
@@ -35,6 +35,6 @@ describe('isContextOk', () => {
   });
 
   it('returns true if given a plausible context', () => {
-    expect(isContextOk(createContext({}))).to.equal(true);
+    expect(isContextOk(createContext())).to.equal(true);
   });
 });

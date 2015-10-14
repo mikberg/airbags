@@ -1,25 +1,25 @@
 import {isSiteMapOk} from '../collect';
 
-function contextModel(siteMap, configuration) {
-  this.getSiteMap = () => siteMap;
-  this.getConfiguration = () => configuration;
+function contextModel(state) {
+  this.getSiteMap = () => state.siteMap;
+  this.getConfiguration = () => state.configuration;
 }
 
 /**
  * Creates a context object using a site map (as per returned by `collect`) and
  * some optional configuration.
  */
-export function createContext(siteMap, configuration = {}) {
-  if (!isSiteMapOk(siteMap)) {
-    throw new Error(`createContext needs a real siteMap, given ${siteMap}`);
+export function createContext(state = { siteMap: {}, configuration: {} }) {
+  if (!isSiteMapOk(state.siteMap)) {
+    throw new Error(`createContext needs a real siteMap, given ${state.siteMap}`);
   }
 
-  if (typeof configuration !== 'object') {
-    throw new Error(`createContext needs an object as configuration, given ${configuration}`);
+  if (typeof state.configuration !== 'object') {
+    state.configuration = {};
   }
 
   const context = {};
-  contextModel.call(context, siteMap, configuration);
+  contextModel.call(context, state);
   return context;
 }
 
