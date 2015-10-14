@@ -6,3 +6,7 @@ export default function menuMiddleware(state) {
 
   return state;
 }
+
+menuMiddleware.contextAugmenter = function menu(state) {
+  this.getMenu = () => state.menu;
+};

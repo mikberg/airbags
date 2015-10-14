@@ -21,4 +21,18 @@ describe('menuMiddleware', () => {
     const {menu} = menuMiddleware({siteMap});
     expect(menu).to.contain({'InMenu': 'in/menu'});
   });
+
+  describe('contextAugmenter', () => {
+    const state = menuMiddleware({ siteMap: {} });
+    const context = {};
+    menuMiddleware.contextAugmenter.call(context, state);
+
+    it('adds `getMenu`', () => {
+      expect(context.getMenu).to.be.a('function');
+    });
+
+    it('returns menu from `getMenu`', () => {
+      expect(context.getMenu()).to.be.an('array');
+    });
+  });
 });
