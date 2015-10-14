@@ -38,6 +38,22 @@ describe('contextModel', () => {
         .to.deep.equal(state.configuration);
     });
   });
+
+  describe('getSiteMap', () => {
+    it('returns the state `siteMap`', () => {
+      const state = { siteMap: {} };
+      const context = createContext(state);
+      expect(context.getSiteMap()).to.equal(state.siteMap);
+    });
+  });
+
+  describe('getConfiguration', () => {
+    it('returns the state `configuration`', () => {
+      const state = { siteMap: {}, configuration: { a: 'b' }};
+      const context = createContext(state);
+      expect(context.getConfiguration()).to.equal(state.configuration);
+    });
+  });
 });
 
 describe('isContextOk', () => {
