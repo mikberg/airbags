@@ -22,6 +22,13 @@ describe('menuMiddleware', () => {
     expect(menu).to.contain({'InMenu': 'in/menu'});
   });
 
+  it('can handle pages without meta', () => {
+    const dumbSiteMap = {'dumb': {}};
+    expect(() => {
+      menuMiddleware({siteMap: dumbSiteMap});
+    }).not.to.throw();
+  });
+
   describe('contextAugmenter', () => {
     const state = menuMiddleware({ siteMap: {} });
     const context = {};
