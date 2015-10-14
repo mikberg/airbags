@@ -18,14 +18,14 @@ describe('createContext', () => {
     }).to.throw();
   });
 
-  it('returns a context containing `siteMap`', () => {
+  it('returns a context containing `getSiteMap`', () => {
     const siteMap = {};
-    expect(createContext(siteMap).siteMap).to.be.an('object');
-    expect(createContext(siteMap).siteMap).to.equal(siteMap);
+    expect(createContext(siteMap).getSiteMap).to.be.a('function');
+    expect(createContext(siteMap).getSiteMap()).to.equal(siteMap);
   });
 
-  it('returns a context containing `configuration`', () => {
-    expect(createContext({}).configuration).to.be.an('object');
+  it('returns a context containing `getConfiguration`', () => {
+    expect(createContext({}).getConfiguration).to.be.a('function');
   });
 });
 

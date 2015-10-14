@@ -27,8 +27,8 @@ export default function renderJson(context) {
 
   const stream = new Readable({ objectMode: true });
 
-  Object.keys(context.siteMap).forEach((nakedPath) => {
-    stream.push(fileFromContext(context.siteMap[nakedPath]));
+  Object.keys(context.getSiteMap()).forEach((nakedPath) => {
+    stream.push(fileFromContext(context.getSiteMap()[nakedPath]));
   });
 
   stream.push(null);

@@ -52,7 +52,7 @@ describe('Cache strategy', () => {
     it('resolves to path\'s data', (done) => {
       strategy.getPageData(context, '/naked/path')
         .then((html) => {
-          expect(html).to.deep.equal(context.siteMap['/naked/path'].data);
+          expect(html).to.deep.equal(context.getSiteMap()['/naked/path'].data);
           done();
         }).catch(done);
     });
@@ -104,7 +104,7 @@ describe('Cache strategy', () => {
     it('resolves to path\'s html', (done) => {
       strategy.getPageHtml(context, '/naked/path')
         .then((html) => {
-          expect(html).to.equal(context.siteMap['/naked/path'].data.html);
+          expect(html).to.equal(context.getSiteMap()['/naked/path'].data.html);
           done();
         }).catch(done);
     });
