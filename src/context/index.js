@@ -42,8 +42,16 @@ export function createContext(state = { siteMap: {}, configuration: {} }, middle
     state.configuration = {};
   }
 
+  const appliedState = applyMiddleware(state, middleware);
+
   const context = {};
-  contextModel.call(context, applyMiddleware(state, middleware));
+  contextModel.call(context, appliedState);
+
+  const augmenters = middleware
+    .filter((mid) => !!mid.contextAugmenter)
+    .map((mid) => mid.contextAugmenter);
+  augmenters.forEach((augmenter) => augmenter.call(context, appliedState));
+
   return context;
 }
 

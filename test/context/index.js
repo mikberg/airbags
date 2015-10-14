@@ -7,6 +7,9 @@ import {
 
 const addPageName = (state) => Object.assign(state,
   { configuration: { pageName: 'CoolPage' }});
+addPageName.contextAugmenter = function addPageNameAugmenter(state) {
+  this.getPageName = () => state.configuration.pageName;
+};
 
 describe('createContext', () => {
   it('throws if not given a plausible `siteMap`', () => {
@@ -38,6 +41,11 @@ describe('createContext', () => {
   it('applies middleware to the state', () => {
     const context = createContext(undefined, [addPageName]);
     expect(context.getConfiguration().pageName).to.equal('CoolPage');
+  });
+
+  it('applies middleware context augmenters to the state', () => {
+    const context = createContext(undefined, [addPageName]);
+    expect(context.getPageName()).to.equal('CoolPage');
   });
 });
 
