@@ -3,6 +3,9 @@ import {isSiteMapOk} from '../collect';
 function contextModel(state) {
   this.getSiteMap = () => state.siteMap;
   this.getConfiguration = () => state.configuration;
+
+  /* eslint no-use-before-define:0 */
+  this.copy = () => createContext(state);
 }
 
 /**

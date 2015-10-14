@@ -29,6 +29,17 @@ describe('createContext', () => {
   });
 });
 
+describe('contextModel', () => {
+  describe('copy', () => {
+    it('returns a copy of the context', () => {
+      const state = { siteMap: {}, configuration: { a: 'b' } };
+      const context = createContext(state);
+      expect(context.copy().getConfiguration())
+        .to.deep.equal(state.configuration);
+    });
+  });
+});
+
 describe('isContextOk', () => {
   it('returns false if given a non-plausible context', () => {
     expect(isContextOk({})).to.equal(false);
