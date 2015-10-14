@@ -8,7 +8,6 @@ import renderJson from '../src/render/json';
 import createReactRenderer from './renderReact';
 import routes from './routes';
 
-const config = {};
 const renderers = [
   renderJson,
   // createJadeRenderer(fs.readFileSync('./template.jade', {encoding: 'utf-8'})),
@@ -17,7 +16,7 @@ const renderers = [
 const outFolder = './build/';
 
 collect(vinylFs.src(['./pages/*.md'], { base: process.cwd() }), markdownExtractor).then((siteMap) => {
-  const context = createContext(siteMap, config);
+  const context = createContext({siteMap});
 
   renderers.forEach((renderer) => {
     renderer(context)

@@ -65,7 +65,7 @@ export default function createReactRenderer(routes) {
   return (context) => {
     const stream = new Readable({ objectMode: true });
     stream._read = () => {};
-    const nakedPaths = Object.keys(context.siteMap);
+    const nakedPaths = Object.keys(context.getSiteMap());
     nakedPaths.push('index');
 
     const api = new AirbagsApi(context, [new CacheStrategy()]);
