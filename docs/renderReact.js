@@ -11,7 +11,7 @@ function outUrl(nakedPath) {
   return `/${nakedPath}.html`;
 }
 
-function renderPath(routes, nakedPath, api) {
+function renderPath(routes, nakedPath, api, context) {
   const location = outUrl(nakedPath);
 
   return new Promise((resolve, reject) => {
@@ -26,7 +26,7 @@ function renderPath(routes, nakedPath, api) {
           return typeof component === 'function' && component.getData;
         })
         .map((component) => {
-          return component.getData(api, renderProps.params).then((result) => {
+          return component.getData(context, api, renderProps.params).then((result) => {
             if (component.dataKey) {
               data[component.dataKey] = result;
             }
@@ -71,7 +71,7 @@ export default function createReactRenderer(routes) {
     const api = new AirbagsApi(context, [new CacheStrategy()]);
 
     const renderedFiles = nakedPaths.map((nakedPath) => {
-      return renderPath(routes, nakedPath, api);
+      return renderPath(routes, nakedPath, api, context);
     });
 
     Promise.all(renderedFiles)

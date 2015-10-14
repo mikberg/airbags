@@ -6,7 +6,7 @@ export default class Page extends React.Component {
     '__page-data': React.PropTypes.object.isRequired,
   }
 
-  static getData(api, params) {
+  static getData(context, api, params) {
     return api.getPageData('pages/' + params.pageName);
   }
 
