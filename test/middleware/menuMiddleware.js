@@ -4,9 +4,11 @@ import menuMiddleware from '../../src/middleware/menuMiddleware';
 const siteMap = {
   'in/menu': {
     nakedPath: 'in/menu',
-    meta: {
-      title: 'InMenu',
-      inMenu: true,
+    data: {
+      meta: {
+        title: 'InMenu',
+        inMenu: true,
+      },
     },
   },
 };
