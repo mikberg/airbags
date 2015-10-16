@@ -1,4 +1,6 @@
 import {match, RoutingContext} from 'react-router';
+import {renderToString} from 'react-dom/server';
+import React from 'react';
 import {isContextOk} from '../context';
 import AirbagsApi from '../api';
 import File from 'vinyl';
@@ -9,8 +11,32 @@ function urlFromNakedPath(nakedPath) {
 }
 
 export function renderPath(routes, nakedPath, api, context) {
-  return new Promise((resolve, reject) => {
+  const location = urlFromNakedPath(nakedPath);
 
+  return new Promise((resolve, reject) => {
+    match({routes, location}, (err, redirectLocation, renderProps) => {
+      if (err) {
+        return reject(new Error(`Error when rendering ${nakedPath}->${location}: ${err}`));
+      }
+
+      if (redirectLocation) {
+        return reject(new Error(`${nakedPath}->${location} redirected (not supported)`));
+      }
+
+      if (!renderProps) {
+        return reject(new Error(`Error when rendering ${nakedPath}->${location}`));
+      }
+
+      let reactString;
+
+      try {
+        reactString = renderToString(<RoutingContext {...renderProps} />);
+      } catch (error) {
+        return reject(error);
+      }
+
+      resolve(reactString);
+    });
   });
 }
 

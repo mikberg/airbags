@@ -15,7 +15,7 @@ const App = (props) => {
 
 const routes = (
   <Router>
-    <Route path="/" component={App} />
+    <Route path="/index.html" component={App} />
   </Router>
 );
 
@@ -131,5 +131,27 @@ describe('renderer', () => {
 describe('renderPath', () => {
   it('returns a promise', () => {
     expect(renderPath(routes, '/', {}, context)).to.be.instanceof(Promise);
+  });
+
+  it('rejects if given non-existing nakedPath', (done) => {
+    renderPath(routes, '/non-existing', {}, context)
+      .then(() => {
+        done('promise resolved');
+      })
+      .catch(() => {
+        done();
+      });
+  });
+
+  it('resolves to rendered string', (done) => {
+    renderPath(routes, 'index', api, context)
+      .then((rendered) => {
+        expect(rendered).to.be.a('string');
+        expect(rendered).to.contain('I am app');
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
   });
 });
