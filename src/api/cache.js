@@ -31,10 +31,10 @@ export default class CacheStrategy {
   }
 
   _isPageInContext(context, nakedPath) {
-    return nakedPath in context.siteMap;
+    return nakedPath in context.getSiteMap();
   }
 
   _getPageFromContext(context, nakedPath) {
-    return context.siteMap[nakedPath];
+    return context.getSiteMap()[nakedPath];
   }
 }

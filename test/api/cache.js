@@ -2,6 +2,21 @@ import {expect} from 'chai';
 import CacheStrategy from '../../src/api/cache';
 import {createContext} from '../../src/context';
 
+const siteMap = {
+  '/naked/path': {
+    nakedPath: '/naked/path',
+    originalPath: '/naked/path.md',
+    data: {
+      html: '<p>hei</p>',
+    },
+  },
+  '/path/without/html': {
+    nakedPath: '/path/without/html',
+    originalPath: '/path/without/html.md',
+    data: {},
+  },
+};
+
 describe('Cache strategy', () => {
   describe('constructor', () => {
     it('needs no arguments', () => {
@@ -16,20 +31,7 @@ describe('Cache strategy', () => {
     let context;
     let strategy;
     beforeEach(() => {
-      context = createContext({
-        '/naked/path': {
-          nakedPath: '/naked/path',
-          originalPath: '/naked/path.md',
-          data: {
-            html: '<p>hei</p>',
-          },
-        },
-        '/path/without/html': {
-          nakedPath: '/path/without/html',
-          originalPath: '/path/without/html.md',
-          data: {},
-        },
-      });
+      context = createContext({siteMap});
       strategy = new CacheStrategy();
     });
 
@@ -52,7 +54,7 @@ describe('Cache strategy', () => {
     it('resolves to path\'s data', (done) => {
       strategy.getPageData(context, '/naked/path')
         .then((html) => {
-          expect(html).to.deep.equal(context.siteMap['/naked/path'].data);
+          expect(html).to.deep.equal(context.getSiteMap()['/naked/path'].data);
           done();
         }).catch(done);
     });
@@ -68,20 +70,7 @@ describe('Cache strategy', () => {
     let context;
     let strategy;
     beforeEach(() => {
-      context = createContext({
-        '/naked/path': {
-          nakedPath: '/naked/path',
-          originalPath: '/naked/path.md',
-          data: {
-            html: '<p>hei</p>',
-          },
-        },
-        '/path/without/html': {
-          nakedPath: '/path/without/html',
-          originalPath: '/path/without/html.md',
-          data: {},
-        },
-      });
+      context = createContext({siteMap});
       strategy = new CacheStrategy();
     });
 
@@ -104,7 +93,7 @@ describe('Cache strategy', () => {
     it('resolves to path\'s html', (done) => {
       strategy.getPageHtml(context, '/naked/path')
         .then((html) => {
-          expect(html).to.equal(context.siteMap['/naked/path'].data.html);
+          expect(html).to.equal(context.getSiteMap()['/naked/path'].data.html);
           done();
         }).catch(done);
     });

@@ -1,25 +1,22 @@
 import {expect} from 'chai';
 import renderJson, {fileFromContext} from '../../src/render/json';
+import {createContext} from '../../src/context';
 import {Readable} from 'stream';
 import File from 'vinyl';
 
-const context = {
-  siteMap: {},
-  configuration: {},
-};
-
-const fileContext = Object.create(context);
-
-fileContext.siteMap = {
-  '/test/file': {
-    data: {
-      html: '<p>contents</p>',
-      meta: {},
+const context = createContext();
+const fileContext = createContext({
+  siteMap: {
+    '/test/file': {
+      data: {
+        html: '<p>contents</p>',
+        meta: {},
+      },
+      originalPath: '/test/file.md',
+      nakedPath: '/test/file',
     },
-    originalPath: '/test/file.md',
-    nakedPath: '/test/file',
   },
-};
+});
 
 describe('Render: json', () => {
   it('throws if not given a context', () => {
@@ -40,7 +37,7 @@ describe('Render: json', () => {
 
     stream.on('data', () => fileCounter++);
     stream.on('end', () => {
-      expect(fileCounter).to.equal(Object.keys(fileContext.siteMap).length);
+      expect(fileCounter).to.equal(Object.keys(fileContext.getSiteMap()).length);
       done();
     });
   });
@@ -78,18 +75,18 @@ describe('fileFromContext', () => {
   });
 
   it('returns a vinyl file', () => {
-    expect(File.isVinyl(fileFromContext(fileContext.siteMap['/test/file'])))
+    expect(File.isVinyl(fileFromContext(fileContext.getSiteMap()['/test/file'])))
         .to.equal(true);
   });
 
   it('has `nakedPath` with `.json` extension as `path`', () => {
-    expect(fileFromContext(fileContext.siteMap['/test/file']).path)
+    expect(fileFromContext(fileContext.getSiteMap()['/test/file']).path)
       .to.equal('/test/file.json');
   });
 
   it('has JSON version of `data` as `content`', () => {
-    const {contents} = fileFromContext(fileContext.siteMap['/test/file']);
+    const {contents} = fileFromContext(fileContext.getSiteMap()['/test/file']);
     expect(JSON.parse(contents.toString()))
-        .to.deep.equal(fileContext.siteMap['/test/file'].data);
+        .to.deep.equal(fileContext.getSiteMap()['/test/file'].data);
   });
 });
