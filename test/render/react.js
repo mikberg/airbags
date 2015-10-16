@@ -1,23 +1,9 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
-import React from 'react';
-import {Router, Route} from 'react-router';
-import {createReactRenderer, renderPath} from '../../src/render/react';
+import {createReactRenderer} from '../../src/render/react';
 import {createContext} from '../../src/context';
-import AirbagsApi from '../../src/api';
-import CacheStrategy from '../../src/api/cache';
 import {Readable} from 'stream';
 import File from 'vinyl';
-
-const App = (props) => {
-  return <p>I am app at {props.params.url}</p>;
-};
-
-const routes = (
-  <Router>
-    <Route path="/index.html" component={App} />
-  </Router>
-);
 
 const fileContext = createContext({
   siteMap: {
@@ -32,48 +18,37 @@ const fileContext = createContext({
   },
 });
 
-const api = new AirbagsApi(fileContext, [new CacheStrategy()]);
-
 const resolvingPromise = new Promise((resolve) => resolve('file contents'));
 const rejectingPromise = new Promise((resolve, reject) => reject(new Error('error here')));
 
 describe('createReactRenderer', () => {
-  it('throws if not given routes', () => {
+  it('throws if not given a function', () => {
     expect(() => {
-      createReactRenderer(undefined, api);
-    }).to.throw();
-  });
-
-  it('throws if not given api', () => {
-    expect(() =>{
-      createReactRenderer(routes);
+      createReactRenderer();
     }).to.throw();
   });
 
   it('returns a function', () => {
-    expect(createReactRenderer(routes, api)).to.be.a('function');
+    expect(createReactRenderer(() => {})).to.be.a('function');
   });
 });
 
 describe('renderer', () => {
-  let renderer;
-  beforeEach(() => {
-    renderer = createReactRenderer(routes, api);
-  });
-
   it('throws if not given a context', () => {
+    const renderer = createReactRenderer(() => {});
     expect(() => {
       renderer();
     }).to.throw();
   });
 
   it('returns a stream', () => {
+    const renderer = createReactRenderer(() => {});
     expect(renderer(fileContext)).to.be.instanceof(Readable);
   });
 
   it('emits vinyl files', (done) => {
+    const renderer = createReactRenderer(sinon.stub().returns(resolvingPromise));
     const stream = renderer(fileContext);
-    sinon.stub(stream, 'renderPath').returns(resolvingPromise);
     let vinylFileCounter = 0;
 
     stream.on('data', (file) => {
@@ -89,8 +64,8 @@ describe('renderer', () => {
   });
 
   it('emits files with contents from `renderPath`', (done) => {
+    const renderer = createReactRenderer(sinon.stub().returns(resolvingPromise));
     const stream = renderer(fileContext);
-    sinon.stub(stream, 'renderPath').returns(resolvingPromise);
 
     stream.on('data', (file) => {
       expect(file.contents.toString()).to.equal('file contents');
@@ -102,8 +77,8 @@ describe('renderer', () => {
   });
 
   it('emits error if `renderPath` rejects', (done) => {
+    const renderer = createReactRenderer(sinon.stub().returns(rejectingPromise));
     const stream = renderer(fileContext);
-    sinon.stub(stream, 'renderPath').returns(rejectingPromise);
 
     stream.on('error', () => {
       done();
@@ -112,46 +87,38 @@ describe('renderer', () => {
     stream.on('data', () => {});
   });
 
-  it('calls `renderPath` with routes, nakedPath, api and context', (done) => {
+  it('calls `renderPath` nakedPath', (done) => {
+    const renderPath = sinon.stub().returns(resolvingPromise);
+    const renderer = createReactRenderer(renderPath);
     const stream = renderer(fileContext);
-    sinon.stub(stream, 'renderPath').returns(resolvingPromise);
 
     stream.on('data', () => {});
     stream.on('end', () => {
-      const [_routes, nakedPath, _api, context] = stream.renderPath.getCall(0).args;
-      expect(_routes).to.equal(routes);
-      expect(nakedPath).to.equal('test/file');
-      expect(_api).to.be.an('object');
-      expect(context).to.be.an('object');
+      expect(renderPath.calledWith('test/file')).to.equal(true);
       done();
     });
   });
-});
 
-describe('renderPath', () => {
-  it('returns a promise', () => {
-    expect(renderPath(routes, '/', {}, context)).to.be.instanceof(Promise);
+  it('emits error if `renderPath` doesn\'t return promise', (done) => {
+    const renderer = createReactRenderer(() => {});
+    const stream = renderer(fileContext);
+
+    stream.on('data', () => {});
+    stream.on('error', () => {
+      done();
+    });
   });
 
-  it('rejects if given non-existing nakedPath', (done) => {
-    renderPath(routes, '/non-existing', {}, context)
-      .then(() => {
-        done('promise resolved');
-      })
-      .catch(() => {
-        done();
-      });
-  });
+  it('emits error if `renderPath` doesn\'t resolve to string', (done) => {
+    const stub = sinon.stub().returns(new Promise((resolve) => {
+      resolve(42);
+    }));
+    const renderer = createReactRenderer(stub);
+    const stream = renderer(fileContext);
 
-  it('resolves to rendered string', (done) => {
-    renderPath(routes, 'index', api, context)
-      .then((rendered) => {
-        expect(rendered).to.be.a('string');
-        expect(rendered).to.contain('I am app');
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
+    stream.on('data', () => {});
+    stream.on('error', () => {
+      done();
+    });
   });
 });

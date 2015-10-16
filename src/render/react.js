@@ -1,46 +1,8 @@
-import {match, RoutingContext} from 'react-router';
-import {renderToString} from 'react-dom/server';
-import React from 'react';
 import {isContextOk} from '../context';
-import AirbagsApi from '../api';
 import File from 'vinyl';
 import {Readable} from 'stream';
 
-function urlFromNakedPath(nakedPath) {
-  return `/${nakedPath}.html`;
-}
-
-export function renderPath(routes, nakedPath, api, context) {
-  const location = urlFromNakedPath(nakedPath);
-
-  return new Promise((resolve, reject) => {
-    match({routes, location}, (err, redirectLocation, renderProps) => {
-      if (err) {
-        return reject(new Error(`Error when rendering ${nakedPath}->${location}: ${err}`));
-      }
-
-      if (redirectLocation) {
-        return reject(new Error(`${nakedPath}->${location} redirected (not supported)`));
-      }
-
-      if (!renderProps) {
-        return reject(new Error(`Error when rendering ${nakedPath}->${location}`));
-      }
-
-      let reactString;
-
-      try {
-        reactString = renderToString(<RoutingContext {...renderProps} />);
-      } catch (error) {
-        return reject(error);
-      }
-
-      resolve(reactString);
-    });
-  });
-}
-
-function rendererModel(routes, api, context) {
+function rendererModel(renderPath, context) {
   const nakedPaths = Object.keys(context.getSiteMap());
   let index = 0;
 
@@ -51,8 +13,18 @@ function rendererModel(routes, api, context) {
     }
     nakedPath = nakedPaths[index];
 
-    this.renderPath(routes, nakedPath, api, context)
+    const promise = renderPath(nakedPath);
+
+    if (!(promise instanceof Promise)) {
+      return this.emit('error', `Expected renderPath to return a promise, got ${promise}`);
+    }
+
+    promise
       .then((contents) => {
+        if (typeof contents !== 'string') {
+          throw new Error(`Expected renderPath to resolve to a string, got ${contents}`);
+        }
+
         const file = new File({
           contents: new Buffer(contents),
         });
@@ -64,18 +36,11 @@ function rendererModel(routes, api, context) {
         this.emit('error', err);
       });
   };
-
-  // Attached here to allow for stubbing
-  this.renderPath = renderPath;
 }
 
-export function createReactRenderer(routes, api) {
-  if (typeof routes !== 'object') {
-    throw new Error(`createReactRenderer expected routes object, got ${routes}`);
-  }
-
-  if (!(api instanceof AirbagsApi)) {
-    throw new Error(`createReactRenderer expected instance of AirbagsApi, got ${api}`);
+export function createReactRenderer(renderPath) {
+  if (typeof renderPath !== 'function') {
+    throw new Error(`createReactRenderer expected a render function, got ${renderPath}`);
   }
 
   return (context) => {
@@ -84,7 +49,7 @@ export function createReactRenderer(routes, api) {
     }
 
     const renderer = new Readable({ objectMode: true });
-    rendererModel.call(renderer, routes, api, context);
+    rendererModel.call(renderer, renderPath, context);
     return renderer;
   };
 }
