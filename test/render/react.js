@@ -81,7 +81,7 @@ describe('renderer', () => {
     const stream = renderer(fileContext);
 
     stream.on('data', (file) => {
-      expect(file.path).to.equal('/test/file.html');
+      expect(file.path).to.equal('test/file.html');
     });
 
     stream.on('end', () => {
