@@ -26,6 +26,7 @@ function rendererModel(renderPath, context) {
         }
 
         const file = new File({
+          path: `/${nakedPath}.html`,
           contents: new Buffer(contents),
         });
 

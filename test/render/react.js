@@ -76,6 +76,19 @@ describe('renderer', () => {
     });
   });
 
+  it('emits files with path from `nakedPath`', (done) => {
+    const renderer = createReactRenderer(sinon.stub().returns(resolvingPromise));
+    const stream = renderer(fileContext);
+
+    stream.on('data', (file) => {
+      expect(file.path).to.equal('/test/file.html');
+    });
+
+    stream.on('end', () => {
+      done();
+    });
+  });
+
   it('emits error if `renderPath` rejects', (done) => {
     const renderer = createReactRenderer(sinon.stub().returns(rejectingPromise));
     const stream = renderer(fileContext);
