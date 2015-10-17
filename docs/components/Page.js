@@ -1,26 +1,26 @@
 import React from 'react';
+import Transmit from 'react-transmit';
 
 export default class Page extends React.Component {
   static propTypes = {
-    params: React.PropTypes.object.isRequired,
-    '__page-data': React.PropTypes.object.isRequired,
+    pageData: React.PropTypes.object.isRequired,
   }
-
-  static getData(context, api, params) {
-    return api.getPageData('pages/' + params.pageName);
-  }
-
-  static dataKey = '__page-data';
 
   render() {
-    const pageData = this.props[Page.dataKey];
-    const html = { __html: pageData.html };
+    const {pageData} = this.props;
 
     return (
       <div>
-        {pageData.meta.title ? <h1>{pageData.meta.title}</h1> : ''}
-        <div dangerouslySetInnerHTML={html} />
+        <div dangerouslySetInnerHTML={{__html: pageData.html}} />
       </div>
     );
   }
 }
+
+export default Transmit.createContainer(Page, {
+  fragments: {
+    pageData: ({pageName}) => {
+      return global.api.getPageData(`pages/${pageName}`);
+    },
+  },
+});

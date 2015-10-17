@@ -1,34 +1,39 @@
 import React from 'react';
+import Transmit from 'react-transmit';
 import Menu from './Menu';
 
 export default class App extends React.Component {
   static propTypes = {
     children: React.PropTypes.element,
-    '__app-data': React.PropTypes.object.isRequired,
+    menu: React.PropTypes.array,
+    configuration: React.PropTypes.object,
   }
-
-  static getData(context) {
-    return new Promise((resolve) => {
-      resolve({
-        siteName: context.getConfiguration().siteName,
-        menu: context.getMenu ? context.getMenu() : null,
-      });
-    });
-  }
-
-  static dataKey = '__app-data';
 
   render() {
-    const appData = this.props[App.dataKey];
+    const {menu} = this.props;
+    const {configuration} = this.props;
 
     return (
       <div>
-        <h1>{appData.siteName || '(no title set)'}</h1>
-
-        <Menu menu={appData.menu} />
-
+        <h1>{configuration.siteName}</h1>
+        <Menu menu={menu} />
         {this.props.children}
       </div>
     );
   }
 }
+
+export default Transmit.createContainer(App, {
+  fragments: {
+    menu() {
+      return new Promise((resolve) => {
+        resolve(global.api.context.getMenu());
+      });
+    },
+    configuration() {
+      return new Promise((resolve) => {
+        resolve(global.api.context.getConfiguration());
+      });
+    },
+  },
+});

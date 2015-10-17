@@ -2,19 +2,24 @@
   "name": "docs",
   "main": "generate.js",
   "scripts": {
-    "generate": "npm run clean && babel-node --optional es7.classProperties generate.js",
+    "generate": "babel-node --optional es7.classProperties generate.js",
+    "browserify": "./node_modules/browserify/bin/cmd.js -d -e client.js -t [ babelify --optional es7.classProperties ] --outfile build/bundle.js",
+    "build": "npm run clean && npm run generate && npm run browserify",
     "clean": "rm -rf build/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "babelify": "^6.3.0",
+    "browserify": "^11.2.0",
     "jade": "^1.11.0",
-    "react-dom": "^0.14.0",
-    "react-router": "^1.0.0-rc3",
     "vinyl-fs": "^2.1.1"
   },
   "dependencies": {
-    "react": "^0.14.0"
+    "react": "^0.14.0",
+    "react-transmit": "^3.0.7",
+    "react-dom": "^0.14.0",
+    "react-router": "^1.0.0-rc3"
   }
 }
