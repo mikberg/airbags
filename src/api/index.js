@@ -46,7 +46,7 @@ export default class AirbagsApi {
 
       const apply = (iterator) => {
         if (iterator === this.strategies.length) {
-          reject(`No strategies could resolve ${methodName}`);
+          return reject(`No strategies could resolve ${methodName}`);
         }
 
         this.strategies[iterator][methodName](...args)
