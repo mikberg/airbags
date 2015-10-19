@@ -43,7 +43,7 @@ export function isStrategyOk(strategy) {
   return typeof strategy === 'object';
 }
 
-export default function createApi(context, strategies = []) {
+export default function createApi(context, strategies = [], middleware = []) {
   if (strategies.some((strategy) => !isStrategyOk(strategy))) {
     throw new Error(`createApi expected array of strategies, got ${strategies}`);
   }
@@ -54,5 +54,12 @@ export default function createApi(context, strategies = []) {
 
   const api = {};
   apiModel.call(api, context, strategies);
+
+  middleware
+    .filter((mid) => !!mid.api)
+    .forEach((mid) => {
+      mid.api.call(api);
+    });
+
   return api;
 }

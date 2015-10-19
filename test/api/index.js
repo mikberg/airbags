@@ -1,6 +1,7 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
 import createApi, {applyToStrategies, isStrategyOk} from '../../src/api';
+import createCacheStrategy from '../../src/api/cache';
 import {createContext} from '../../src/context';
 
 class MockStrategy {
@@ -25,6 +26,39 @@ describe('createApi', () => {
     expect(() => {
       createApi(context, ['a']);
     }).to.throw();
+  });
+
+  it('attaches middleware api', (done) => {
+    const siteMap = {
+      'some/path': {
+        nakedPath: 'some/path',
+        originalPath: 'some/path.md',
+        data: {
+          html: '<p>hei</p>',
+        },
+      },
+    };
+
+    const backwardsMiddleware = {
+      api: function backwardsApi() {
+        this.getBackwardsHtml = (nakedPath) => {
+          return this.getPageData(nakedPath)
+            .then((data) => {
+              return data.html.split('').reverse().join('');
+            });
+        };
+      },
+    };
+
+    const someContext = createContext({siteMap});
+    const api = createApi(someContext, [createCacheStrategy()], [backwardsMiddleware]);
+
+    api.getBackwardsHtml('some/path')
+      .then((backwards) => {
+        expect(backwards).to.equal('>p/<ieh>p<');
+        done();
+      })
+      .catch(done);
   });
 });
 
