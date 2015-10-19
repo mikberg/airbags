@@ -1,10 +1,10 @@
 import {expect} from 'chai';
 import nock from 'nock';
-import HttpStrategy from '../../src/api/http';
+import createHttpStrategy from '../../src/api/http';
 import {createContext} from '../../src/context';
 
 const baseUrl = 'http://localhost/';
-const nakedPath = '/some/path';
+const nakedPath = 'some/path';
 const exampleResponse = {
   nakedPath,
   originalPath: nakedPath + '.md',
@@ -22,10 +22,10 @@ describe('Http strategy', () => {
 
   beforeEach(() => {
     context = createContext();
-    strategy = new HttpStrategy(baseUrl);
+    strategy = createHttpStrategy(baseUrl);
     scope = nock(baseUrl);
 
-    nakedPathEndpoint = scope.get(nakedPath + '.json')
+    nakedPathEndpoint = scope.get('/' + nakedPath + '.json')
       .reply(200, exampleResponse);
 
     scope.get('/failpath').reply(404, 'oh man');
@@ -38,14 +38,8 @@ describe('Http strategy', () => {
   describe('constructor', () => {
     it('throws if not given a baseUrl', () => {
       expect(() => {
-        /* eslint no-new:0 */
-        new HttpStrategy();
+        createHttpStrategy();
       }).to.throw();
-    });
-
-    it('saves baseUrl without trailing slash', () => {
-      const strategy = new HttpStrategy('http://localhost/');
-      expect(strategy.baseUrl).to.equal('http://localhost');
     });
   });
 
