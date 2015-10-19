@@ -41,7 +41,7 @@ export default class AirbagsApi {
   _applyToStrategies(methodName, ...args) {
     return new Promise((resolve, reject) => {
       if (this.strategies.length === 0) {
-        reject(new Error(`No strategies to use for ${methodName}`));
+        return reject(new Error(`No strategies to use for ${methodName}`));
       }
 
       const apply = (iterator) => {

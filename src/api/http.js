@@ -1,6 +1,6 @@
 import {isContextOk} from '../context';
-import request from 'request';
 import stripOuter from 'strip-outer';
+import 'isomorphic-fetch';
 
 /**
  * @NOTE: Could require URL to be set on context?
@@ -14,39 +14,39 @@ export default class HttpStrategy {
     this.baseUrl = this._stripBaseUrl(baseUrl);
   }
 
-  getPageData() {
+  getPageData(context, nakedPath) {
     return new Promise((resolve, reject) => {
-      return reject(new Error(`getPageData not yet implemented for HttpStrategy`));
+      if (!isContextOk(context)) {
+        return reject(new Error(`getPageData expected a context, got ${context}`));
+      }
+
+      if (typeof nakedPath !== 'string') {
+        return reject(new Error(`getPageData expected a string nakedPath`));
+      }
+
+      const url = this._getUrl(nakedPath);
+      fetch(url)
+        .then((response) => {
+          if (response.status !== 200) {
+            return reject(new Error(`HttpStrategy error: ${response.status} returned`));
+          }
+
+          return response.json();
+        })
+        .then((data) => {
+          return resolve(data);
+        })
+        .catch((error) => {
+          return reject(error);
+        });
     });
   }
 
   getPageHtml(context, nakedPath) {
-    return new Promise((resolve, reject) => {
-      if (!isContextOk(context)) {
-        return reject(new Error('getPageHtml expected a context, got ${context}'));
-      }
-
-      if (typeof nakedPath !== 'string') {
-        return reject(new Error('getPageHtml expected a string `nakedPath`'));
-      }
-
-      const url = this._getUrl(nakedPath);
-      request(url, (error, response, body) => {
-        let parsed;
-
-        if (error || response.statusCode !== 200) {
-          return reject(`HttpStrategy Error: ${error}`);
-        }
-
-        try {
-          parsed = JSON.parse(body);
-        } catch (parseError) {
-          return reject(`HttpStrategy Error: ${parseError}`);
-        }
-
-        resolve(parsed.data.html);
+    return this.getPageData(context, nakedPath)
+      .then(({data}) => {
+        return data.html;
       });
-    });
   }
 
   _getUrl(nakedPath) {
