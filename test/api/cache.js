@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import CacheStrategy from '../../src/api/cache';
+import createCacheStrategy from '../../src/api/cache';
 import {createContext} from '../../src/context';
 
 const siteMap = {
@@ -21,8 +21,7 @@ describe('Cache strategy', () => {
   describe('constructor', () => {
     it('needs no arguments', () => {
       expect(() => {
-        /* eslint no-new:0 */
-        new CacheStrategy();
+        createCacheStrategy();
       }).not.to.throw();
     });
   });
@@ -32,7 +31,7 @@ describe('Cache strategy', () => {
     let strategy;
     beforeEach(() => {
       context = createContext({siteMap});
-      strategy = new CacheStrategy();
+      strategy = createCacheStrategy();
     });
 
     it('rejects if not given a context', (done) => {
@@ -71,7 +70,7 @@ describe('Cache strategy', () => {
     let strategy;
     beforeEach(() => {
       context = createContext({siteMap});
-      strategy = new CacheStrategy();
+      strategy = createCacheStrategy();
     });
 
     it('rejects if not given a context', (done) => {
