@@ -30,7 +30,7 @@ export default function renderPath(nakedPath) {
               <title>Coool</title>
             </head>
             <body>
-              <div id="react-root"></div>
+              <div id="react-root">${reactString}</div>
               <script>
                 window.contextData = ${JSON.stringify(contextData)};
               </script>
