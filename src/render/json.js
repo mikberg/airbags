@@ -2,18 +2,25 @@ import {isContextOk} from '../context';
 import {Readable} from 'stream';
 import File from 'vinyl';
 
-export function fileFromContext(contextFile) {
-  if (!contextFile.nakedPath) {
+export function fileFromContext(fileDesc) {
+  if (!fileDesc.nakedPath) {
     throw new Error('fileFromContext needs supplied file to have `nakedPath`');
   }
 
-  if (typeof contextFile.data !== 'object') {
+  if (typeof fileDesc.data !== 'object') {
     throw new Error('fileFromContext needs supplied file to have `data`');
   }
 
   return new File({
-    path: `${contextFile.nakedPath}.json`,
-    contents: new Buffer(JSON.stringify(contextFile.data)),
+    path: `${fileDesc.nakedPath}.json`,
+    contents: new Buffer(JSON.stringify(fileDesc.data)),
+  });
+}
+
+export function contextFile(context) {
+  return new File({
+    path: `context.json`,
+    contents: new Buffer(JSON.stringify(context)),
   });
 }
 
@@ -30,6 +37,8 @@ export default function renderJson(context) {
   Object.keys(context.getSiteMap()).forEach((nakedPath) => {
     stream.push(fileFromContext(context.getSiteMap()[nakedPath]));
   });
+
+  stream.push(contextFile(context));
 
   stream.push(null);
   return stream;
