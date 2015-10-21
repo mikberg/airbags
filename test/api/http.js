@@ -19,6 +19,7 @@ describe('Http strategy', () => {
   let strategy;
   let scope;
   let nakedPathEndpoint;
+  let contextEndpoint;
 
   beforeEach(() => {
     context = createContext();
@@ -27,6 +28,8 @@ describe('Http strategy', () => {
 
     nakedPathEndpoint = scope.get('/' + nakedPath + '.json')
       .reply(200, exampleResponse);
+    contextEndpoint = scope.get('/context.json')
+      .reply(200, { siteMap: context.getSiteMap() });
 
     scope.get('/failpath').reply(404, 'oh man');
   });
@@ -108,6 +111,30 @@ describe('Http strategy', () => {
     it('rejects if there is an HTTP error', (done) => {
       strategy.getPageHtml(context, '/failpath')
         .catch(() => done());
+    });
+  });
+
+  describe('getContext', () => {
+    it('returns a promise', () => {
+      expect(strategy.getContext()).to.be.instanceof(Promise);
+    });
+
+    it('requests context from baseUrl/context.json', (done) => {
+      strategy.getContext(context)
+        .then(() => {
+          contextEndpoint.isDone();
+          done();
+        })
+        .catch(done);
+    });
+
+    it('resolves correct data', (done) => {
+      strategy.getContext(context)
+        .then((resolvedContext) => {
+          expect(resolvedContext.siteMap).to.deep.equal(context.getSiteMap());
+          done();
+        })
+        .catch(done);
     });
   });
 });

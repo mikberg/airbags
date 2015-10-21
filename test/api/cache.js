@@ -109,4 +109,31 @@ describe('Cache strategy', () => {
       });
     });
   });
+
+  describe('getContext', () => {
+    let context;
+    let strategy;
+    beforeEach(() => {
+      context = createContext({siteMap});
+      strategy = createCacheStrategy();
+    });
+
+    it('rejects if not given a context', (done) => {
+      strategy.getContext()
+        .then(() => done('did not reject'))
+        .catch(() => done());
+    });
+
+    it('returns a promise', () => {
+      expect(strategy.getContext(context).then).to.be.a('function');
+    });
+
+    it('resolves to the context given', (done) => {
+      strategy.getContext(context)
+        .then((resolvedContext) => {
+          expect(resolvedContext).to.equal(context);
+          done();
+        }).catch(done);
+    });
+  });
 });

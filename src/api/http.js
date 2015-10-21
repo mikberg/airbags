@@ -41,6 +41,14 @@ function httpStrategyModel(baseUrl) {
         return data.html;
       });
   };
+
+  this.getContext = () => {
+    const url = `${baseUrl}/context.json`;
+    return fetch(url)
+      .then((response) => {
+        return response.json();
+      });
+  };
 }
 
 export default function createHttpStrategy(baseUrl) {

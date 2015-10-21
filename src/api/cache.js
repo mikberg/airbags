@@ -37,6 +37,16 @@ function cacheStrategyModel() {
         return data.html;
       });
   };
+
+  this.getContext = (context) => {
+    return new Promise((resolve, reject) => {
+      if (!isContextOk(context)) {
+        return reject(`Expected a context, got ${context}`);
+      }
+
+      return resolve(context);
+    });
+  };
 }
 
 export default function createCacheStrategy() {
