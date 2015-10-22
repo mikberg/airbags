@@ -2,19 +2,12 @@ import {isContextOk} from '../context';
 import stripOuter from 'strip-outer';
 import 'isomorphic-fetch';
 
-/**
- * @NOTE: Could require URL to be set on context?
- */
-export default class HttpStrategy {
-  constructor(baseUrl) {
-    if (typeof baseUrl !== 'string') {
-      throw new Error(`HttpStrategy expected a baseUrl, got ${baseUrl}`);
-    }
+function getUrl(baseUrl, nakedPath) {
+  return `${baseUrl}/${nakedPath}.json`;
+}
 
-    this.baseUrl = this._stripBaseUrl(baseUrl);
-  }
-
-  getPageData(context, nakedPath) {
+function httpStrategyModel(baseUrl) {
+  this.getPageData = (context, nakedPath) => {
     return new Promise((resolve, reject) => {
       if (!isContextOk(context)) {
         return reject(new Error(`getPageData expected a context, got ${context}`));
@@ -24,11 +17,11 @@ export default class HttpStrategy {
         return reject(new Error(`getPageData expected a string nakedPath`));
       }
 
-      const url = this._getUrl(nakedPath);
+      const url = getUrl(baseUrl, nakedPath);
       fetch(url)
         .then((response) => {
           if (response.status !== 200) {
-            return reject(new Error(`HttpStrategy error: ${response.status} returned`));
+            return reject(new Error(`httpStrategy error: ${response.status} returned`));
           }
 
           return response.json();
@@ -40,20 +33,30 @@ export default class HttpStrategy {
           return reject(error);
         });
     });
-  }
+  };
 
-  getPageHtml(context, nakedPath) {
+  this.getPageHtml = (context, nakedPath) => {
     return this.getPageData(context, nakedPath)
       .then(({data}) => {
         return data.html;
       });
+  };
+
+  this.getContext = () => {
+    const url = `${baseUrl}/context.json`;
+    return fetch(url)
+      .then((response) => {
+        return response.json();
+      });
+  };
+}
+
+export default function createHttpStrategy(baseUrl) {
+  if (typeof baseUrl !== 'string') {
+    throw new Error(`createHttpStrategy expected a baseUrl, got ${baseUrl}`);
   }
 
-  _getUrl(nakedPath) {
-    return `${this.baseUrl}${nakedPath}.json`;
-  }
-
-  _stripBaseUrl(baseUrl) {
-    return stripOuter(baseUrl, '/');
-  }
+  const strategy = {};
+  httpStrategyModel.call(strategy, stripOuter(baseUrl, '/'));
+  return strategy;
 }

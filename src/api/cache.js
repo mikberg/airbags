@@ -1,26 +1,34 @@
 import {isContextOk} from '../context';
 
-export default class CacheStrategy {
-  getPageData(context, nakedPath) {
+function isPageInContext(context, nakedPath) {
+  return nakedPath in context.getSiteMap();
+}
+
+function getPageFromContext(context, nakedPath) {
+  return context.getSiteMap()[nakedPath];
+}
+
+function cacheStrategyModel() {
+  this.getPageData = (context, nakedPath) => {
     return new Promise((resolve, reject) => {
       if (!isContextOk(context)) {
         return reject(`Expected a context, got ${context}`);
       }
 
-      if (!this._isPageInContext(context, nakedPath)) {
+      if (!isPageInContext(context, nakedPath)) {
         return reject(`Path ${nakedPath} is not in context`);
       }
 
-      const page = this._getPageFromContext(context, nakedPath);
+      const page = getPageFromContext(context, nakedPath);
       if (page && page.data) {
         return resolve(page.data);
       }
 
-      return reject(`Path ${nakedPath} does not have HTML in context`);
+      return reject(`Path ${nakedPath} does not have data in context`);
     });
-  }
+  };
 
-  getPageHtml(context, nakedPath) {
+  this.getPageHtml = (context, nakedPath) => {
     return this.getPageData(context, nakedPath)
       .then((data) => {
         if (!data.html) {
@@ -28,13 +36,21 @@ export default class CacheStrategy {
         }
         return data.html;
       });
-  }
+  };
 
-  _isPageInContext(context, nakedPath) {
-    return nakedPath in context.getSiteMap();
-  }
+  this.getContext = (context) => {
+    return new Promise((resolve, reject) => {
+      if (!isContextOk(context)) {
+        return reject(`Expected a context, got ${context}`);
+      }
 
-  _getPageFromContext(context, nakedPath) {
-    return context.getSiteMap()[nakedPath];
-  }
+      return resolve(context);
+    });
+  };
+}
+
+export default function createCacheStrategy() {
+  const strategy = {};
+  cacheStrategyModel.call(strategy);
+  return strategy;
 }
