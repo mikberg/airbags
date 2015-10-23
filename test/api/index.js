@@ -11,6 +11,7 @@ class MockStrategy {
 
   getPageHtml() {}
   getPageData() {}
+  getContext() {}
 }
 
 const context = createContext();
@@ -113,6 +114,20 @@ describe('getPageData', () => {
     const api = createApi(context, [strategy]);
     api.getPageData(nakedPath).then(() => {
       expect(strategy.getPageData.calledWith(context, nakedPath)).to.equal(true);
+      done();
+    }).catch(done);
+  });
+});
+
+describe('getContext', () => {
+  it('calls strategies with context', (done) => {
+    const strategy = new MockStrategy();
+    sinon.stub(strategy, 'getContext')
+      .returns(new Promise((resolve) => resolve()));
+
+    const api = createApi(context, [strategy]);
+    api.getContext().then(() => {
+      expect(strategy.getContext.calledWith(context)).to.equal(true);
       done();
     }).catch(done);
   });

@@ -37,6 +37,10 @@ function apiModel(context, strategies) {
     console.warn(`api.getPageHtml is deprecated, please use getPageData instead`);
     return applyToStrategies(strategies, 'getPageHtml', [context, nakedPath]);
   };
+
+  this.getContext = () => {
+    return applyToStrategies(strategies, 'getContext', [context]);
+  };
 }
 
 export function isStrategyOk(strategy) {
