@@ -56,7 +56,7 @@ describe('menuMiddleware', () => {
 
       mockApi.getMenu()
         .then((menu) => {
-          console.log(menu);
+          expect(menu).to.contain({'InMenu': 'in/menu'});
           done();
         })
         .catch(done);

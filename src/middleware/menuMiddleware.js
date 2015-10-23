@@ -14,11 +14,8 @@ menuMiddleware.contextAugmenter = function menu(state) {
 menuMiddleware.api = function menuApi() {
   this.getMenu = () => {
     return this.getContext().then((context) => {
-      const siteMap = context.siteMap;
-      return Object.keys(siteMap)
-        .map((index) => siteMap[index])
-        .filter((page) => page.data && page.data.meta && page.data.meta.inMenu && page.data.meta.title)
-        .map((page) => ({[page.data.meta.title]: page.nakedPath}));
+      const { menu } = menuMiddleware(context);
+      return menu;
     });
   };
 };
