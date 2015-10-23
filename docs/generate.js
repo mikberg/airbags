@@ -1,12 +1,10 @@
 /* eslint no-console: 0 */
 import vinylFs from 'vinyl-fs';
-// import fs from 'fs';
 import collect from '../src/collect';
 import markdownExtractor from '../src/extractors/markdown';
 import {createContext} from '../src/context/';
 import menuMiddleware from '../src/middleware/menuMiddleware';
 import renderJson from '../src/render/json';
-// import createJadeRenderer from './jade';
 import renderPath from './renderPath';
 import {createReactRenderer} from '../src/render/react';
 
