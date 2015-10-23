@@ -47,6 +47,11 @@ describe('createContext', () => {
     const context = createContext(undefined, [addPageName]);
     expect(context.getPageName()).to.equal('CoolPage');
   });
+
+  it('has sitemap readily available', () => {
+    const context = createContext();
+    expect(context.siteMap).to.be.an('object');
+  });
 });
 
 describe('contextModel', () => {

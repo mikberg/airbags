@@ -22,6 +22,8 @@ export function applyMiddleware(state, middleware) {
 }
 
 function contextModel(state) {
+  Object.assign(this, state);
+
   this.getSiteMap = () => state.siteMap;
   this.getConfiguration = () => state.configuration;
 
