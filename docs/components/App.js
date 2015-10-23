@@ -26,13 +26,11 @@ export default class App extends React.Component {
 export default Transmit.createContainer(App, {
   fragments: {
     menu() {
-      return new Promise((resolve) => {
-        resolve(global.api.context.getMenu());
-      });
+      return global.api.getMenu();
     },
     configuration() {
-      return new Promise((resolve) => {
-        resolve(global.api.context.getConfiguration());
+      return global.api.getContext().then((context) => {
+        return context.configuration;
       });
     },
   },

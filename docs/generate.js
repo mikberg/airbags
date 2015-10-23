@@ -10,8 +10,8 @@ import renderJson from '../src/render/json';
 import renderPath from './renderPath';
 import {createReactRenderer} from '../src/render/react';
 
-import AirbagsApi from '../src/api';
-import CacheStrategy from '../src/api/cache';
+import createApi from '../src/api';
+import createCacheStrategy from '../src/api/cache';
 
 const outFolder = './build/';
 const middleware = [menuMiddleware];
@@ -35,13 +35,17 @@ collect(vinylFs.src(['./pages/*.md'], { base: process.cwd() }), markdownExtracto
     },
   }, middleware);
 
+  global.api = createApi(
+    context,
+    [createCacheStrategy()],
+    [menuMiddleware]
+  );
+
   renderJson(context)
     .on('error', (err) => console.error(err))
     .on('data', (file) => console.log(`Rendered ${file.path} with JSON`))
     .on('end', () => console.log('JSON ended'))
     .pipe(vinylFs.dest(outFolder));
-
-  global.api = new AirbagsApi(context, [new CacheStrategy()]);
 
   createReactRenderer(renderPath)(context)
     .on('error', (err) => console.error(err))
