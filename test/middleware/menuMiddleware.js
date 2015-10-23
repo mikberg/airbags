@@ -44,4 +44,22 @@ describe('menuMiddleware', () => {
       expect(context.getMenu()).to.be.an('array');
     });
   });
+
+  describe('api', () => {
+    it('returns menu', (done) => {
+      const mockApi = {
+        getContext() {
+          return new Promise((resolve) => resolve({siteMap}));
+        },
+      };
+      menuMiddleware.api.call(mockApi);
+
+      mockApi.getMenu()
+        .then((menu) => {
+          console.log(menu);
+          done();
+        })
+        .catch(done);
+    });
+  });
 });
