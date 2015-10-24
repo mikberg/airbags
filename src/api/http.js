@@ -1,4 +1,3 @@
-import {isContextOk} from '../context';
 import stripOuter from 'strip-outer';
 import 'isomorphic-fetch';
 
@@ -7,12 +6,8 @@ function getUrl(baseUrl, nakedPath) {
 }
 
 function httpStrategyModel(baseUrl) {
-  this.getPageData = (context, nakedPath) => {
+  this.getPageData = (nakedPath) => {
     return new Promise((resolve, reject) => {
-      if (!isContextOk(context)) {
-        return reject(new Error(`getPageData expected a context, got ${context}`));
-      }
-
       if (typeof nakedPath !== 'string') {
         return reject(new Error(`getPageData expected a string nakedPath`));
       }
@@ -35,8 +30,8 @@ function httpStrategyModel(baseUrl) {
     });
   };
 
-  this.getPageHtml = (context, nakedPath) => {
-    return this.getPageData(context, nakedPath)
+  this.getPageHtml = (nakedPath) => {
+    return this.getPageData(nakedPath)
       .then(({data}) => {
         return data.html;
       });
