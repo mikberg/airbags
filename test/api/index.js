@@ -104,7 +104,7 @@ describe('getContext', () => {
     sinon.stub(strategy, 'getContext')
       .returns(new Promise((resolve) => resolve()));
 
-    const api = createApi(context, [strategy]);
+    const api = createApi([strategy]);
     api.getContext().then(() => {
       expect(strategy.getContext.called).to.equal(true);
       done();

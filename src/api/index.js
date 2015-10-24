@@ -1,5 +1,3 @@
-import {isContextOk} from '../context';
-
 /**
  * Run a method on strategies in order until one of them resolves. Reject if
  * no strategies resolve.
@@ -27,7 +25,7 @@ export function applyToStrategies(strategies, methodName, args) {
   });
 }
 
-function apiModel(context, strategies) {
+function apiModel(strategies) {
   this.getPageData = (nakedPath) => {
     return applyToStrategies(strategies, 'getPageData', [nakedPath]);
   };
@@ -41,30 +39,13 @@ export function isStrategyOk(strategy) {
   return typeof strategy === 'object';
 }
 
-export default function createApi(_context, _strategies = [], _middleware = []) {
-  let context;
-  let strategies;
-  let middleware;
-
-  if (Array.isArray(_context)) {
-    strategies = _context;
-    middleware = _strategies;
-  } else {
-    context = _context;
-    strategies = _strategies;
-    middleware = _middleware;
-  }
-
-  if (typeof context === 'object' && !isContextOk(context)) {
-    throw new Error(`createApi expected context, got ${context}`);
-  }
-
+export default function createApi(strategies = [], middleware = []) {
   if (strategies.some((strategy) => !isStrategyOk(strategy))) {
     throw new Error(`createApi expected array of strategies, got ${strategies}`);
   }
 
   const api = {};
-  apiModel.call(api, context, strategies);
+  apiModel.call(api, strategies);
 
   middleware
     .forEach((mid) => {
