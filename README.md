@@ -64,3 +64,12 @@ depending on what means are available for access. Examples include:
 ### Helper Components
 
 Provide low-level components and wrappers to display content.
+
+
+## Todo
+
+ - [x] Add ability to create cache strategy with context
+ - [ ] Deprecate initiating API with context in favor of creating cache strategy with context?
+ - [x] Deprecate calling strategy methods with context as first argument
+ - [ ] Deprecate collection with extraction of HTML in favor of metadata-only?
+   - Think about this. We need the metadata. Could lead to only splitting the same functionality.

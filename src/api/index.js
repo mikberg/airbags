@@ -29,17 +29,17 @@ export function applyToStrategies(strategies, methodName, args) {
 
 function apiModel(context, strategies) {
   this.getPageData = (nakedPath) => {
-    return applyToStrategies(strategies, 'getPageData', [context, nakedPath]);
+    return applyToStrategies(strategies, 'getPageData', [nakedPath]);
   };
 
   this.getPageHtml = (nakedPath) => {
     /* eslint no-console:0 */
     console.warn(`api.getPageHtml is deprecated, please use getPageData instead`);
-    return applyToStrategies(strategies, 'getPageHtml', [context, nakedPath]);
+    return applyToStrategies(strategies, 'getPageHtml', [nakedPath]);
   };
 
   this.getContext = () => {
-    return applyToStrategies(strategies, 'getContext', [context]);
+    return applyToStrategies(strategies, 'getContext', []);
   };
 }
 
@@ -47,22 +47,34 @@ export function isStrategyOk(strategy) {
   return typeof strategy === 'object';
 }
 
-export default function createApi(context, strategies = [], middleware = []) {
-  if (strategies.some((strategy) => !isStrategyOk(strategy))) {
-    throw new Error(`createApi expected array of strategies, got ${strategies}`);
+export default function createApi(_context, _strategies = [], _middleware = []) {
+  let context;
+  let strategies;
+  let middleware;
+
+  if (Array.isArray(_context)) {
+    strategies = _context;
+    middleware = _strategies;
+  } else {
+    context = _context;
+    strategies = _strategies;
+    middleware = _middleware;
   }
 
-  if (!isContextOk(context)) {
+  if (typeof context === 'object' && !isContextOk(context)) {
     throw new Error(`createApi expected context, got ${context}`);
+  }
+
+  if (strategies.some((strategy) => !isStrategyOk(strategy))) {
+    throw new Error(`createApi expected array of strategies, got ${strategies}`);
   }
 
   const api = {};
   apiModel.call(api, context, strategies);
 
   middleware
-    .filter((mid) => !!mid.api)
     .forEach((mid) => {
-      mid.api.call(api);
+      mid.call(api);
     });
 
   return api;

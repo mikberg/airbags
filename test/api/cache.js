@@ -1,4 +1,5 @@
 import {expect} from 'chai';
+import sinon from 'sinon';
 import createCacheStrategy from '../../src/api/cache';
 import {createContext} from '../../src/context';
 
@@ -24,6 +25,12 @@ describe('Cache strategy', () => {
         createCacheStrategy();
       }).not.to.throw();
     });
+
+    it('throws if given an object which is not a context', () => {
+      expect(() => {
+        createCacheStrategy({});
+      }).to.throw();
+    });
   });
 
   describe('getPageData', () => {
@@ -32,12 +39,8 @@ describe('Cache strategy', () => {
     beforeEach(() => {
       context = createContext({siteMap});
       strategy = createCacheStrategy();
-    });
-
-    it('rejects if not given a context', (done) => {
-      strategy.getPageData()
-        .then(() => done('did not throw'))
-        .catch(() => done());
+      sinon.stub(strategy, 'getContext')
+        .returns(new Promise((resolve) => resolve(context)));
     });
 
     it('returns a promise', () => {
@@ -45,13 +48,13 @@ describe('Cache strategy', () => {
     });
 
     it('rejects if not given a string `nakedPath`', (done) => {
-      strategy.getPageData(context)
+      strategy.getPageData()
         .then(() => done('did not throw'))
         .catch(() => done());
     });
 
     it('resolves to path\'s data', (done) => {
-      strategy.getPageData(context, '/naked/path')
+      strategy.getPageData('/naked/path')
         .then((html) => {
           expect(html).to.deep.equal(context.getSiteMap()['/naked/path'].data);
           done();
@@ -59,7 +62,7 @@ describe('Cache strategy', () => {
     });
 
     it('rejects if given unknown path', (done) => {
-      strategy.getPageHtml(context, '/unknown/url').catch(() => {
+      strategy.getPageHtml('/unknown/url').catch(() => {
         done();
       });
     });
@@ -71,12 +74,8 @@ describe('Cache strategy', () => {
     beforeEach(() => {
       context = createContext({siteMap});
       strategy = createCacheStrategy();
-    });
-
-    it('rejects if not given a context', (done) => {
-      strategy.getPageHtml()
-        .then(() => done('did not throw'))
-        .catch(() => done());
+      sinon.stub(strategy, 'getContext')
+        .returns(new Promise((resolve) => resolve(context)));
     });
 
     it('returns a promise', () => {
@@ -84,13 +83,13 @@ describe('Cache strategy', () => {
     });
 
     it('rejects if not given a string `nakedPath`', (done) => {
-      strategy.getPageHtml(context)
+      strategy.getPageHtml()
         .then(() => done('did not throw'))
         .catch(() => done());
     });
 
     it('resolves to path\'s html', (done) => {
-      strategy.getPageHtml(context, '/naked/path')
+      strategy.getPageHtml('/naked/path')
         .then((html) => {
           expect(html).to.equal(context.getSiteMap()['/naked/path'].data.html);
           done();
@@ -98,13 +97,13 @@ describe('Cache strategy', () => {
     });
 
     it('rejects if given unknown path', (done) => {
-      strategy.getPageHtml(context, '/unknown/url').catch(() => {
+      strategy.getPageHtml('/unknown/url').catch(() => {
         done();
       });
     });
 
     it('rejects if given path with no html in context', (done) => {
-      strategy.getPageHtml(context, '/path/without/html').catch(() => {
+      strategy.getPageHtml('/path/without/html').catch(() => {
         done();
       });
     });
@@ -118,7 +117,7 @@ describe('Cache strategy', () => {
       strategy = createCacheStrategy();
     });
 
-    it('rejects if not given a context', (done) => {
+    it('rejects if not given a context and no loaded context', (done) => {
       strategy.getContext()
         .then(() => done('did not reject'))
         .catch(() => done());
@@ -134,6 +133,16 @@ describe('Cache strategy', () => {
           expect(resolvedContext).to.equal(context);
           done();
         }).catch(done);
+    });
+
+    it('resolves to context in factory if given', (done) => {
+      const givenContext = createContext({siteMap});
+      const loadedStrategy = createCacheStrategy(givenContext);
+
+      loadedStrategy.getContext().then((resolvedContext) => {
+        expect(resolvedContext).to.equal(givenContext);
+        done();
+      }).catch(done);
     });
   });
 });

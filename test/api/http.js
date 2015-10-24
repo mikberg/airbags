@@ -52,13 +52,13 @@ describe('Http strategy', () => {
     });
 
     it('rejects if not given a string `nakedPath`', (done) => {
-      strategy.getPageData(context)
+      strategy.getPageData()
         .then(() => done('did not reject'))
         .catch(() => done());
     });
 
     it('calls nakedPath with .json extension', (done) => {
-      strategy.getPageData(context, nakedPath)
+      strategy.getPageData(nakedPath)
         .then(() => {
           nakedPathEndpoint.isDone();
           done();
@@ -67,7 +67,7 @@ describe('Http strategy', () => {
     });
 
     it('returns correct JSON data', (done) => {
-      strategy.getPageData(context, nakedPath)
+      strategy.getPageData(nakedPath)
         .then((data) => {
           expect(data).to.deep.equal(exampleResponse);
           done();
@@ -76,24 +76,24 @@ describe('Http strategy', () => {
     });
 
     it('rejects if there is an HTTP error', (done) => {
-      strategy.getPageData(context, '/failpath')
+      strategy.getPageData('/failpath')
         .catch(() => done());
     });
   });
 
   describe('getPageHtml', () => {
     it('returns a promise', () => {
-      expect(strategy.getPageHtml(context).then).to.be.a('function');
+      expect(strategy.getPageHtml().then).to.be.a('function');
     });
 
     it('rejects if not given a string `nakedPath`', (done) => {
-      strategy.getPageHtml(context)
+      strategy.getPageHtml()
         .then(() => done('did not throw'))
         .catch(() => done());
     });
 
     it('calls nakedPath with .json extension', (done) => {
-      strategy.getPageHtml(context, nakedPath)
+      strategy.getPageHtml(nakedPath)
         .then(() => {
           nakedPathEndpoint.isDone();
           done();
@@ -101,7 +101,7 @@ describe('Http strategy', () => {
     });
 
     it('returns HTML from the JSON data', (done) => {
-      strategy.getPageHtml(context, nakedPath)
+      strategy.getPageHtml(nakedPath)
         .then((html) => {
           expect(html).to.equal('<p>I am HTML</p>');
           done();
@@ -109,7 +109,7 @@ describe('Http strategy', () => {
     });
 
     it('rejects if there is an HTTP error', (done) => {
-      strategy.getPageHtml(context, '/failpath')
+      strategy.getPageHtml('/failpath')
         .catch(() => done());
     });
   });
@@ -120,7 +120,7 @@ describe('Http strategy', () => {
     });
 
     it('requests context from baseUrl/context.json', (done) => {
-      strategy.getContext(context)
+      strategy.getContext()
         .then(() => {
           contextEndpoint.isDone();
           done();
@@ -129,7 +129,7 @@ describe('Http strategy', () => {
     });
 
     it('resolves correct data', (done) => {
-      strategy.getContext(context)
+      strategy.getContext()
         .then((resolvedContext) => {
           expect(resolvedContext.siteMap).to.deep.equal(context.getSiteMap());
           done();
