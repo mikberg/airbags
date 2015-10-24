@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import menuMiddleware from '../../src/middleware/menuMiddleware';
+import menu from '../../src/middleware/menuMiddleware';
 
 const siteMap = {
   'in/menu': {
@@ -13,50 +13,41 @@ const siteMap = {
   },
 };
 
+const mockApi = {
+  getContext() {
+    return new Promise((resolve) => resolve({siteMap}));
+  },
+};
+
 describe('menuMiddleware', () => {
-  it('adds `menu` chapter to state', () => {
-    const state = menuMiddleware({ siteMap: {} });
-    expect(state.menu).to.deep.equal([]);
-  });
-
-  it('adds `[title->nakedPath]` array for pages with `inMenu=true` and title set', () => {
-    const {menu} = menuMiddleware({siteMap});
-    expect(menu).to.contain({'InMenu': 'in/menu'});
-  });
-
-  it('can handle pages without meta', () => {
-    const dumbSiteMap = {'dumb': {}};
-    expect(() => {
-      menuMiddleware({siteMap: dumbSiteMap});
-    }).not.to.throw();
-  });
-
-  describe('contextAugmenter', () => {
-    const state = menuMiddleware({ siteMap: {} });
-    const context = {};
-    menuMiddleware.contextAugmenter.call(context, state);
-
-    it('adds `getMenu`', () => {
-      expect(context.getMenu).to.be.a('function');
-    });
-
-    it('returns menu from `getMenu`', () => {
-      expect(context.getMenu()).to.be.an('array');
-    });
-  });
-
   describe('api', () => {
-    it('returns menu', (done) => {
-      const mockApi = {
+    it('adds `getMenu` function to API', () => {
+      menu.call(mockApi);
+      expect(mockApi.getMenu).to.be.a('function');
+    });
+
+    it('returns `[title->nakedPath]` array for pages with `inMenu=true and title set`', (done) => {
+      menu.call(mockApi);
+      mockApi.getMenu()
+        .then((_menu) => {
+          expect(_menu).to.contain({'InMenu': 'in/menu'});
+          done();
+        })
+        .catch(done);
+    });
+
+    it('can handle pages without meta', (done) => {
+      const dumbSiteMap = {'dumb': {}};
+      const dumbApi = {
         getContext() {
-          return new Promise((resolve) => resolve({siteMap}));
+          return new Promise((resolve) => resolve({siteMap: dumbSiteMap}));
         },
       };
-      menuMiddleware.api.call(mockApi);
 
-      mockApi.getMenu()
-        .then((menu) => {
-          expect(menu).to.contain({'InMenu': 'in/menu'});
+      menu.call(dumbApi);
+      dumbApi.getMenu()
+        .then((_menu) => {
+          expect(_menu).to.be.an('array');
           done();
         })
         .catch(done);
