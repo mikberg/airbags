@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import menu from '../../src/middleware/menuMiddleware';
+import menu from '../../src/middleware/menu';
 
 const siteMap = {
   'in/menu': {
@@ -19,7 +19,7 @@ const mockApi = {
   },
 };
 
-describe('menuMiddleware', () => {
+describe('menu', () => {
   describe('api', () => {
     it('adds `getMenu` function to API', () => {
       menu.call(mockApi);
