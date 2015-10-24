@@ -2,7 +2,6 @@ import {expect} from 'chai';
 import {
   createContext,
   isContextOk,
-  applyMiddleware,
 } from '../../src/context';
 
 const addPageName = (state) => Object.assign(state,
@@ -36,16 +35,6 @@ describe('createContext', () => {
 
   it('returns a context containing `getConfiguration`', () => {
     expect(createContext().getConfiguration).to.be.a('function');
-  });
-
-  it('applies middleware to the state', () => {
-    const context = createContext(undefined, [addPageName]);
-    expect(context.getConfiguration().pageName).to.equal('CoolPage');
-  });
-
-  it('applies middleware context augmenters to the state', () => {
-    const context = createContext(undefined, [addPageName]);
-    expect(context.getPageName()).to.equal('CoolPage');
   });
 
   it('has sitemap readily available', () => {
@@ -88,35 +77,5 @@ describe('isContextOk', () => {
 
   it('returns true if given a plausible context', () => {
     expect(isContextOk(createContext())).to.equal(true);
-  });
-});
-
-describe('applyMiddleware', () => {
-  it('throws if not given a state', () => {
-    expect(() => {
-      applyMiddleware(2, []);
-    }).to.throw();
-  });
-
-  it('throws if not given an array of middleware', () => {
-    expect(() => {
-      applyMiddleware({});
-    }).to.throw();
-  });
-
-  it('runs the state through middleware', () => {
-    const state = applyMiddleware({}, [addPageName]);
-    expect(state.configuration.pageName).to.equal('CoolPage');
-  });
-
-  it('does not manipulate the state', () => {
-    const state = {};
-    expect(applyMiddleware(state, [addPageName])).not.to.equal(state);
-  });
-
-  it('returns a copy of the state if no middleware is given', () => {
-    const state = { a: 'b' };
-    expect(applyMiddleware(state, [])).to.deep.equal(state);
-    expect(applyMiddleware(state, [])).not.to.equal(state);
   });
 });
