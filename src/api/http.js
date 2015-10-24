@@ -30,13 +30,6 @@ function httpStrategyModel(baseUrl) {
     });
   };
 
-  this.getPageHtml = (nakedPath) => {
-    return this.getPageData(nakedPath)
-      .then(({data}) => {
-        return data.html;
-      });
-  };
-
   this.getContext = () => {
     const url = `${baseUrl}/context.json`;
     return fetch(url)

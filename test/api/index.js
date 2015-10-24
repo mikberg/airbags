@@ -69,47 +69,6 @@ describe('createApi', () => {
   });
 });
 
-describe('getPageHtml', () => {
-  it('warns that the method is deprecated', () => {
-    const api = createApi();
-    const spy = sinon.spy(console, 'warn');
-    api.getPageHtml('cool/page');
-    expect(spy.callCount).to.equal(1);
-  });
-
-  it('returns a promise', () => {
-    const api = createApi();
-    expect(api.getPageHtml('/cool/page').then).to.be.a('function');
-  });
-
-  it('calls strategies with `nakedPath`', (done) => {
-    const nakedPath = '/cool/page';
-    const strategy = new MockStrategy();
-    sinon.stub(strategy, 'getPageHtml')
-      .returns(new Promise((resolve) => resolve()));
-
-    const api = createApi([strategy]);
-    api.getPageHtml(nakedPath).then(() => {
-      expect(strategy.getPageHtml.calledWith(nakedPath)).to.equal(true);
-      done();
-    }).catch(done);
-  });
-
-  it('resolves to strategy\'s resolve', (done) => {
-    const html = 'hei';
-    const strategy = new MockStrategy();
-    sinon.stub(strategy, 'getPageHtml')
-      .returns(new Promise(resolve => resolve(html)));
-
-    const api = createApi([strategy]);
-    api.getPageHtml('/path')
-      .then((resolvedHtml) => {
-        expect(resolvedHtml).to.equal(html);
-        done();
-      }).catch(done);
-  });
-});
-
 describe('getPageData', () => {
   it('calls strategies with `nakedPath`', (done) => {
     const nakedPath = 'cool/page';
@@ -120,6 +79,20 @@ describe('getPageData', () => {
     const api = createApi([strategy]);
     api.getPageData(nakedPath).then(() => {
       expect(strategy.getPageData.calledWith(nakedPath)).to.equal(true);
+      done();
+    }).catch(done);
+  });
+
+  it('resolves to strategy\'s resolve', (done) => {
+    const nakedPath = 'cool/page';
+    const data = { hei: 'hopp' };
+    const strategy = new MockStrategy();
+    sinon.stub(strategy, 'getPageData')
+      .returns(new Promise((resolve) => resolve(data)));
+
+    const api = createApi([strategy]);
+    api.getPageData(nakedPath).then((returnedData) => {
+      expect(returnedData).to.deep.equal(data);
       done();
     }).catch(done);
   });

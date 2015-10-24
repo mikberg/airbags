@@ -26,16 +26,6 @@ function cacheStrategyModel(loadedContext) {
     });
   };
 
-  this.getPageHtml = (context, nakedPath) => {
-    return this.getPageData(context, nakedPath)
-      .then((data) => {
-        if (!data.html) {
-          throw new Error(`No HTML in data for ${nakedPath}`);
-        }
-        return data.html;
-      });
-  };
-
   this.getContext = (context) => {
     return new Promise((resolve, reject) => {
       if (context && !isContextOk(context)) {

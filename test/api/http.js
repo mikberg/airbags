@@ -81,39 +81,6 @@ describe('Http strategy', () => {
     });
   });
 
-  describe('getPageHtml', () => {
-    it('returns a promise', () => {
-      expect(strategy.getPageHtml().then).to.be.a('function');
-    });
-
-    it('rejects if not given a string `nakedPath`', (done) => {
-      strategy.getPageHtml()
-        .then(() => done('did not throw'))
-        .catch(() => done());
-    });
-
-    it('calls nakedPath with .json extension', (done) => {
-      strategy.getPageHtml(nakedPath)
-        .then(() => {
-          nakedPathEndpoint.isDone();
-          done();
-        }).catch(done);
-    });
-
-    it('returns HTML from the JSON data', (done) => {
-      strategy.getPageHtml(nakedPath)
-        .then((html) => {
-          expect(html).to.equal('<p>I am HTML</p>');
-          done();
-        }).catch(done);
-    });
-
-    it('rejects if there is an HTTP error', (done) => {
-      strategy.getPageHtml('/failpath')
-        .catch(() => done());
-    });
-  });
-
   describe('getContext', () => {
     it('returns a promise', () => {
       expect(strategy.getContext()).to.be.instanceof(Promise);

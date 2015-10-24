@@ -32,12 +32,6 @@ function apiModel(context, strategies) {
     return applyToStrategies(strategies, 'getPageData', [nakedPath]);
   };
 
-  this.getPageHtml = (nakedPath) => {
-    /* eslint no-console:0 */
-    console.warn(`api.getPageHtml is deprecated, please use getPageData instead`);
-    return applyToStrategies(strategies, 'getPageHtml', [nakedPath]);
-  };
-
   this.getContext = () => {
     return applyToStrategies(strategies, 'getContext', []);
   };

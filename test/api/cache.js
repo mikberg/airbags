@@ -62,48 +62,7 @@ describe('Cache strategy', () => {
     });
 
     it('rejects if given unknown path', (done) => {
-      strategy.getPageHtml('/unknown/url').catch(() => {
-        done();
-      });
-    });
-  });
-
-  describe('getPageHtml', () => {
-    let context;
-    let strategy;
-    beforeEach(() => {
-      context = createContext({siteMap});
-      strategy = createCacheStrategy();
-      sinon.stub(strategy, 'getContext')
-        .returns(new Promise((resolve) => resolve(context)));
-    });
-
-    it('returns a promise', () => {
-      expect(strategy.getPageHtml().then).to.be.a('function');
-    });
-
-    it('rejects if not given a string `nakedPath`', (done) => {
-      strategy.getPageHtml()
-        .then(() => done('did not throw'))
-        .catch(() => done());
-    });
-
-    it('resolves to path\'s html', (done) => {
-      strategy.getPageHtml('/naked/path')
-        .then((html) => {
-          expect(html).to.equal(context.getSiteMap()['/naked/path'].data.html);
-          done();
-        }).catch(done);
-    });
-
-    it('rejects if given unknown path', (done) => {
-      strategy.getPageHtml('/unknown/url').catch(() => {
-        done();
-      });
-    });
-
-    it('rejects if given path with no html in context', (done) => {
-      strategy.getPageHtml('/path/without/html').catch(() => {
+      strategy.getPageData('/unknown/url').catch(() => {
         done();
       });
     });
