@@ -43,7 +43,7 @@ describe('createApi', () => {
     };
 
     const someContext = createContext({siteMap});
-    const api = createApi(someContext, [createCacheStrategy()], [backwardsMiddleware]);
+    const api = createApi([createCacheStrategy(someContext)], [backwardsMiddleware]);
 
     api.getBackwardsHtml('some/path')
       .then((backwards) => {
@@ -82,7 +82,7 @@ describe('getPageHtml', () => {
     expect(api.getPageHtml('/cool/page').then).to.be.a('function');
   });
 
-  it('calls strategies with context and `nakedPath`', (done) => {
+  it('calls strategies with `nakedPath`', (done) => {
     const nakedPath = '/cool/page';
     const strategy = new MockStrategy();
     sinon.stub(strategy, 'getPageHtml')
@@ -90,7 +90,7 @@ describe('getPageHtml', () => {
 
     const api = createApi([strategy]);
     api.getPageHtml(nakedPath).then(() => {
-      expect(strategy.getPageHtml.calledWith(undefined, nakedPath)).to.equal(true);
+      expect(strategy.getPageHtml.calledWith(nakedPath)).to.equal(true);
       done();
     }).catch(done);
   });
@@ -111,29 +111,29 @@ describe('getPageHtml', () => {
 });
 
 describe('getPageData', () => {
-  it('calls strategies with context and `nakedPath`', (done) => {
+  it('calls strategies with `nakedPath`', (done) => {
     const nakedPath = 'cool/page';
     const strategy = new MockStrategy();
     sinon.stub(strategy, 'getPageData')
       .returns(new Promise((resolve) => resolve()));
 
-    const api = createApi(context, [strategy]);
+    const api = createApi([strategy]);
     api.getPageData(nakedPath).then(() => {
-      expect(strategy.getPageData.calledWith(context, nakedPath)).to.equal(true);
+      expect(strategy.getPageData.calledWith(nakedPath)).to.equal(true);
       done();
     }).catch(done);
   });
 });
 
 describe('getContext', () => {
-  it('calls strategies with context', (done) => {
+  it('calls strategies', (done) => {
     const strategy = new MockStrategy();
     sinon.stub(strategy, 'getContext')
       .returns(new Promise((resolve) => resolve()));
 
     const api = createApi(context, [strategy]);
     api.getContext().then(() => {
-      expect(strategy.getContext.calledWith(context)).to.equal(true);
+      expect(strategy.getContext.called).to.equal(true);
       done();
     }).catch(done);
   });

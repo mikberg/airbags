@@ -29,17 +29,17 @@ export function applyToStrategies(strategies, methodName, args) {
 
 function apiModel(context, strategies) {
   this.getPageData = (nakedPath) => {
-    return applyToStrategies(strategies, 'getPageData', [context, nakedPath]);
+    return applyToStrategies(strategies, 'getPageData', [nakedPath]);
   };
 
   this.getPageHtml = (nakedPath) => {
     /* eslint no-console:0 */
     console.warn(`api.getPageHtml is deprecated, please use getPageData instead`);
-    return applyToStrategies(strategies, 'getPageHtml', [context, nakedPath]);
+    return applyToStrategies(strategies, 'getPageHtml', [nakedPath]);
   };
 
   this.getContext = () => {
-    return applyToStrategies(strategies, 'getContext', [context]);
+    return applyToStrategies(strategies, 'getContext', []);
   };
 }
 
