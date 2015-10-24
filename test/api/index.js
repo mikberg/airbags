@@ -17,19 +17,13 @@ class MockStrategy {
 const context = createContext();
 
 describe('createApi', () => {
-  it('throws if not given a context', () => {
-    expect(() => {
-      createApi('context', []);
-    }).to.throw();
-  });
-
   it('throws if strategy is not a strategy', () => {
     expect(() => {
       createApi(context, ['a']);
     }).to.throw();
   });
 
-  it('attaches middleware api', (done) => {
+  it('attaches middleware apis', (done) => {
     const siteMap = {
       'some/path': {
         nakedPath: 'some/path',
@@ -48,17 +42,6 @@ describe('createApi', () => {
       };
     };
 
-    // const backwardsMiddleware = {
-    //   api: function backwardsApi() {
-    //     this.getBackwardsHtml = (nakedPath) => {
-    //       return this.getPageData(nakedPath)
-    //         .then((data) => {
-    //           return data.html.split('').reverse().join('');
-    //         });
-    //     };
-    //   },
-    // };
-
     const someContext = createContext({siteMap});
     const api = createApi(someContext, [createCacheStrategy()], [backwardsMiddleware]);
 
@@ -69,18 +52,33 @@ describe('createApi', () => {
       })
       .catch(done);
   });
+
+  it('can work without being given a context', (done) => {
+    const coolStrategy = {
+      getContext() {
+        return new Promise((resolve) => resolve({ siteMap: {}}));
+      },
+    };
+
+    createApi([coolStrategy]).getContext()
+      .then((cont) => {
+        expect(cont.siteMap).to.be.an('object');
+        done();
+      })
+      .catch(done);
+  });
 });
 
 describe('getPageHtml', () => {
   it('warns that the method is deprecated', () => {
-    const api = createApi(context);
+    const api = createApi();
     const spy = sinon.spy(console, 'warn');
     api.getPageHtml('cool/page');
     expect(spy.callCount).to.equal(1);
   });
 
   it('returns a promise', () => {
-    const api = createApi(context);
+    const api = createApi();
     expect(api.getPageHtml('/cool/page').then).to.be.a('function');
   });
 
@@ -90,9 +88,9 @@ describe('getPageHtml', () => {
     sinon.stub(strategy, 'getPageHtml')
       .returns(new Promise((resolve) => resolve()));
 
-    const api = createApi(context, [strategy]);
+    const api = createApi([strategy]);
     api.getPageHtml(nakedPath).then(() => {
-      expect(strategy.getPageHtml.calledWith(context, nakedPath)).to.equal(true);
+      expect(strategy.getPageHtml.calledWith(undefined, nakedPath)).to.equal(true);
       done();
     }).catch(done);
   });
@@ -103,7 +101,7 @@ describe('getPageHtml', () => {
     sinon.stub(strategy, 'getPageHtml')
       .returns(new Promise(resolve => resolve(html)));
 
-    const api = createApi(context, [strategy]);
+    const api = createApi([strategy]);
     api.getPageHtml('/path')
       .then((resolvedHtml) => {
         expect(resolvedHtml).to.equal(html);

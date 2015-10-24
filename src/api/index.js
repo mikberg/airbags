@@ -47,13 +47,26 @@ export function isStrategyOk(strategy) {
   return typeof strategy === 'object';
 }
 
-export default function createApi(context, strategies = [], middleware = []) {
-  if (strategies.some((strategy) => !isStrategyOk(strategy))) {
-    throw new Error(`createApi expected array of strategies, got ${strategies}`);
+export default function createApi(_context, _strategies = [], _middleware = []) {
+  let context;
+  let strategies;
+  let middleware;
+
+  if (Array.isArray(_context)) {
+    strategies = _context;
+    middleware = _strategies;
+  } else {
+    context = _context;
+    strategies = _strategies;
+    middleware = _middleware;
   }
 
-  if (!isContextOk(context)) {
+  if (typeof context === 'object' && !isContextOk(context)) {
     throw new Error(`createApi expected context, got ${context}`);
+  }
+
+  if (strategies.some((strategy) => !isStrategyOk(strategy))) {
+    throw new Error(`createApi expected array of strategies, got ${strategies}`);
   }
 
   const api = {};
