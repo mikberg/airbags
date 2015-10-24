@@ -68,6 +68,7 @@ Provide low-level components and wrappers to display content.
 
 ## Todo
 
+ - [x] Add ability to create cache strategy with context
  - [ ] Deprecate initiating API with context in favor of creating cache strategy with context?
  - [ ] Deprecate calling strategy methods with context as first argument
  - [ ] Deprecate collection with extraction of HTML in favor of metadata-only?

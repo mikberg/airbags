@@ -8,7 +8,9 @@ function getPageFromContext(context, nakedPath) {
   return context.getSiteMap()[nakedPath];
 }
 
-function cacheStrategyModel() {
+function cacheStrategyModel(loadedContext) {
+  this.context = loadedContext;
+
   this.getPageData = (context, nakedPath) => {
     return new Promise((resolve, reject) => {
       if (!isContextOk(context)) {
@@ -40,8 +42,16 @@ function cacheStrategyModel() {
 
   this.getContext = (context) => {
     return new Promise((resolve, reject) => {
-      if (!isContextOk(context)) {
+      if (context && !isContextOk(context)) {
         return reject(`Expected a context, got ${context}`);
+      }
+
+      if (!context && this.context) {
+        return resolve(this.context);
+      }
+
+      if (!context && !this.context) {
+        return reject(new Error(`No context available`));
       }
 
       return resolve(context);
@@ -49,8 +59,13 @@ function cacheStrategyModel() {
   };
 }
 
-export default function createCacheStrategy() {
+export default function createCacheStrategy(context) {
   const strategy = {};
-  cacheStrategyModel.call(strategy);
+
+  if (typeof context === 'object' && !isContextOk(context)) {
+    throw new Error(`Expected argument to be a context or undefined, got ${context}`);
+  }
+
+  cacheStrategyModel.call(strategy, context);
   return strategy;
 }

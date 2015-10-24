@@ -24,6 +24,12 @@ describe('Cache strategy', () => {
         createCacheStrategy();
       }).not.to.throw();
     });
+
+    it('throws if given an object which is not a context', () => {
+      expect(() => {
+        createCacheStrategy({});
+      }).to.throw();
+    });
   });
 
   describe('getPageData', () => {
@@ -118,7 +124,7 @@ describe('Cache strategy', () => {
       strategy = createCacheStrategy();
     });
 
-    it('rejects if not given a context', (done) => {
+    it('rejects if not given a context and no loaded context', (done) => {
       strategy.getContext()
         .then(() => done('did not reject'))
         .catch(() => done());
@@ -134,6 +140,16 @@ describe('Cache strategy', () => {
           expect(resolvedContext).to.equal(context);
           done();
         }).catch(done);
+    });
+
+    it('resolves to context in factory if given', (done) => {
+      const givenContext = createContext({siteMap});
+      const loadedStrategy = createCacheStrategy(givenContext);
+
+      loadedStrategy.getContext().then((resolvedContext) => {
+        expect(resolvedContext).to.equal(givenContext);
+        done();
+      }).catch(done);
     });
   });
 });
