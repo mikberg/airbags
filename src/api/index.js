@@ -60,9 +60,8 @@ export default function createApi(context, strategies = [], middleware = []) {
   apiModel.call(api, context, strategies);
 
   middleware
-    .filter((mid) => !!mid.api)
     .forEach((mid) => {
-      mid.api.call(api);
+      mid.call(api);
     });
 
   return api;

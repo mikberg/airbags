@@ -40,16 +40,24 @@ describe('createApi', () => {
       },
     };
 
-    const backwardsMiddleware = {
-      api: function backwardsApi() {
-        this.getBackwardsHtml = (nakedPath) => {
-          return this.getPageData(nakedPath)
-            .then((data) => {
-              return data.html.split('').reverse().join('');
-            });
-        };
-      },
+    const backwardsMiddleware = function backwards() {
+      this.getBackwardsHtml = (nakedPath) => {
+        return this.getPageData(nakedPath).then((data) => {
+          return data.html.split('').reverse().join('');
+        });
+      };
     };
+
+    // const backwardsMiddleware = {
+    //   api: function backwardsApi() {
+    //     this.getBackwardsHtml = (nakedPath) => {
+    //       return this.getPageData(nakedPath)
+    //         .then((data) => {
+    //           return data.html.split('').reverse().join('');
+    //         });
+    //     };
+    //   },
+    // };
 
     const someContext = createContext({siteMap});
     const api = createApi(someContext, [createCacheStrategy()], [backwardsMiddleware]);
