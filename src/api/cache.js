@@ -11,22 +11,18 @@ function getPageFromContext(context, nakedPath) {
 function cacheStrategyModel(loadedContext) {
   this.context = loadedContext;
 
-  this.getPageData = (context, nakedPath) => {
-    return new Promise((resolve, reject) => {
-      if (!isContextOk(context)) {
-        return reject(`Expected a context, got ${context}`);
-      }
-
+  this.getPageData = (nakedPath) => {
+    return this.getContext().then((context) => {
       if (!isPageInContext(context, nakedPath)) {
-        return reject(`Path ${nakedPath} is not in context`);
+        throw new Error(`Path ${nakedPath} is not in context`);
       }
 
       const page = getPageFromContext(context, nakedPath);
       if (page && page.data) {
-        return resolve(page.data);
+        return page.data;
       }
 
-      return reject(`Path ${nakedPath} does not have data in context`);
+      throw new Error(`Path ${nakedPath} does not have data in context`);
     });
   };
 
