@@ -6,16 +6,16 @@ export default class App extends React.Component {
   static propTypes = {
     children: React.PropTypes.element,
     menu: React.PropTypes.array,
-    configuration: React.PropTypes.object,
+    config: React.PropTypes.object,
   }
 
   render() {
     const {menu} = this.props;
-    const {configuration} = this.props;
+    const {config} = this.props;
 
     return (
       <div>
-        <h1>{configuration.siteName}</h1>
+        <h1>{config.siteName}</h1>
         <Menu menu={menu} />
         {this.props.children}
       </div>
@@ -28,7 +28,7 @@ export default Transmit.createContainer(App, {
     menu() {
       return global.api.getMenu();
     },
-    configuration() {
+    config() {
       return global.api.getContext().then((context) => {
         return context.configuration;
       });

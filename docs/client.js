@@ -3,20 +3,21 @@ import Transmit from 'react-transmit';
 import routes from './routes';
 import {createHistory} from 'history';
 import {createContext} from '../src/context';
-import menuMiddleware from '../src/middleware/menuMiddleware';
+import menu from '../src/middleware/menu';
+import createConfig from '../src/middleware/config';
 import createApi from '../src/api';
 import createHttpStrategy from '../src/api/http';
 import createCacheStrategy from '../src/api/cache';
 
 const context = createContext(global.contextData);
 global.api = createApi(
-  context,
   [
-    createCacheStrategy(),
+    createCacheStrategy(context),
     createHttpStrategy('http://localhost:8080'),
   ],
   [
-    menuMiddleware,
+    menu,
+    createConfig(),
   ]
 );
 

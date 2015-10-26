@@ -3,7 +3,8 @@ import vinylFs from 'vinyl-fs';
 import collect from '../src/collect';
 import markdownExtractor from '../src/extractors/markdown';
 import {createContext} from '../src/context/';
-import menuMiddleware from '../src/middleware/menuMiddleware';
+import menu from '../src/middleware/menu';
+import createConfig from '../src/middleware/config';
 import renderJson from '../src/render/json';
 import renderPath from './renderPath';
 import {createReactRenderer} from '../src/render/react';
@@ -12,7 +13,10 @@ import createApi from '../src/api';
 import createCacheStrategy from '../src/api/cache';
 
 const outFolder = './build/';
-const middleware = [menuMiddleware];
+const middleware = [
+  menu,
+  createConfig({ siteName: 'Airbags Docs'}),
+];
 
 collect(vinylFs.src(['./pages/*.md'], { base: process.cwd() }), markdownExtractor).then((siteMap) => {
   const context = createContext({
@@ -34,9 +38,8 @@ collect(vinylFs.src(['./pages/*.md'], { base: process.cwd() }), markdownExtracto
   }, middleware);
 
   global.api = createApi(
-    context,
-    [createCacheStrategy()],
-    [menuMiddleware]
+    [createCacheStrategy(context)],
+    middleware
   );
 
   renderJson(context)
