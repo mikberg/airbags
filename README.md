@@ -74,3 +74,8 @@ Provide low-level components and wrappers to display content.
  - [ ] Deprecate collection with extraction of HTML in favor of metadata-only?
    - Think about this. We need the metadata. Could lead to only splitting the same functionality.
  - [x] Remove `getPageHtml` from API and strategies
+ - [ ] Find out + fix why config middleware isn't working
+ - [ ] Remove legacy crap from context
+ - [ ] Finalize how middleware can append to context
+ - [ ] Use API to render JSON
+ - [ ] Use common API for client+server in its own module
