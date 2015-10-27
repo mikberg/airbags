@@ -2,6 +2,8 @@ import {expect} from 'chai';
 import sinon from 'sinon';
 import {createReactRenderer} from '../../src/render/react';
 import {createContext} from '../../src/context';
+import createApi from '../../src/api';
+import createCacheStrategy from '../../src/api/cache';
 import {Readable} from 'stream';
 import File from 'vinyl';
 
@@ -17,6 +19,7 @@ const fileContext = createContext({
     },
   },
 });
+const api = createApi([createCacheStrategy(fileContext)]);
 
 const resolvingPromise = new Promise((resolve) => resolve('file contents'));
 const rejectingPromise = new Promise((resolve, reject) => reject(new Error('error here')));
@@ -34,7 +37,7 @@ describe('createReactRenderer', () => {
 });
 
 describe('renderer', () => {
-  it('throws if not given a context', () => {
+  it('throws if not given an api', () => {
     const renderer = createReactRenderer(() => {});
     expect(() => {
       renderer();
@@ -43,12 +46,12 @@ describe('renderer', () => {
 
   it('returns a stream', () => {
     const renderer = createReactRenderer(() => {});
-    expect(renderer(fileContext)).to.be.instanceof(Readable);
+    expect(renderer(api)).to.be.instanceof(Readable);
   });
 
   it('emits vinyl files', (done) => {
     const renderer = createReactRenderer(sinon.stub().returns(resolvingPromise));
-    const stream = renderer(fileContext);
+    const stream = renderer(api);
     let vinylFileCounter = 0;
 
     stream.on('data', (file) => {
@@ -65,7 +68,7 @@ describe('renderer', () => {
 
   it('emits files with contents from `renderPath`', (done) => {
     const renderer = createReactRenderer(sinon.stub().returns(resolvingPromise));
-    const stream = renderer(fileContext);
+    const stream = renderer(api);
 
     stream.on('data', (file) => {
       expect(file.contents.toString()).to.equal('file contents');
@@ -78,7 +81,7 @@ describe('renderer', () => {
 
   it('emits files with path from `nakedPath`', (done) => {
     const renderer = createReactRenderer(sinon.stub().returns(resolvingPromise));
-    const stream = renderer(fileContext);
+    const stream = renderer(api);
 
     stream.on('data', (file) => {
       expect(file.path).to.equal('test/file.html');
@@ -91,7 +94,7 @@ describe('renderer', () => {
 
   it('emits error if `renderPath` rejects', (done) => {
     const renderer = createReactRenderer(sinon.stub().returns(rejectingPromise));
-    const stream = renderer(fileContext);
+    const stream = renderer(api);
 
     stream.on('error', () => {
       done();
@@ -103,7 +106,7 @@ describe('renderer', () => {
   it('calls `renderPath` nakedPath', (done) => {
     const renderPath = sinon.stub().returns(resolvingPromise);
     const renderer = createReactRenderer(renderPath);
-    const stream = renderer(fileContext);
+    const stream = renderer(api);
 
     stream.on('data', () => {});
     stream.on('end', () => {
@@ -114,7 +117,7 @@ describe('renderer', () => {
 
   it('emits error if `renderPath` doesn\'t return promise', (done) => {
     const renderer = createReactRenderer(() => {});
-    const stream = renderer(fileContext);
+    const stream = renderer(api);
 
     stream.on('data', () => {});
     stream.on('error', () => {
@@ -127,7 +130,7 @@ describe('renderer', () => {
       resolve(42);
     }));
     const renderer = createReactRenderer(stub);
-    const stream = renderer(fileContext);
+    const stream = renderer(api);
 
     stream.on('data', () => {});
     stream.on('error', () => {

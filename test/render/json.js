@@ -6,7 +6,6 @@ import createCacheStrategy from '../../src/api/cache';
 import {Readable} from 'stream';
 import File from 'vinyl';
 
-// const context = createContext();
 const fileContext = createContext({
   siteMap: {
     'test/file': {

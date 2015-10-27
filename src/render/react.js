@@ -1,41 +1,45 @@
-import {isContextOk} from '../context';
 import File from 'vinyl';
 import {Readable} from 'stream';
 
-function rendererModel(renderPath, context) {
-  const nakedPaths = Object.keys(context.getSiteMap());
+function rendererModel(renderPath, api) {
+  const nakedPathsPromise = api.getContext()
+    .then(context => Object.keys(context.getSiteMap()));
+
   let index = 0;
 
   this._read = () => {
     let nakedPath;
-    if (index === nakedPaths.length) {
-      return this.push(null);
-    }
-    nakedPath = nakedPaths[index];
 
-    const promise = renderPath(nakedPath);
+    nakedPathsPromise.then(nakedPaths => {
+      if (index === nakedPaths.length) {
+        return this.push(null);
+      }
+      nakedPath = nakedPaths[index];
 
-    if (!(promise instanceof Promise)) {
-      return this.emit('error', `Expected renderPath to return a promise, got ${promise}`);
-    }
+      const promise = renderPath(nakedPath);
 
-    promise
-      .then((contents) => {
-        if (typeof contents !== 'string') {
-          throw new Error(`Expected renderPath to resolve to a string, got ${contents}`);
-        }
+      if (!(promise instanceof Promise)) {
+        return this.emit('error', `Expected renderPath to return a promise, got ${promise}`);
+      }
 
-        const file = new File({
-          path: `${nakedPath}.html`,
-          contents: new Buffer(contents),
+      promise
+        .then((contents) => {
+          if (typeof contents !== 'string') {
+            throw new Error(`Expected renderPath to resolve to a string, got ${contents}`);
+          }
+
+          const file = new File({
+            path: `${nakedPath}.html`,
+            contents: new Buffer(contents),
+          });
+
+          this.push(file);
+          index++;
+        })
+        .catch((err) => {
+          this.emit('error', err);
         });
-
-        this.push(file);
-        index++;
-      })
-      .catch((err) => {
-        this.emit('error', err);
-      });
+    });
   };
 }
 
@@ -44,13 +48,13 @@ export function createReactRenderer(renderPath) {
     throw new Error(`createReactRenderer expected a render function, got ${renderPath}`);
   }
 
-  return (context) => {
-    if (!isContextOk(context)) {
-      throw new Error(`renderer expected a context, got ${context}`);
+  return (api) => {
+    if (!typeof api.getContext === 'function') {
+      throw new Error(`renderer expected an api, got ${api}`);
     }
 
     const renderer = new Readable({ objectMode: true });
-    rendererModel.call(renderer, renderPath, context);
+    rendererModel.call(renderer, renderPath, api);
     return renderer;
   };
 }
