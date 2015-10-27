@@ -79,3 +79,4 @@ Provide low-level components and wrappers to display content.
  - [x] Finalize how middleware can append to context
  - [x] Use API to render JSON
  - [ ] Use common API for client+server in its own module
+ - [ ] HTTP strategy caching
