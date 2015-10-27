@@ -4,20 +4,14 @@ export default function createConfig(configObject) {
   }
 
   function config() {
-    if (configObject) {
-      if (!this.context) {
-        this.context = {};
-      }
-
-      this.context.config = configObject;
-    }
-
     this.getConfig = () => {
       return this.getContext().then((context) => {
         return context.config;
       });
     };
   }
+
+  config.amendContext = () => configObject;
 
   return config;
 }

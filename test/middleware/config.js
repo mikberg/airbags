@@ -18,14 +18,18 @@ describe('config middleware', () => {
   });
 
   describe('config', () => {
-    it('attaches config from createConfig to api', () => {
-      const api = {};
+    it('attaches config from createConfig to api', (done) => {
       const configObject = { test: 'cool' };
-      const config = createConfig(configObject);
+      const context = createContext();
+      const api = createApi(
+        [ createCacheStrategy(context) ],
+        [ createConfig(configObject) ]
+      );
 
-      config.call(api);
-
-      expect(api.context.config).to.deep.equal(configObject);
+      api.getContext().then(cont => {
+        expect(cont.config).to.deep.equal(configObject);
+        done();
+      }).catch(done);
     });
 
     it('adds method `getConfig` to api', () => {
