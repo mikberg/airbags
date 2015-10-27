@@ -4,9 +4,6 @@ function contextModel(state) {
   Object.assign(this, state);
 
   this.getSiteMap = () => state.siteMap;
-
-  /* eslint no-use-before-define:0 */
-  this.copy = () => createContext(state);
 }
 
 /**

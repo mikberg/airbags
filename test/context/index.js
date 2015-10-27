@@ -40,14 +40,6 @@ describe('createContext', () => {
 });
 
 describe('contextModel', () => {
-  describe('copy', () => {
-    it('returns a copy of the context', () => {
-      const state = { siteMap: {}, configuration: { a: 'b' } };
-      const context = createContext(state);
-      expect(context.copy()).to.contain(state);
-    });
-  });
-
   describe('getSiteMap', () => {
     it('returns the state `siteMap`', () => {
       const state = { siteMap: {} };
