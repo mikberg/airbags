@@ -110,6 +110,52 @@ describe('getContext', () => {
       done();
     }).catch(done);
   });
+
+  it('passes context through middleware\'s prop `amendContext`', (done) => {
+    const amended = { prop: 'cool' };
+
+    function myCoolMiddleware() {}
+    myCoolMiddleware.amendContext = () => amended;
+
+    const strategy = new MockStrategy();
+    sinon.stub(strategy, 'getContext')
+      .returns(new Promise(resolve => resolve({})));
+
+    const api = createApi([strategy], [myCoolMiddleware]);
+    api.getContext().then(ctx => {
+      expect(ctx.myCoolMiddleware).to.deep.equal(amended);
+      done();
+    }).catch(done);
+  });
+
+  it('doesn\'t trip up if middleware doesn\'t provide `amendContext`', (done) => {
+    function myCoolMiddleware() {}
+
+    const strategy = new MockStrategy();
+    sinon.stub(strategy, 'getContext')
+      .returns(new Promise(resolve => resolve({})));
+
+    const api = createApi([strategy], [myCoolMiddleware]);
+    api.getContext()
+      .then(() => done())
+      .catch(done);
+  });
+
+  it('doesn\'t overwrite field if already in context', (done) => {
+    function myCoolMiddleware() {}
+    myCoolMiddleware.amendContext = () => ({ prop: 'not cool' });
+
+    const strategy = new MockStrategy();
+    sinon.stub(strategy, 'getContext').returns(
+      new Promise(resolve => resolve({ myCoolMiddleware: {prop: 'test'} }))
+    );
+
+    const api = createApi([strategy], [myCoolMiddleware]);
+    api.getContext().then(ctx => {
+      expect(ctx.myCoolMiddleware.prop).to.equal('test');
+      done();
+    }).catch(done);
+  });
 });
 
 describe('isStrategyOk', () => {

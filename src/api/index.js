@@ -25,13 +25,26 @@ export function applyToStrategies(strategies, methodName, args) {
   });
 }
 
-function apiModel(strategies) {
+function apiModel(strategies, middleware) {
   this.getPageData = (nakedPath) => {
     return applyToStrategies(strategies, 'getPageData', [nakedPath]);
   };
 
   this.getContext = () => {
-    return applyToStrategies(strategies, 'getContext', []);
+    return applyToStrategies(strategies, 'getContext', [])
+      .then(raw => {
+        middleware.forEach((mid) => {
+          if (!mid.name) {
+            throw new Error(`Middleware must be named functions`);
+          }
+
+          if (typeof mid.amendContext === 'function' && !raw[mid.name]) {
+            raw[mid.name] = mid.amendContext(raw);
+          }
+        });
+
+        return raw;
+      });
   };
 }
 
@@ -45,7 +58,7 @@ export default function createApi(strategies = [], middleware = []) {
   }
 
   const api = {};
-  apiModel.call(api, strategies);
+  apiModel.call(api, strategies, middleware);
 
   middleware
     .forEach((mid) => {
