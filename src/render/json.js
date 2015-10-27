@@ -1,19 +1,18 @@
-import {isContextOk} from '../context';
 import {Readable} from 'stream';
 import File from 'vinyl';
 
-export function fileFromContext(fileDesc) {
-  if (!fileDesc.nakedPath) {
-    throw new Error('fileFromContext needs supplied file to have `nakedPath`');
+export function fileFromData(nakedPath, data) {
+  if (!nakedPath) {
+    throw new Error(`fileFromData needs nakedPath, got ${nakedPath}`);
   }
 
-  if (typeof fileDesc.data !== 'object') {
-    throw new Error('fileFromContext needs supplied file to have `data`');
+  if (typeof data !== 'object') {
+    throw new Error(`fileFromData needs data, got ${data}`);
   }
 
   return new File({
-    path: `${fileDesc.nakedPath}.json`,
-    contents: new Buffer(JSON.stringify(fileDesc.data)),
+    path: `${nakedPath}.json`,
+    contents: new Buffer(JSON.stringify(data)),
   });
 }
 
@@ -27,19 +26,33 @@ export function contextFile(context) {
 /**
  * Creates a stream of JSON vinyl files from a context.
  */
-export default function renderJson(context) {
-  if (!isContextOk(context)) {
-    throw new Error(`renderJson expected a context, got ${context}`);
+export default function renderJson(api) {
+  if (!typeof api.getContext === 'function') {
+    throw new Error(`renderJson expected a api, got ${api}`);
   }
 
   const stream = new Readable({ objectMode: true });
+  stream._read = () => {};
 
-  Object.keys(context.getSiteMap()).forEach((nakedPath) => {
-    stream.push(fileFromContext(context.getSiteMap()[nakedPath]));
+  api.getContext().then(context => {
+    const promises = Object.keys(context.getSiteMap())
+      .map(nakedPath =>
+        api.getPageData(nakedPath).then(data => ({ nakedPath, data }))
+      );
+
+    Promise.all(promises)
+      .then(datas => {
+        datas.forEach(({nakedPath, data}) => {
+          stream.push(fileFromData(nakedPath, data));
+        });
+
+        stream.push(contextFile(context));
+        stream.push(null);
+      })
+      .catch((err) => {
+        stream.emit('error', err);
+      });
   });
 
-  stream.push(contextFile(context));
-
-  stream.push(null);
   return stream;
 }
