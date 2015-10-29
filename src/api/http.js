@@ -5,14 +5,21 @@ function getUrl(baseUrl, nakedPath) {
   return `${baseUrl}/${nakedPath}.json`;
 }
 
+const cache = {};
+
 function httpStrategyModel(baseUrl) {
   this.getPageData = (nakedPath) => {
-    return new Promise((resolve, reject) => {
+    const url = getUrl(baseUrl, nakedPath);
+
+    if (cache[url]) {
+      return cache[url];
+    }
+
+    cache[url] = new Promise((resolve, reject) => {
       if (typeof nakedPath !== 'string') {
         return reject(new Error(`getPageData expected a string nakedPath`));
       }
 
-      const url = getUrl(baseUrl, nakedPath);
       fetch(url)
         .then((response) => {
           if (response.status !== 200) {
@@ -28,14 +35,21 @@ function httpStrategyModel(baseUrl) {
           return reject(error);
         });
     });
+
+    return cache[url];
   };
 
   this.getContext = () => {
     const url = `${baseUrl}/context.json`;
-    return fetch(url)
+
+    if (!cache[url]) {
+      cache[url] = fetch(url)
       .then((response) => {
         return response.json();
       });
+    }
+
+    return cache[url];
   };
 }
 

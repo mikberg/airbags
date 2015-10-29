@@ -24,7 +24,7 @@ describe('Http strategy', () => {
   beforeEach(() => {
     context = createContext();
     strategy = createHttpStrategy(baseUrl);
-    scope = nock(baseUrl);
+    scope = nock(baseUrl).persist();
 
     nakedPathEndpoint = scope.get('/' + nakedPath + '.json')
       .reply(200, exampleResponse);
@@ -79,6 +79,13 @@ describe('Http strategy', () => {
       strategy.getPageData('/failpath')
         .catch(() => done());
     });
+
+    it('caches; fulfills all subsequent requests without re-fetching', () => {
+      const promise1 = strategy.getPageData(nakedPath);
+      const promise2 = strategy.getPageData(nakedPath);
+
+      expect(promise1).to.equal(promise2);
+    });
   });
 
   describe('getContext', () => {
@@ -102,6 +109,13 @@ describe('Http strategy', () => {
           done();
         })
         .catch(done);
+    });
+
+    it('caches; fulfills all subsequent requests without re-fetching', () => {
+      const promise1 = strategy.getContext();
+      const promise2 = strategy.getContext();
+
+      expect(promise1).to.equal(promise2);
     });
   });
 });
