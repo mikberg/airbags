@@ -29,9 +29,7 @@ export default Transmit.createContainer(App, {
       return global.api.getMenu();
     },
     config() {
-      return global.api.getContext().then((context) => {
-        return context.configuration;
-      });
+      return global.api.getConfig();
     },
   },
 });

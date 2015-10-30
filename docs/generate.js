@@ -32,9 +32,6 @@ collect(vinylFs.src(['./pages/*.md'], { base: process.cwd() }), markdownExtracto
         },
       },
     }),
-    configuration: {
-      siteName: 'Airbags Docs',
-    },
   }, middleware);
 
   global.api = createApi(
@@ -42,15 +39,15 @@ collect(vinylFs.src(['./pages/*.md'], { base: process.cwd() }), markdownExtracto
     middleware
   );
 
-  renderJson(context)
+  renderJson(global.api)
     .on('error', (err) => console.error(err))
     .on('data', (file) => console.log(`Rendered ${file.path} with JSON`))
     .on('end', () => console.log('JSON ended'))
     .pipe(vinylFs.dest(outFolder));
 
-  createReactRenderer(renderPath)(context)
+  createReactRenderer(renderPath)(global.api)
     .on('error', (err) => console.error(err))
     .on('data', (file) => console.log(`Rendered ${file.path} with React`))
     .on('end', () => console.log('React ended'))
     .pipe(vinylFs.dest(outFolder));
-});
+}).catch(reason => console.error(reason));
