@@ -1,7 +1,8 @@
-/* eslint no-proto:0 */
 import React from 'react';
 import Menu from './Menu';
+import ssrify from '../helpers/ssrify';
 
+@ssrify('App')
 export default class App extends React.Component {
   static propTypes = {
     children: React.PropTypes.element,
@@ -9,18 +10,16 @@ export default class App extends React.Component {
     config: React.PropTypes.object,
   }
 
-  componentWillMount() {
-    if (global.__SSR_DATA) {
-      const props = global.__SSR_DATA[this.__proto__.constructor.name];
-      this.setState(props);
-    }
+  componentDidMount() {
+    this.setStateFromApi(this.props);
   }
 
   componentWillReceiveProps(nextProps) {
-    App.fetchData(nextProps)
-      .then(data => {
-        this.setState(data);
-      });
+    this.setStateFromApi(nextProps);
+  }
+
+  setStateFromApi(props) {
+    App.fetchData(props).then(data => this.setState(data));
   }
 
   static fetchData() {

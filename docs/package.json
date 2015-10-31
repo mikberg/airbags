@@ -2,7 +2,7 @@
   "name": "docs",
   "main": "generate.js",
   "scripts": {
-    "generate": "babel-node --optional es7.classProperties generate.js",
+    "generate": "babel-node --stage 0 generate.js",
     "browserify": "./node_modules/browserify/bin/cmd.js -d -e client.js -t [ babelify --optional es7.classProperties ] --outfile build/bundle.js",
     "build": "npm run clean && npm run generate && npm run webpack",
     "webpack": "webpack",

@@ -16,14 +16,14 @@ export default function renderPath(nakedPath) {
         reject(new Error(`Unspecified error: did not receive renderProps when rendering ${nakedPath}->${location}`));
       }
 
-      const asyncComponents = {};
+      const ssrData = {};
       const dataComponents = renderProps.components
-        .filter(Component => Component && Component.fetchData);
+        .filter(Component => Component && Component.__SSR_ID);
 
       const dataPromise = Promise.all(
         dataComponents.map(Component =>
           Component.fetchData(renderProps).then(data => {
-            asyncComponents[Component.name] = data;
+            ssrData[Component.__SSR_ID] = data;
             return data;
           })
         )
@@ -32,8 +32,8 @@ export default function renderPath(nakedPath) {
       dataPromise.then(() => {
         const createElement = (Component, props) => {
           let finalProps;
-          if (asyncComponents[Component.name]) {
-            finalProps = Object.assign({}, props, asyncComponents[Component.name]);
+          if (ssrData[Component.__SSR_ID]) {
+            finalProps = Object.assign({}, props, ssrData[Component.__SSR_ID]);
           } else {
             finalProps = props;
           }
@@ -50,7 +50,7 @@ export default function renderPath(nakedPath) {
           </head>
           <body>
             <div id="react-root">${output}</div>
-            <script>var __SSR_DATA = ${JSON.stringify(asyncComponents)};</script>
+            <script>var __SSR_DATA = ${JSON.stringify(ssrData)};</script>
             <script src="/bundle.js"></script>
           </body>
         </html>

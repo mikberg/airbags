@@ -1,32 +1,18 @@
-/* eslint no-proto:0 */
 import React from 'react';
+import ssrify from '../helpers/ssrify';
 
+@ssrify('Page')
 export default class Page extends React.Component {
   static propTypes = {
     pageData: React.PropTypes.object,
   }
 
-  componentWillMount() {
-    if (global.__SSR_DATA) {
-      const props = global.__SSR_DATA[this.__proto__.constructor.name];
-      if (props) {
-        this.setState(props);
-      }
-    }
-  }
-
-  componentDidMount() {
-    Page.fetchData(this.props)
-      .then(data => {
-        this.setState(data);
-      });
-  }
-
   componentWillReceiveProps(nextProps) {
-    Page.fetchData(nextProps)
-      .then(data => {
-        this.setState(data);
-      });
+    this.setStateFromApi(nextProps);
+  }
+
+  setStateFromApi(props) {
+    this.constructor.fetchData(props).then(data => this.setState(data));
   }
 
   static fetchData(renderProps) {
