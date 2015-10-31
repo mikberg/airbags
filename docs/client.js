@@ -1,5 +1,6 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
 import {Router} from 'react-router';
-import Transmit from 'react-transmit';
 import routes from './routes';
 import {createHistory} from 'history';
 import {createContext} from '../src/context';
@@ -22,4 +23,4 @@ global.api = createApi(
 );
 
 const reactRoot = window.document.getElementById('react-root');
-Transmit.render(Router, {routes, history: createHistory()}, reactRoot);
+ReactDOM.render(<Router routes={routes} history={createHistory()}/>, reactRoot);
