@@ -1,5 +1,5 @@
+/* eslint no-proto:0 */
 import React from 'react';
-// import Transmit from 'react-transmit';
 import Menu from './Menu';
 
 export default class App extends React.Component {
@@ -12,8 +12,15 @@ export default class App extends React.Component {
   componentWillMount() {
     if (global.__SSR_DATA) {
       const props = global.__SSR_DATA[this.__proto__.constructor.name];
-      this.props = Object.assign({}, this.props, props);
+      this.setState(props);
     }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    App.fetchData(nextProps)
+      .then(data => {
+        this.setState(data);
+      });
   }
 
   static fetchData() {
@@ -26,8 +33,14 @@ export default class App extends React.Component {
   }
 
   render() {
-    const {menu} = this.props;
-    const {config} = this.props;
+    const {menu} = this.state || this.props;
+    const {config} = this.state || this.props;
+
+    if (!menu || !config) {
+      return (
+        <span>Loading ...</span>
+      );
+    }
 
     return (
       <div>

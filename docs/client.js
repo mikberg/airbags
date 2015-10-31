@@ -3,17 +3,17 @@ import ReactDOM from 'react-dom';
 import {Router} from 'react-router';
 import routes from './routes';
 import {createHistory} from 'history';
-import {createContext} from '../src/context';
+// import {createContext} from '../src/context';
 import menu from '../src/middleware/menu';
 import createConfig from '../src/middleware/config';
 import createApi from '../src/api';
 import createHttpStrategy from '../src/api/http';
-import createCacheStrategy from '../src/api/cache';
+// import createCacheStrategy from '../src/api/cache';
 
-const context = createContext(global.contextData);
+// const context = createContext(global.contextData);
 global.api = createApi(
   [
-    createCacheStrategy(context),
+    // createCacheStrategy(context),
     createHttpStrategy('http://localhost:8080'),
   ],
   [

@@ -1,3 +1,4 @@
+/* eslint no-proto:0 */
 import React from 'react';
 
 export default class Page extends React.Component {
@@ -8,8 +9,24 @@ export default class Page extends React.Component {
   componentWillMount() {
     if (global.__SSR_DATA) {
       const props = global.__SSR_DATA[this.__proto__.constructor.name];
-      this.props = Object.assign({}, this.props, props);
+      if (props) {
+        this.setState(props);
+      }
     }
+  }
+
+  componentDidMount() {
+    Page.fetchData(this.props)
+      .then(data => {
+        this.setState(data);
+      });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    Page.fetchData(nextProps)
+      .then(data => {
+        this.setState(data);
+      });
   }
 
   static fetchData(renderProps) {
@@ -18,7 +35,13 @@ export default class Page extends React.Component {
   }
 
   render() {
-    const {pageData} = this.props;
+    const { pageData } = this.state || this.props;
+
+    if (!pageData) {
+      return (
+        <span>Loading ...</span>
+      );
+    }
 
     return (
       <div>
