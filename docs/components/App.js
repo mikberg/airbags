@@ -5,8 +5,15 @@ import Menu from './Menu';
 export default class App extends React.Component {
   static propTypes = {
     children: React.PropTypes.element,
-    menu: React.PropTypes.array.isRequired,
-    config: React.PropTypes.object.isRequired,
+    menu: React.PropTypes.array,
+    config: React.PropTypes.object,
+  }
+
+  componentWillMount() {
+    if (global.__SSR_DATA) {
+      const props = global.__SSR_DATA[this.__proto__.constructor.name];
+      this.props = Object.assign({}, this.props, props);
+    }
   }
 
   static fetchData() {
@@ -24,9 +31,11 @@ export default class App extends React.Component {
 
     return (
       <div>
-        <h1>{config.siteName}</h1>
-        <Menu menu={menu} />
-        {this.props.children}
+        <div>
+          <h1>{config.siteName}</h1>
+          <Menu menu={menu} />
+          {this.props.children}
+        </div>
       </div>
     );
   }

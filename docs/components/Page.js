@@ -2,7 +2,14 @@ import React from 'react';
 
 export default class Page extends React.Component {
   static propTypes = {
-    pageData: React.PropTypes.object.isRequired,
+    pageData: React.PropTypes.object,
+  }
+
+  componentWillMount() {
+    if (global.__SSR_DATA) {
+      const props = global.__SSR_DATA[this.__proto__.constructor.name];
+      this.props = Object.assign({}, this.props, props);
+    }
   }
 
   static fetchData(renderProps) {

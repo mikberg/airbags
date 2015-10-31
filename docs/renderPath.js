@@ -50,6 +50,7 @@ export default function renderPath(nakedPath) {
           </head>
           <body>
             <div id="react-root">${output}</div>
+            <script>var __SSR_DATA = ${JSON.stringify(asyncComponents)};</script>
             <script src="/bundle.js"></script>
           </body>
         </html>
