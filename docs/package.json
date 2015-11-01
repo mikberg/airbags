@@ -2,8 +2,8 @@
   "name": "docs",
   "main": "generate.js",
   "scripts": {
-    "dev": "webpack -d",
-    "prod": "webpack -p",
+    "dev": "webpack -d --config webpack.develop.js",
+    "prod": "webpack -p --config webpack.production.js",
     "clean": "rm -rf build/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

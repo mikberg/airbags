@@ -1,7 +1,4 @@
 /* eslint no-var:0 vars-on-top:0 */
-require('babel/register')({
-  stage: 0,
-});
 var path = require('path');
 var AirbagsPlugin = require('./AirbagsPlugin');
 var airbagsApi = require('./airbagsApi');
@@ -10,7 +7,6 @@ var renderJson = require('../src/render/json').default;
 var createReactRenderer = require('../src/render/react').createReactRenderer;
 
 module.exports = {
-  devtool: 'eval',
   entry: [
     './client.js',
   ],
