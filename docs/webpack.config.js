@@ -5,6 +5,9 @@ require('babel/register')({
 var path = require('path');
 var AirbagsPlugin = require('./AirbagsPlugin');
 var airbagsApi = require('./airbagsApi');
+var renderPath = require('./renderPath');
+var renderJson = require('../src/render/json').default;
+var createReactRenderer = require('../src/render/react').createReactRenderer;
 
 module.exports = {
   devtool: 'eval',
@@ -33,6 +36,10 @@ module.exports = {
     new AirbagsPlugin({
       sourceFiles: ['./pages/*.md'],
       api: airbagsApi,
+      renderers: [
+        renderJson,
+        createReactRenderer(renderPath),
+      ],
       additionalPages: {
         'index': {
           meta: {

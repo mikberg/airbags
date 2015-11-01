@@ -3,18 +3,6 @@ import vinylFs from 'vinyl-fs';
 import collect from '../src/collect';
 import markdownExtractor from '../src/extractors/markdown';
 import { createContext } from '../src/context';
-import renderJson from '../src/render/json';
-import { createReactRenderer } from '../src/render/react';
-
-import renderPath from './renderPath';
-
-function generate(api) {
-  global.api = api;
-  return mergeStream(
-    renderJson(api),
-    createReactRenderer(renderPath)(api)
-  );
-}
 
 export default class AirbagsPlugin {
   constructor(options) {
@@ -54,6 +42,10 @@ export default class AirbagsPlugin {
     return options.api;
   }
 
+  getRenderers(options) {
+    return options.renderers || [];
+  }
+
   emit(compilation, done) {
     const source = this.getSource(this.options);
     const extractor = this.getExtractor(this.options);
@@ -63,8 +55,15 @@ export default class AirbagsPlugin {
       const context = createContext({ siteMap });
       const api = this.getApi(this.options)(context);
 
-      generate(api)
+      const renderers = this.getRenderers(this.options);
+
+      // @TODO do something about this!!!
+      global.api = api;
+
+      mergeStream(...renderers.map(renderer => renderer(api)))
       .on('data', (file) => {
+        // @TODO: Add file dependencies for re-rendering
+        // compilation.fileDependencies.push('/Users/miberg/work/mikaelbe/airbags/docs/pages/what-is-airbags.md');
         compilation.assets[file.path] = {
           source: () => file.contents.toString(),
           size: () => file.contents.toString().length,
