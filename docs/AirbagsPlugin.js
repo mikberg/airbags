@@ -19,20 +19,7 @@ const middleware = [
 ];
 
 function generate(siteMap) {
-  const context = createContext({
-    siteMap: Object.assign({}, siteMap, {
-      index: {
-        nakedPath: 'index',
-        originalPath: 'index.md',
-        data: {
-          meta: {
-            title: 'Home',
-            inMenu: true,
-          },
-        },
-      },
-    }),
-  }, middleware);
+  const context = createContext({ siteMap }, middleware);
 
   global.api = createApi(
     [createCacheStrategy(context)],
@@ -60,24 +47,44 @@ export default class AirbagsPlugin {
     return options.extractor || markdownExtractor;
   }
 
-  apply(compiler) {
+  getAdditionalPages(options) {
+    const additional = options.additionalPages || {};
+    const siteMap = {};
+
+    Object.keys(additional).forEach((nakedPath) => {
+      const data = additional[nakedPath];
+      siteMap[nakedPath] = {
+        nakedPath,
+        originalPath: `${nakedPath}.html`,
+        data,
+      };
+    });
+
+    return siteMap;
+  }
+
+  emit(compilation, done) {
     const source = this.getSource(this.options);
     const extractor = this.getExtractor(this.options);
 
-    compiler.plugin('emit', (compilation, done) => {
-      collect(source, extractor).then(siteMap => {
-        generate(siteMap)
-        .on('data', (file) => {
-          compilation.assets[file.path] = {
-            source: () => file.contents.toString(),
-            size: () => file.contents.toString().length,
-          };
-        })
-        .on('error', error => done(error))
-        .on('end', () => {
-          done();
-        });
+    collect(source, extractor).then(siteMap => {
+      Object.assign(siteMap, this.getAdditionalPages(this.options));
+
+      generate(siteMap)
+      .on('data', (file) => {
+        compilation.assets[file.path] = {
+          source: () => file.contents.toString(),
+          size: () => file.contents.toString().length,
+        };
+      })
+      .on('error', error => done(error))
+      .on('end', () => {
+        done();
       });
     });
+  }
+
+  apply(compiler) {
+    compiler.plugin('emit', this.emit.bind(this));
   }
 }

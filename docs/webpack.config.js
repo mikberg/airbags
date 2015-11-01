@@ -31,6 +31,14 @@ module.exports = {
   plugins: [
     new AirbagsPlugin({
       sourceFiles: ['./pages/*.md'],
+      additionalPages: {
+        'index': {
+          meta: {
+            title: 'Home',
+            inMenu: true,
+          },
+        },
+      },
     }),
   ],
 };
