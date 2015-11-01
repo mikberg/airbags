@@ -1,5 +1,9 @@
 /* eslint no-var:0 */
+require('babel/register')({
+  stage: 0,
+});
 var path = require('path');
+var AirbagsPlugin = require('./AirbagsPlugin');
 
 module.exports = {
   devtool: 'eval',
@@ -24,4 +28,9 @@ module.exports = {
   resolveLoader: {
     root: path.join(__dirname, 'node_modules'),
   },
+  plugins: [
+    new AirbagsPlugin({
+      sourceFiles: ['./pages/*.md'],
+    }),
+  ],
 };
