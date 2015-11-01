@@ -1,4 +1,5 @@
 import routes from './routes';
+import Html from './components/Html';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import {match, RoutingContext} from 'react-router';
@@ -41,22 +42,19 @@ export default function renderPath(nakedPath) {
           return React.createElement(Component, finalProps);
         };
 
-        const output = ReactDOM.renderToString(<RoutingContext {...renderProps} createElement={createElement} />);
-        const html = `
-        <!doctype html>
-        <html>
-          <head>
-            <title>Cool page</title>
-          </head>
-          <body>
-            <div id="react-root">${output}</div>
-            <script>var __SSR_DATA = ${JSON.stringify(ssrData)};</script>
-            <script src="/bundle.js"></script>
-          </body>
-        </html>
-        `;
+        const output = ReactDOM.renderToString(
+          <RoutingContext {...renderProps} createElement={createElement} />
+        );
 
-        resolve(html);
+        const html = ReactDOM.renderToStaticMarkup(
+          <Html>
+            <div id="react-root" dangerouslySetInnerHTML={{__html: output}}/>
+            <script dangerouslySetInnerHTML={{__html: `var __SSR_DATA = ${JSON.stringify(ssrData)};`}} />
+            <script src="/bundle.js" />
+          </Html>
+        );
+
+        resolve(`<!doctype html>${html}`);
       });
     });
   });
