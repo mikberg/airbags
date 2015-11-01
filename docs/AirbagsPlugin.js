@@ -18,33 +18,31 @@ const middleware = [
   createConfig({ siteName: 'Airbags Docs '}),
 ];
 
-function generate(src) {
-  return collect(src, markdownExtractor).then((siteMap) => {
-    const context = createContext({
-      siteMap: Object.assign({}, siteMap, {
-        index: {
-          nakedPath: 'index',
-          originalPath: 'index.md',
-          data: {
-            meta: {
-              title: 'Home',
-              inMenu: true,
-            },
+function generate(siteMap) {
+  const context = createContext({
+    siteMap: Object.assign({}, siteMap, {
+      index: {
+        nakedPath: 'index',
+        originalPath: 'index.md',
+        data: {
+          meta: {
+            title: 'Home',
+            inMenu: true,
           },
         },
-      }),
-    }, middleware);
+      },
+    }),
+  }, middleware);
 
-    global.api = createApi(
-      [createCacheStrategy(context)],
-      middleware
-    );
+  global.api = createApi(
+    [createCacheStrategy(context)],
+    middleware
+  );
 
-    return mergeStream(
-      renderJson(global.api),
-      createReactRenderer(renderPath)(global.api)
-    );
-  });
+  return mergeStream(
+    renderJson(global.api),
+    createReactRenderer(renderPath)(global.api)
+  );
 }
 
 export default class AirbagsPlugin {
@@ -58,12 +56,17 @@ export default class AirbagsPlugin {
     return vinylFs.src(sourceFiles, { base: process.cwd() });
   }
 
+  getExtractor(options) {
+    return options.extractor || markdownExtractor;
+  }
+
   apply(compiler) {
     const source = this.getSource(this.options);
+    const extractor = this.getExtractor(this.options);
 
     compiler.plugin('emit', (compilation, done) => {
-      generate(source).then(stream => {
-        stream
+      collect(source, extractor).then(siteMap => {
+        generate(siteMap)
         .on('data', (file) => {
           compilation.assets[file.path] = {
             source: () => file.contents.toString(),
