@@ -8,4 +8,10 @@ var config = Object.assign({}, common, {
   devtool: 'eval',
 });
 
+// config.module.loaders.unshift({
+//   test: /\.js$/,
+//   exclude: /node_modules/,
+//   loaders: ['react-hot'],
+// });
+
 module.exports = config;

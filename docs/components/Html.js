@@ -6,7 +6,6 @@ export default class Html extends Component {
   };
 
   render() {
-    console.log('hi from html');
     return (
       <html>
         <head>
