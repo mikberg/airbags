@@ -2,11 +2,8 @@
   "name": "docs",
   "main": "generate.js",
   "scripts": {
-    "generate": "babel-node --stage 0 generate.js",
-    "browserify": "./node_modules/browserify/bin/cmd.js -d -e client.js -t [ babelify --optional es7.classProperties ] --outfile build/bundle.js",
-    "build": "npm run clean && npm run generate && npm run webpack",
-    "webpack": "webpack",
-    "start": "node server.js",
+    "dev": "webpack -d",
+    "prod": "webpack -p",
     "clean": "rm -rf build/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
