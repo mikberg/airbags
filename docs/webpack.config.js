@@ -1,9 +1,10 @@
-/* eslint no-var:0 */
+/* eslint no-var:0 vars-on-top:0 */
 require('babel/register')({
   stage: 0,
 });
 var path = require('path');
 var AirbagsPlugin = require('./AirbagsPlugin');
+var airbagsApi = require('./airbagsApi');
 
 module.exports = {
   devtool: 'eval',
@@ -31,6 +32,7 @@ module.exports = {
   plugins: [
     new AirbagsPlugin({
       sourceFiles: ['./pages/*.md'],
+      api: airbagsApi,
       additionalPages: {
         'index': {
           meta: {

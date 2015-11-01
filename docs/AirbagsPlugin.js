@@ -3,32 +3,16 @@ import vinylFs from 'vinyl-fs';
 import collect from '../src/collect';
 import markdownExtractor from '../src/extractors/markdown';
 import { createContext } from '../src/context';
-import menu from '../src/middleware/menu';
-import createConfig from '../src/middleware/config';
 import renderJson from '../src/render/json';
 import { createReactRenderer } from '../src/render/react';
 
-import createApi from '../src/api';
-import createCacheStrategy from '../src/api/cache';
-
 import renderPath from './renderPath';
 
-const middleware = [
-  menu,
-  createConfig({ siteName: 'Airbags Docs '}),
-];
-
-function generate(siteMap) {
-  const context = createContext({ siteMap }, middleware);
-
-  global.api = createApi(
-    [createCacheStrategy(context)],
-    middleware
-  );
-
+function generate(api) {
+  global.api = api;
   return mergeStream(
-    renderJson(global.api),
-    createReactRenderer(renderPath)(global.api)
+    renderJson(api),
+    createReactRenderer(renderPath)(api)
   );
 }
 
@@ -63,14 +47,23 @@ export default class AirbagsPlugin {
     return siteMap;
   }
 
+  getApi(options) {
+    if (!options.api) {
+      throw new Error('Needs an API to be supplied in options');
+    }
+    return options.api;
+  }
+
   emit(compilation, done) {
     const source = this.getSource(this.options);
     const extractor = this.getExtractor(this.options);
 
     collect(source, extractor).then(siteMap => {
       Object.assign(siteMap, this.getAdditionalPages(this.options));
+      const context = createContext({ siteMap });
+      const api = this.getApi(this.options)(context);
 
-      generate(siteMap)
+      generate(api)
       .on('data', (file) => {
         compilation.assets[file.path] = {
           source: () => file.contents.toString(),
