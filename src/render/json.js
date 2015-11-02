@@ -1,9 +1,9 @@
 import {Readable} from 'stream';
 import File from 'vinyl';
 
-export function fileFromData(nakedPath, data) {
-  if (!nakedPath) {
-    throw new Error(`fileFromData needs nakedPath, got ${nakedPath}`);
+export function fileFromData(filePath, data) {
+  if (!filePath) {
+    throw new Error(`fileFromData needs filePath, got ${filePath}`);
   }
 
   if (typeof data !== 'object') {
@@ -11,7 +11,7 @@ export function fileFromData(nakedPath, data) {
   }
 
   return new File({
-    path: `${nakedPath}.json`,
+    path: filePath,
     contents: new Buffer(JSON.stringify(data)),
   });
 }
@@ -43,7 +43,10 @@ export default function renderJson(api) {
     Promise.all(promises)
       .then(datas => {
         datas.forEach(({nakedPath, data}) => {
-          stream.push(fileFromData(nakedPath, data));
+          const originalPath = context.getSiteMap()[nakedPath].originalPath;
+          const file = fileFromData(originalPath, data);
+          file.path = `${nakedPath}.json`;
+          stream.push(file);
         });
 
         stream.push(contextFile(context));

@@ -65,6 +65,17 @@ describe('Render: json', () => {
     stream.on('end', done);
   });
 
+  it('emits files with originalPath on history, except for context.json', (done) => {
+    const stream = renderJson(api);
+
+    stream.on('data', (file) => {
+      if (file.path !== 'context.json') {
+        expect(file.history).to.contain('test/file.md');
+      }
+    });
+    stream.on('end', done);
+  });
+
   it('emits a `context.json`', (done) => {
     const stream = renderJson(api);
     const paths = [];
@@ -80,7 +91,7 @@ describe('Render: json', () => {
 });
 
 describe('fileFromData', () => {
-  it('throws if not given a `nakedPath`', () => {
+  it('throws if not given a `filePath`', () => {
     expect(() => {
       fileFromData();
     }).to.throw();
@@ -96,12 +107,6 @@ describe('fileFromData', () => {
     expect(File.isVinyl(
       fileFromData('test/file', fileContext.getSiteMap()['test/file'].data)
     )).to.equal(true);
-  });
-
-  it('has `nakedPath` with `.json` extension as `path`', () => {
-    expect(
-      fileFromData('test/file', fileContext.getSiteMap()['test/file']).path
-    ).to.equal('test/file.json');
   });
 
   it('has JSON version of `data` as `content`', () => {
