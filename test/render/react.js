@@ -92,6 +92,19 @@ describe('renderer', () => {
     });
   });
 
+  it('emits files with originalPath in history', (done) => {
+    const renderer = createReactRenderer(sinon.stub().returns(resolvingPromise));
+    const stream = renderer(api);
+
+    stream.on('data', (file) => {
+      expect(file.history).to.contain('test/file.md');
+    });
+
+    stream.on('end', () => {
+      done();
+    });
+  });
+
   it('emits error if `renderPath` rejects', (done) => {
     const renderer = createReactRenderer(sinon.stub().returns(rejectingPromise));
     const stream = renderer(api);

@@ -2,19 +2,22 @@ import File from 'vinyl';
 import {Readable} from 'stream';
 
 function rendererModel(renderPath, api) {
-  const nakedPathsPromise = api.getContext()
-    .then(context => Object.keys(context.getSiteMap()));
+  const nakedPathsPromise = api.getContext();
 
   let index = 0;
 
   this._read = () => {
     let nakedPath;
 
-    nakedPathsPromise.then(nakedPaths => {
+    nakedPathsPromise.then(context => {
+      const nakedPaths = Object.keys(context.getSiteMap());
+
       if (index === nakedPaths.length) {
         return this.push(null);
       }
       nakedPath = nakedPaths[index];
+
+      const originalPath = context.getSiteMap()[nakedPath].originalPath;
 
       const promise = renderPath(nakedPath);
 
@@ -29,9 +32,12 @@ function rendererModel(renderPath, api) {
           }
 
           const file = new File({
-            path: `${nakedPath}.html`,
+            path: originalPath,
             contents: new Buffer(contents),
           });
+
+          // Pushes originalPath into history, for later use
+          file.path = `${nakedPath}.html`;
 
           this.push(file);
           index++;
