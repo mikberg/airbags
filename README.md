@@ -80,5 +80,6 @@ Provide low-level components and wrappers to display content.
  - [x] Use API to render JSON
  - [ ] Use common API for client+server in its own module
  - [x] HTTP strategy caching
- - [ ] Scrap Browserify for Webpack
- - [ ] Scrap react-transmit
+ - [x] Scrap Browserify for Webpack
+ - [x] Scrap react-transmit
+ - [ ] Enable (hot) reloading/recompiling for Airbags webpack plugin
