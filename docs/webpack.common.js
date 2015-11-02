@@ -18,11 +18,6 @@ module.exports = {
   module: {
     loaders: [
       { test: /vinyl/, loader: 'null' }, // Remove when `collect` loading Vinyl issue is dealt with
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loaders: ['babel-loader?stage=0'],
-      },
     ],
   },
   resolveLoader: {

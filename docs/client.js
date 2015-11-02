@@ -14,7 +14,7 @@ import createHttpStrategy from '../src/api/http';
 global.api = createApi(
   [
     // createCacheStrategy(context),
-    createHttpStrategy('http://localhost:8080'),
+    createHttpStrategy('/'),
   ],
   [
     menu,
