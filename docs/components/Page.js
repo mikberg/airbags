@@ -7,6 +7,10 @@ export default class Page extends React.Component {
     pageData: React.PropTypes.object,
   }
 
+  componentDidMount() {
+    this.setStateFromApi(this.props);
+  }
+
   componentWillReceiveProps(nextProps) {
     this.setStateFromApi(nextProps);
   }
