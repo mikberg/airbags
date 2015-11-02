@@ -62,8 +62,7 @@ export default class AirbagsPlugin {
 
       mergeStream(...renderers.map(renderer => renderer(api)))
       .on('data', (file) => {
-        // @TODO: Add file dependencies for re-rendering
-        // compilation.fileDependencies.push('/Users/miberg/work/mikaelbe/airbags/docs/pages/what-is-airbags.md');
+        compilation.fileDependencies.push(file.history[0]);
         compilation.assets[file.path] = {
           source: () => file.contents.toString(),
           size: () => file.contents.toString().length,

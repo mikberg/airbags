@@ -82,4 +82,5 @@ Provide low-level components and wrappers to display content.
  - [x] HTTP strategy caching
  - [x] Scrap Browserify for Webpack
  - [x] Scrap react-transmit
- - [ ] Enable (hot) reloading/recompiling for Airbags webpack plugin
+ - [x] Enable recompiling for Airbags webpack plugin
+ - [ ] Implement hot reloading of content
