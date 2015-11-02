@@ -1,0 +1,30 @@
+{
+  "name": "docs",
+  "main": "generate.js",
+  "scripts": {
+    "clean": "rimraf build",
+    "build:webpack": "NODE_ENV=production webpack --config webpack.production.js",
+    "build": "npm run clean && npm run build:webpack",
+    "start": "NODE_ENV=development node devServer.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-loader": "^5.3.3",
+    "babel-plugin-react-transform": "^1.1.1",
+    "express": "^4.13.3",
+    "null-loader": "^0.1.1",
+    "react-transform-catch-errors": "^1.0.0",
+    "react-transform-hmr": "^1.0.1",
+    "redbox-react": "^1.1.1",
+    "rimraf": "^2.4.3",
+    "vinyl-fs": "^2.1.1",
+    "webpack-dev-middleware": "^1.2.0",
+    "webpack-hot-middleware": "^2.4.1"
+  },
+  "dependencies": {
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0",
+    "react-router": "^1.0.0-rc3"
+  }
+}
