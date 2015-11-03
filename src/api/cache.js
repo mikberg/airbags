@@ -11,6 +11,18 @@ function getPageFromContext(context, nakedPath) {
 function cacheStrategyModel(loadedContext) {
   this.context = loadedContext;
 
+  this.setContext = (context) => {
+    if (this.context) {
+      throw new Error(`Expected a context, got ${context}`);
+    }
+
+    if (!isContextOk(context)) {
+      throw new Error(`Expected a context, got ${context}`);
+    }
+
+    this.context = context;
+  };
+
   this.getPageData = (nakedPath) => {
     return this.getContext().then((context) => {
       if (!isPageInContext(context, nakedPath)) {

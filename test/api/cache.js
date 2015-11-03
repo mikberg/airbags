@@ -33,6 +33,33 @@ describe('Cache strategy', () => {
     });
   });
 
+  describe('setContext', () => {
+    it('throws if given an object which is not a context', () => {
+      const strategy = createCacheStrategy();
+      expect(() => {
+        strategy.setContext({});
+      }).to.throw();
+    });
+
+    it('throws if context is already set', () => {
+      const context = createContext({siteMap});
+      const strategy = createCacheStrategy(context);
+      expect(() => {
+        strategy.setContext(context);
+      }).to.throw();
+    });
+
+    it('causes the strategy to return that context from `getContext`', (done) => {
+      const context = createContext({siteMap});
+      const strategy = createCacheStrategy();
+      strategy.setContext(context);
+      strategy.getContext().then(con => {
+        expect(con.siteMap).to.deep.equal(con.siteMap);
+        done();
+      }).catch(done);
+    });
+  });
+
   describe('getPageData', () => {
     let context;
     let strategy;
