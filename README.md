@@ -78,7 +78,7 @@ Provide low-level components and wrappers to display content.
  - [x] Remove legacy crap from context
  - [x] Finalize how middleware can append to context
  - [x] Use API to render JSON
- - [ ] Use common API for client+server in its own module
+ - [x] Use common API for client+server in its own module
  - [x] HTTP strategy caching
  - [x] Scrap Browserify for Webpack
  - [x] Scrap react-transmit

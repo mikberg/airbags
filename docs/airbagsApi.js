@@ -1,17 +1,17 @@
 import menu from '../src/middleware/menu';
 import createConfig from '../src/middleware/config';
 import createApi from '../src/api';
-import createCacheStrategy from '../src/api/cache';
 
-export default function api(context) {
-  const middleware = [
-    menu,
-    createConfig({ siteName: 'Airbags Docs' }),
-  ];
+const middleware = [
+  menu,
+  createConfig({ siteName: 'Airbags Docs' }),
+];
 
-  const strategies = [
-    createCacheStrategy(context),
-  ];
-
-  return createApi(strategies, middleware);
+const strategies = [];
+if (process.env.__BROWSER__) {
+  strategies.push(require('../src/api/http')('/'));
+} else {
+  strategies.push(require('../src/api/cache')());
 }
+
+export default createApi(strategies, middleware);

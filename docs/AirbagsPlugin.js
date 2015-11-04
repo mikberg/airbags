@@ -53,12 +53,14 @@ export default class AirbagsPlugin {
     collect(source, extractor).then(siteMap => {
       Object.assign(siteMap, this.getAdditionalPages(this.options));
       const context = createContext({ siteMap });
-      const api = this.getApi(this.options)(context);
+      const api = this.getApi(this.options);
+
+      if (!api.strategies.cacheStrategy) {
+        throw new Error(`AirbagsPlugin needs cacheStrategy to be available on server`);
+      }
+      api.strategies.cacheStrategy.setContext(context);
 
       const renderers = this.getRenderers(this.options);
-
-      // @TODO do something about this!!!
-      global.api = api;
 
       mergeStream(...renderers.map(renderer => renderer(api)))
       .on('data', (file) => {

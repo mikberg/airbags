@@ -1,5 +1,6 @@
 /* eslint no-var:0 vars-on-top:0 */
 var path = require('path');
+var webpack = require('webpack');
 var AirbagsPlugin = require('./AirbagsPlugin');
 var airbagsApi = require('./airbagsApi');
 var renderPath = require('./renderPath');
@@ -24,6 +25,11 @@ module.exports = {
     root: path.join(__dirname, 'node_modules'),
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        __BROWSER__: true,
+      },
+    }),
     new AirbagsPlugin({
       sourceFiles: ['./pages/*.md'],
       api: airbagsApi,

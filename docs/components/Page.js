@@ -1,5 +1,6 @@
 import React from 'react';
 import ssrify from '../helpers/ssrify';
+import api from '../airbagsApi';
 
 @ssrify('Page')
 export default class Page extends React.Component {
@@ -20,7 +21,7 @@ export default class Page extends React.Component {
   }
 
   static fetchData(renderProps) {
-    return global.api.getPageData(`pages/${renderProps.params.pageName}`)
+    return api.getPageData(`pages/${renderProps.params.pageName}`)
       .then(pageData => ({ pageData }));
   }
 

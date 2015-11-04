@@ -1,6 +1,7 @@
 import React from 'react';
 import Menu from './Menu';
 import ssrify from '../helpers/ssrify';
+import api from '../airbagsApi';
 
 @ssrify('App')
 export default class App extends React.Component {
@@ -24,8 +25,8 @@ export default class App extends React.Component {
 
   static fetchData() {
     return Promise.all([
-      global.api.getMenu(),
-      global.api.getConfig(),
+      api.getMenu(),
+      api.getConfig(),
     ]).then(([menu, config]) => {
       return { menu, config };
     });
