@@ -26,6 +26,8 @@ export function applyToStrategies(strategies, methodName, args) {
 }
 
 function apiModel(strategies, middleware) {
+  this.strategies = {};
+
   this.getPageData = (nakedPath) => {
     return applyToStrategies(strategies, 'getPageData', [nakedPath]);
   };
@@ -49,7 +51,7 @@ function apiModel(strategies, middleware) {
 }
 
 export function isStrategyOk(strategy) {
-  return typeof strategy === 'object';
+  return typeof strategy === 'function' && strategy.name;
 }
 
 export default function createApi(strategies = [], middleware = []) {
@@ -64,6 +66,10 @@ export default function createApi(strategies = [], middleware = []) {
     .forEach((mid) => {
       mid.call(api);
     });
+
+  strategies.forEach(strategy => {
+    api.strategies[strategy.name] = strategy;
+  });
 
   return api;
 }

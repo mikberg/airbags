@@ -54,11 +54,12 @@ function httpStrategyModel(baseUrl) {
 }
 
 export default function createHttpStrategy(baseUrl) {
+  function httpStrategy() {}
+
   if (typeof baseUrl !== 'string') {
     throw new Error(`createHttpStrategy expected a baseUrl, got ${baseUrl}`);
   }
 
-  const strategy = {};
-  httpStrategyModel.call(strategy, stripOuter(baseUrl, '/'));
-  return strategy;
+  httpStrategyModel.call(httpStrategy, stripOuter(baseUrl, '/'));
+  return httpStrategy;
 }

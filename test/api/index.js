@@ -4,14 +4,19 @@ import createApi, {applyToStrategies, isStrategyOk} from '../../src/api';
 import createCacheStrategy from '../../src/api/cache';
 import {createContext} from '../../src/context';
 
-class MockStrategy {
-  dummyMethod() {
-    return new Promise((resolve) => resolve());
+function createMockStrategy() {
+  function model() {
+    this.dummyMethod = () => new Promise(resolve => resolve());
+    this.getPageHtml = () => {};
+    this.getPageData = () => {};
+    this.getContext = () => {};
   }
 
-  getPageHtml() {}
-  getPageData() {}
-  getContext() {}
+  function mockStrategy() {}
+
+  model.call(mockStrategy);
+
+  return mockStrategy;
 }
 
 const context = createContext();
@@ -54,11 +59,15 @@ describe('createApi', () => {
   });
 
   it('can work without being given a context', (done) => {
-    const coolStrategy = {
-      getContext() {
-        return new Promise((resolve) => resolve({ siteMap: {}}));
-      },
-    };
+    function coolStrategy() {}
+
+    function coolStrategyModel() {
+      this.getContext = () => {
+        return new Promise(resolve => resolve({ siteMap: {} }));
+      };
+    }
+
+    coolStrategyModel.call(coolStrategy);
 
     createApi([coolStrategy]).getContext()
       .then((cont) => {
@@ -67,12 +76,18 @@ describe('createApi', () => {
       })
       .catch(done);
   });
+
+  it('makes strategies by name available on `.strategies`', () => {
+    const strategy = createMockStrategy();
+    const api = createApi([strategy]);
+    expect(api.strategies.mockStrategy).to.equal(strategy);
+  });
 });
 
 describe('getPageData', () => {
   it('calls strategies with `nakedPath`', (done) => {
     const nakedPath = 'cool/page';
-    const strategy = new MockStrategy();
+    const strategy = createMockStrategy();
     sinon.stub(strategy, 'getPageData')
       .returns(new Promise((resolve) => resolve()));
 
@@ -86,7 +101,7 @@ describe('getPageData', () => {
   it('resolves to strategy\'s resolve', (done) => {
     const nakedPath = 'cool/page';
     const data = { hei: 'hopp' };
-    const strategy = new MockStrategy();
+    const strategy = createMockStrategy();
     sinon.stub(strategy, 'getPageData')
       .returns(new Promise((resolve) => resolve(data)));
 
@@ -100,7 +115,7 @@ describe('getPageData', () => {
 
 describe('getContext', () => {
   it('calls strategies', (done) => {
-    const strategy = new MockStrategy();
+    const strategy = createMockStrategy();
     sinon.stub(strategy, 'getContext')
       .returns(new Promise((resolve) => resolve()));
 
@@ -117,7 +132,7 @@ describe('getContext', () => {
     function myCoolMiddleware() {}
     myCoolMiddleware.amendContext = () => amended;
 
-    const strategy = new MockStrategy();
+    const strategy = createMockStrategy();
     sinon.stub(strategy, 'getContext')
       .returns(new Promise(resolve => resolve({})));
 
@@ -131,7 +146,7 @@ describe('getContext', () => {
   it('doesn\'t trip up if middleware doesn\'t provide `amendContext`', (done) => {
     function myCoolMiddleware() {}
 
-    const strategy = new MockStrategy();
+    const strategy = createMockStrategy();
     sinon.stub(strategy, 'getContext')
       .returns(new Promise(resolve => resolve({})));
 
@@ -145,7 +160,7 @@ describe('getContext', () => {
     function myCoolMiddleware() {}
     myCoolMiddleware.amendContext = () => ({ prop: 'not cool' });
 
-    const strategy = new MockStrategy();
+    const strategy = createMockStrategy();
     sinon.stub(strategy, 'getContext').returns(
       new Promise(resolve => resolve({ myCoolMiddleware: {prop: 'test'} }))
     );
@@ -171,7 +186,7 @@ describe('applyToStrategies', () => {
   });
 
   it('calls method on strategies', (done) => {
-    const strategy = new MockStrategy();
+    const strategy = createMockStrategy();
     sinon.spy(strategy, 'dummyMethod');
 
     applyToStrategies([strategy], 'dummyMethod', [])
@@ -182,7 +197,7 @@ describe('applyToStrategies', () => {
   });
 
   it('calls method with arguments', (done) => {
-    const strategy = new MockStrategy();
+    const strategy = createMockStrategy();
     sinon.spy(strategy, 'dummyMethod');
 
     applyToStrategies([strategy], 'dummyMethod', ['a', 1, Math.PI])
@@ -194,8 +209,8 @@ describe('applyToStrategies', () => {
   });
 
   it('calls strategies until resolving', (done) => {
-    const strategy1 = new MockStrategy();
-    const strategy2 = new MockStrategy();
+    const strategy1 = createMockStrategy();
+    const strategy2 = createMockStrategy();
 
     sinon.stub(strategy1, 'dummyMethod')
       .returns(new Promise((resolve, reject) => reject()));
@@ -211,8 +226,8 @@ describe('applyToStrategies', () => {
   });
 
   it('rejects if no strategies resolve', (done) => {
-    const strategy1 = new MockStrategy();
-    const strategy2 = new MockStrategy();
+    const strategy1 = createMockStrategy();
+    const strategy2 = createMockStrategy();
 
     sinon.stub(strategy1, 'dummyMethod')
       .returns(new Promise((resolve, reject) => reject()));

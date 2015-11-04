@@ -58,12 +58,12 @@ function cacheStrategyModel(loadedContext) {
 }
 
 export default function createCacheStrategy(context) {
-  const strategy = {};
+  function cacheStrategy() {}
 
   if (typeof context === 'object' && !isContextOk(context)) {
     throw new Error(`Expected argument to be a context or undefined, got ${context}`);
   }
 
-  cacheStrategyModel.call(strategy, context);
-  return strategy;
+  cacheStrategyModel.call(cacheStrategy, context);
+  return cacheStrategy;
 }
