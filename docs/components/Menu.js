@@ -21,6 +21,7 @@ export default class Menu extends React.Component {
             </li>
           );
         })}
+        <li><a href="//github.com/mikberg/airbags">Github</a></li>
       </ul>
     );
   }
