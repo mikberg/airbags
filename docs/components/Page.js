@@ -45,11 +45,6 @@ export default class Page extends React.Component {
 
     return (
       <div>
-        {() => {
-          if (pageData.meta.title) {
-            return <h2>{pageData.meta.title}</h2>;
-          }
-        }()}
         <div dangerouslySetInnerHTML={{__html: pageData.html}} />
       </div>
     );
