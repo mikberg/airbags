@@ -1,6 +1,11 @@
 import React from 'react';
+import hljs from 'highlight.js';
 import ssrify from '../helpers/ssrify';
 import api from '../airbagsApi';
+
+if (process.env.__BROWSER__) {
+  require('../styles/Page.scss');
+}
 
 @ssrify('Page')
 export default class Page extends React.Component {
@@ -26,6 +31,10 @@ export default class Page extends React.Component {
   }
 
   render() {
+    if (process.env.__BROWSER__) {
+      hljs.initHighlightingOnLoad();
+    }
+
     const { pageData } = this.state || this.props;
 
     if (!pageData) {
@@ -36,11 +45,6 @@ export default class Page extends React.Component {
 
     return (
       <div>
-        {() => {
-          if (pageData.meta.title) {
-            return <h1>{pageData.meta.title}</h1>;
-          }
-        }()}
         <div dangerouslySetInnerHTML={{__html: pageData.html}} />
       </div>
     );

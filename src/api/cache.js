@@ -13,7 +13,7 @@ function cacheStrategyModel(loadedContext) {
 
   this.setContext = (context) => {
     if (this.context) {
-      throw new Error(`Expected a context, got ${context}`);
+      throw new Error(`Already have a context ${context}`);
     }
 
     if (!isContextOk(context)) {

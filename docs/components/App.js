@@ -3,10 +3,14 @@ import Menu from './Menu';
 import ssrify from '../helpers/ssrify';
 import api from '../airbagsApi';
 
+if (process.env.__BROWSER__) {
+  require('../styles/App.scss');
+}
+
 @ssrify('App')
 export default class App extends React.Component {
   static propTypes = {
-    children: React.PropTypes.element,
+    children: React.PropTypes.object,
     menu: React.PropTypes.array,
     config: React.PropTypes.object,
   }
@@ -43,10 +47,14 @@ export default class App extends React.Component {
     }
 
     return (
-      <div>
-        <div>
+      <div className="App">
+        <div className="title">
           <h1>{config.siteName}</h1>
-          <Menu menu={menu} />
+        </div>
+
+        <Menu menu={menu} />
+        
+        <div className="content">
           {this.props.children}
         </div>
       </div>

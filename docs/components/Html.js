@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 
 export default class Html extends Component {
   static propTypes = {
-    children: PropTypes.children,
+    children: PropTypes.array,
   };
 
   render() {
