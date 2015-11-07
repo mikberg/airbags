@@ -1,6 +1,6 @@
 ---
 title: What is Airbags?
-inMenu: yes
+home: true
 ---
 
 Airbags is a cool new way of creating static web pages. You should use it.

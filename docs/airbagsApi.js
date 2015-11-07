@@ -1,8 +1,10 @@
 import menu from '../src/middleware/menu';
+import home from '../src/middleware/home';
 import createConfig from '../src/middleware/config';
 import createApi from '../src/api';
 
 const middleware = [
+  home(),
   menu,
   createConfig({ siteName: 'Airbags' }),
 ];

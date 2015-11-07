@@ -40,12 +40,6 @@ module.exports = {
         createReactRenderer(renderPath),
       ],
       additionalPages: {
-        'index': {
-          meta: {
-            title: 'Home',
-            inMenu: true,
-          },
-        },
       },
     }),
   ],

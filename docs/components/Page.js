@@ -26,8 +26,11 @@ export default class Page extends React.Component {
   }
 
   static fetchData(renderProps) {
-    return api.getPageData(`pages/${renderProps.params.pageName}`)
-      .then(pageData => ({ pageData }));
+    if (renderProps.params.pageName) {
+      return api.getPageData(`pages/${renderProps.params.pageName}`)
+        .then(pageData => ({ pageData }));
+    }
+    return api.getPageData('index').then(pageData => ({ pageData }));
   }
 
   render() {
