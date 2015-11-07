@@ -1,12 +1,23 @@
+@import 'variables';
+
 .Menu {
   list-style-type: none;
   display: flex;
   flex-direction: row;
   align-content: center;
+  justify-content: center;
 
   li {
     display: block;
-    margin: auto;
     align-self: center;
+    margin: 0 1em;
+  }
+
+  a {
+    font-family: sans-serif;
+    color: $primary-color;
+    padding: 1em;
+    border-bottom: 2px solid $primary-color;
+    text-decoration: none;
   }
 }

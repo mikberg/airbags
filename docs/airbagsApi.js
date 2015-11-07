@@ -4,7 +4,7 @@ import createApi from '../src/api';
 
 const middleware = [
   menu,
-  createConfig({ siteName: 'Airbags Docs' }),
+  createConfig({ siteName: 'Airbags' }),
 ];
 
 const strategies = [];
