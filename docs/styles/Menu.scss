@@ -1,0 +1,12 @@
+.Menu {
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+
+  li {
+    display: block;
+    margin: auto;
+    align-self: center;
+  }
+}

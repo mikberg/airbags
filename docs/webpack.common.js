@@ -19,6 +19,8 @@ module.exports = {
   module: {
     loaders: [
       { test: /vinyl/, loader: 'null' }, // Remove when `collect` loading Vinyl issue is dealt with
+      { test: /\.scss$/, loaders: ['style', 'css', 'sass'] },
+      { test: /\.css$/, loaders: ['style', 'css'] },
     ],
   },
   resolveLoader: {
