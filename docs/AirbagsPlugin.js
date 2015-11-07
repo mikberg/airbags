@@ -59,9 +59,8 @@ export default class AirbagsPlugin {
         throw new Error(`AirbagsPlugin needs cacheStrategy to be available on server`);
       }
 
-      if (!api.strategies.cacheStrategy.context) {
-        api.strategies.cacheStrategy.setContext(context);
-      }
+      // Inject the context
+      api.strategies.cacheStrategy.context = context;
 
       const renderers = this.getRenderers(this.options);
 
