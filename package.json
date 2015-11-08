@@ -2,18 +2,29 @@
   "name": "airbags",
   "version": "0.1.0-dev",
   "description": "An isomorphic react based generator of sites",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "mocha --compilers js:babel/register test/**/*.js",
     "lint": "eslint --ext .jsx --ext .js src test",
     "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:babel/register --reporter spec test/**/*.js",
-    "test-travis": "npm run test-cov"
+    "test-travis": "npm run test-cov",
+    "compile": "babel -d lib/ src/",
+    "prepublish": "npm run compile"
   },
   "keywords": [
     "static",
     "site",
     "generator"
   ],
+  "directories": {
+    "api": "lib/api",
+    "collect": "lib/collect",
+    "context": "lib/context",
+    "extractors": "lib/extractors",
+    "middleware": "lib/middleware",
+    "render": "lib/render",
+    "webpack": "lib/webpack"
+  },
   "author": "Mikael Berg",
   "license": "ISC",
   "devDependencies": {
