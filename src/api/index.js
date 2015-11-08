@@ -1,3 +1,6 @@
+export createHttpStrategy from './http';
+export createCacheStrategy from './cache';
+
 /**
  * Run a method on strategies in order until one of them resolves. Reject if
  * no strategies resolve.

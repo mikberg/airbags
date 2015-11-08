@@ -2,7 +2,7 @@ import {expect} from 'chai';
 import sinon from 'sinon';
 import createApi, {applyToStrategies, isStrategyOk} from '../../src/api';
 import createCacheStrategy from '../../src/api/cache';
-import {createContext} from '../../src/context';
+import createContext from '../../src/context';
 
 function createMockStrategy() {
   function model() {

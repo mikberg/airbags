@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
 import createCacheStrategy from '../../src/api/cache';
-import {createContext} from '../../src/context';
+import createContext from '../../src/context';
 
 const siteMap = {
   '/naked/path': {

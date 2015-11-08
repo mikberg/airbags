@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import nock from 'nock';
 import createHttpStrategy from '../../src/api/http';
-import {createContext} from '../../src/context';
+import createContext from '../../src/context';
 
 const baseUrl = 'http://localhost/';
 const nakedPath = 'some/path';

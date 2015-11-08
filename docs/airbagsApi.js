@@ -1,12 +1,10 @@
-import menu from '../src/middleware/menu';
-import home from '../src/middleware/home';
-import createConfig from '../src/middleware/config';
+import { home, menu, config } from '../src/middleware';
 import createApi from '../src/api';
 
 const middleware = [
   home(),
   menu,
-  createConfig({ siteName: 'Airbags' }),
+  config({ siteName: 'Airbags' }),
 ];
 
 const strategies = [];

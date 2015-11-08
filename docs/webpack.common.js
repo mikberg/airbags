@@ -4,8 +4,10 @@ var webpack = require('webpack');
 var AirbagsPlugin = require('../src/webpack/AirbagsPlugin');
 var airbagsApi = require('./airbagsApi');
 var renderPath = require('./renderPath');
-var renderJson = require('../src/render/json').default;
-var createReactRenderer = require('../src/render/react').createReactRenderer;
+var renderers = require('../src/render');
+
+var renderJson = renderers.renderJson;
+var createReactRenderer = renderers.createReactRenderer;
 
 module.exports = {
   entry: [
@@ -38,8 +40,6 @@ module.exports = {
         renderJson,
         createReactRenderer(renderPath),
       ],
-      additionalPages: {
-      },
     }),
   ],
 };

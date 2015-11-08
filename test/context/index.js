@@ -1,8 +1,5 @@
 import {expect} from 'chai';
-import {
-  createContext,
-  isContextOk,
-} from '../../src/context';
+import createContext, { isContextOk } from '../../src/context';
 
 const addPageName = (state) => Object.assign(state,
   { configuration: { pageName: 'CoolPage' }});

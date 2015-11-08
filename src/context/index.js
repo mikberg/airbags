@@ -10,7 +10,7 @@ function contextModel(state) {
  * Creates a context object using a site map (as per returned by `collect`) and
  * some optional configuration.
  */
-export function createContext(state = { siteMap: {} }) {
+export default function createContext(state = { siteMap: {} }) {
   if (!isSiteMapOk(state.siteMap)) {
     throw new Error(`createContext needs a real siteMap, given ${state.siteMap}`);
   }

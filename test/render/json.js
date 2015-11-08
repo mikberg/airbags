@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import renderJson, {fileFromData, contextFile} from '../../src/render/json';
-import {createContext} from '../../src/context';
+import createContext from '../../src/context';
 import createApi from '../../src/api';
 import createCacheStrategy from '../../src/api/cache';
 import {Readable} from 'stream';

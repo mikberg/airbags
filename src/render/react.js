@@ -49,7 +49,7 @@ function rendererModel(renderPath, api) {
   };
 }
 
-export function createReactRenderer(renderPath) {
+export default function createReactRenderer(renderPath) {
   if (typeof renderPath !== 'function') {
     throw new Error(`createReactRenderer expected a render function, got ${renderPath}`);
   }
