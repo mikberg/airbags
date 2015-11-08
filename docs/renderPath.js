@@ -1,5 +1,6 @@
 import routes from './routes';
 import Html from './components/Html';
+import DocumentMeta from 'react-document-meta';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import {match, RoutingContext} from 'react-router';
@@ -46,8 +47,10 @@ export default function renderPath(nakedPath) {
           <RoutingContext {...renderProps} createElement={createElement} />
         );
 
+        const meta = DocumentMeta.renderAsReact();
+
         const html = ReactDOM.renderToStaticMarkup(
-          <Html>
+          <Html meta={meta}>
             <div id="react-root" dangerouslySetInnerHTML={{__html: output}}/>
             <script dangerouslySetInnerHTML={{__html: `var __SSR_DATA = ${JSON.stringify(ssrData)};`}} />
             <script src="/bundle.js" />

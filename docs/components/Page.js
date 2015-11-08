@@ -1,4 +1,5 @@
 import React from 'react';
+import DocumentMeta from 'react-document-meta';
 import hljs from 'highlight.js';
 import ssrify from '../helpers/ssrify';
 import api from '../airbagsApi';
@@ -51,8 +52,13 @@ export default class Page extends React.Component {
       );
     }
 
+    const metaData = {
+      title: pageData.meta.title || 'unknown title',
+    };
+
     return (
       <div>
+        <DocumentMeta {...metaData} extend />
         <div dangerouslySetInnerHTML={{__html: pageData.html}} />
       </div>
     );

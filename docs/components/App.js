@@ -1,4 +1,5 @@
 import React from 'react';
+import DocumentMeta from 'react-document-meta';
 import Menu from './Menu';
 import ssrify from '../helpers/ssrify';
 import api from '../airbagsApi';
@@ -46,14 +47,22 @@ export default class App extends React.Component {
       );
     }
 
+    const metaData = {
+      title: config.siteName,
+      meta: {
+        charSet: 'utf-8',
+      },
+    };
+
     return (
       <div className="App">
+        <DocumentMeta {...metaData} />
         <div className="title">
           <h1>{config.siteName}</h1>
         </div>
 
         <Menu menu={menu} />
-        
+
         <div className="content">
           {this.props.children}
         </div>
