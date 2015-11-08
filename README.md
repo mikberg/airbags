@@ -2,6 +2,9 @@
 
 An isomorphic react based generator of sites
 
+[![Build Status](https://travis-ci.org/mikberg/airbags.svg?branch=develop)](https://travis-ci.org/mikberg/airbags) [![Coverage Status](https://coveralls.io/repos/mikberg/airbags/badge.svg?branch=develop&service=github)](https://coveralls.io/github/mikberg/airbags?branch=develop)
+---
+
 ## Revamp
 
 **Main goal:** Create a platform for making static isomorphic websites for
