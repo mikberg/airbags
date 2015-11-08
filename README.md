@@ -3,6 +3,8 @@
 Create ~~isomorphic~~ universal static websites, using an uniform API when
 generating and on the client side.
 
+See [example in docs](https://github.com/mikberg/airbags/tree/develop/docs)
+
 [![Build Status](https://travis-ci.org/mikberg/airbags.svg?branch=develop)](https://travis-ci.org/mikberg/airbags) [![Coverage Status](https://coveralls.io/repos/mikberg/airbags/badge.svg?branch=develop&service=github)](https://coveralls.io/github/mikberg/airbags?branch=develop)
 ---
 
