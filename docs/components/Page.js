@@ -35,7 +35,12 @@ export default class Page extends React.Component {
 
   render() {
     if (process.env.__BROWSER__) {
-      hljs.initHighlightingOnLoad();
+      setTimeout(() => {
+        const matches = document.querySelectorAll('pre code');
+        for (let idx = 0; idx < matches.length; idx++) {
+          hljs.highlightBlock(matches[idx]);
+        }
+      });
     }
 
     const { pageData } = this.state || this.props;
