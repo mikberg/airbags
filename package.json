@@ -25,6 +25,10 @@
     "render": "lib/render",
     "webpack": "lib/webpack"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mikberg/airbags.git"
+  },
   "author": "Mikael Berg",
   "license": "ISC",
   "devDependencies": {
