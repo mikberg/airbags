@@ -4,7 +4,6 @@ import Stream from 'stream';
 import collect, {
   extractFromFile,
   removeFileExtension,
-  isSiteMapOk,
 } from '../../src/collect';
 import File from 'vinyl';
 
@@ -136,42 +135,5 @@ describe('create naked path', () => {
   it('lacks file extension', () => {
     const naked = removeFileExtension('/test/is/cool.md');
     expect(naked).to.equal('/test/is/cool');
-  });
-});
-
-describe('isSiteMapOk', () => {
-  it('returns true for empty generated siteMap', (done) => {
-    const fileStream = createFileStream();
-
-    fileStream.push(null);
-
-    collect(fileStream, sinon.stub().returns({}))
-      .then((siteMap) => {
-        expect(isSiteMapOk(siteMap)).to.equal(true);
-        done();
-      })
-      .catch(done);
-  });
-
-  it('returns true for filled generated siteMap', (done) => {
-    const fileStream = createFileStream();
-
-    fileStream.push(new File({
-      path: 'cool/file.md',
-      contents: new Buffer('hello'),
-    }));
-
-    fileStream.push(null);
-
-    collect(fileStream, sinon.stub().returns({}))
-      .then((siteMap) => {
-        expect(isSiteMapOk(siteMap)).to.equal(true);
-        done();
-      })
-      .catch(done);
-  });
-
-  it('returns false for implausible siteMap', () => {
-    expect(isSiteMapOk({a: 'b'})).to.equal(false);
   });
 });

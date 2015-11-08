@@ -1,4 +1,4 @@
-import {isSiteMapOk} from '../collect';
+import isSiteMapOk from '../collect/isSiteMapOk';
 
 function contextModel(state) {
   Object.assign(this, state);
@@ -22,6 +22,5 @@ export function createContext(state = { siteMap: {} }) {
 }
 
 export function isContextOk(context) {
-  return typeof context === 'object'
-      && !!context.getSiteMap;
+  return typeof context === 'object' && !!context.getSiteMap;
 }
