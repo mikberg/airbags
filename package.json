@@ -3,6 +3,10 @@
   "version": "0.1.0-rc.1",
   "description": "An isomorphic react based generator of sites",
   "main": "lib/index.js",
+  "files": [
+    "lib",
+    "README.md"
+  ],
   "scripts": {
     "test": "mocha --compilers js:babel/register test/**/*.js",
     "lint": "eslint --ext .jsx --ext .js src test",
