@@ -1,0 +1,1 @@
+export markdownExtractor from './markdown';

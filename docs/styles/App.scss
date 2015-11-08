@@ -1,0 +1,18 @@
+@import '~normalize.css';
+@import 'variables';
+@import 'typebase';
+
+
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.title {
+  text-align: center;
+
+  h1 {
+    text-transform: uppercase;
+    color: $primary-color;
+  }
+}

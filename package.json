@@ -1,0 +1,68 @@
+{
+  "name": "airbags",
+  "version": "0.1.0-rc.1",
+  "description": "An isomorphic react based generator of sites",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha --compilers js:babel/register test/**/*.js",
+    "lint": "eslint --ext .jsx --ext .js src test",
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:babel/register --reporter spec test/**/*.js",
+    "test-travis": "npm run test-cov",
+    "compile": "babel -d lib/ src/",
+    "prepublish": "npm run compile"
+  },
+  "keywords": [
+    "static",
+    "site",
+    "generator"
+  ],
+  "directories": {
+    "api": "lib/api",
+    "collect": "lib/collect",
+    "context": "lib/context",
+    "extractors": "lib/extractors",
+    "middleware": "lib/middleware",
+    "render": "lib/render",
+    "webpack": "lib/webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mikberg/airbags.git"
+  },
+  "author": "Mikael Berg",
+  "license": "ISC",
+  "devDependencies": {
+    "airbnb-style": "^2.0.0",
+    "babel": "^5.8.23",
+    "babel-eslint": "^4.1.3",
+    "chai": "^3.3.0",
+    "coveralls": "^2.11.4",
+    "eslint": "^1.6.0",
+    "eslint-config-airbnb": "^0.1.0",
+    "eslint-plugin-react": "^3.5.1",
+    "istanbul": "^0.3.22",
+    "mocha": "^2.3.3",
+    "nock": "^2.13.0",
+    "sinon": "^1.17.1"
+  },
+  "dependencies": {
+    "isomorphic-fetch": "^2.1.1",
+    "isstream": "^0.1.2",
+    "lodash.assign": "^3.2.0",
+    "lodash.indexby": "^3.1.1",
+    "lodash.omit": "^3.1.0",
+    "marked": "^0.3.3",
+    "merge-stream": "^1.0.0",
+    "strip-outer": "^1.0.0",
+    "vinyl": "^1.0.0",
+    "vinyl-fs": "^2.2.1",
+    "yaml-front-matter": "^3.2.3"
+  },
+  "browserify": {
+    "transform": [
+      "babelify",
+      "bpb",
+      "unreachable-branch-transform"
+    ]
+  }
+}
