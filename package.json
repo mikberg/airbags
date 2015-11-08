@@ -1,6 +1,6 @@
 {
   "name": "airbags",
-  "version": "0.1.0-rc.1",
+  "version": "0.1.0-rc.2",
   "description": "An isomorphic react based generator of sites",
   "main": "lib/index.js",
   "files": [
