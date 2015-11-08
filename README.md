@@ -1,89 +1,79 @@
 # Airbags
 
-An isomorphic react based generator of sites
+Create ~~isomorphic~~ universal static websites, using an uniform API when
+generating and on the client side.
 
 [![Build Status](https://travis-ci.org/mikberg/airbags.svg?branch=develop)](https://travis-ci.org/mikberg/airbags) [![Coverage Status](https://coveralls.io/repos/mikberg/airbags/badge.svg?branch=develop&service=github)](https://coveralls.io/github/mikberg/airbags?branch=develop)
 ---
 
-## Revamp
+## Plain Usage
 
-**Main goal:** Create a platform for making static isomorphic websites for
-capable coders. Don't over simplify. Provide methods of transforming a markup
-file (e.g. Markdown) to static HTML through an "arbitrary" React wrapper.
+### Collecting
 
-## Components
+Collect pages using the `collect` function, which takes a stream of *vinyl* files and an *extractor*, e.g. the markdown extractor. Extractors are functions which takes a string and returns an object with the shape
 
-### Collection
-
-The `collect` module reads data from a supplied file stream, and builds a site
-map of the files. It uses *extractors* to extract data from the files, e.g. a
-markdown extractor for markdown files. From there on out, the content is HTML.
-
-The end goal for the `collect` module is to provide data for the other modules.
-
-```
-collect(content files, extractor) -> data structure with all content, meta data
+```js
+{
+  html: `<string of html>`,
+  meta: {
+    `<meta data from file>`
+  }
+}
 ```
 
-This data structure can then be turned into (new) files containing the data
-in some manner.
+`collect` generates a `siteMap` object:
 
-```
-extractor(content file) -> data structure with content, meta data
-```
-
-### Manifest/Context
-
-A context or manifest consists of a collected site map, plus some meta data or
-configuration for the renderers to use. Examples include site name or header
-color.
-
-```
-createContext(sitemap, configuration) -> context
+```js
+collect(source, extractor).then(siteMap => console.log(siteMap));
 ```
 
-### Rendering
+### Context
 
-Renderers take a context, and produce a stream of files as output. Examples are
-JSON representations of individual input files, or rendered HTML files. They can
-optionally take more parameters.
+The context contains information which should be available both when generating static pages and during runtime on the client side. Create a context using `createContext`.
 
-```
-contextRenderer(context) -> stream of one json context representation
-jsonRenderer(context) -> stream of json files
-reactRenderer(context, react component) -> stream of html files
+```js
+const context = createContext({ siteMap });
 ```
 
 ### Context API
 
-The context API provides means of accessing the context data, such as file
-names, titles and content. The API needs a *strategy* to access this data,
-depending on what means are available for access. Examples include:
+The context API lets us access data, and consists of two main parts: the *strategies* and the *middleware*.
 
- - HTTP access via JSON
- - In-memory access (context already complete)
- - Direct access to stored files
+**Strategies** define how to access the context data. **Middleware** can extend the context and the API: they can modify the context or add methods to the API.
 
-### Helper Components
+```js
+import createApi, { createHttpStrategy } from 'airbags/api';
+import { home, menu, config } from 'airbags/middleware';
 
-Provide low-level components and wrappers to display content.
+const middleware = {
+  home(), // A page with `home: true` in meta data will be renamed `index`
+  menu(), // Add a method `.getMenu()` to API, which returns pages with `inMenu: true` in meta data
+  config({ siteName: 'My Awesome Site' }), // Add a method `getConfig()` to API, which returns the supplied object
+};
 
+const api = createApi([createHttpStrategy('/')], middleware);
+```
+
+When rendering, you probably want to use the cache strategy instead of the HTTP strategy. The cache strategy factory `createCacheStrategy`, takes an optional context, or the context can be set later with the `setContext` method.
+
+### Render
+
+Renderers take an API instance and returns a stream of `vinyl` files. This package contains two renderers, the `json` renderer and renderer suitable for use with React, `reactRenderer`.
+
+```js
+const renderers = [
+  renderJson,
+  createReactRenderer(renderPath), // `renderPath` is a function `nakedPath` -> Promise<string of html>
+];
+
+mergeStream(...renderers.map(renderer => renderer(api)))
+  .on('data', file => {
+    // Store the file
+  })
+  .on('end', console.log('Rendered successfully!'));
+```
 
 ## Todo
 
- - [x] Add ability to create cache strategy with context
- - [x] Deprecate initiating API with context in favor of creating cache strategy with context?
- - [x] Deprecate calling strategy methods with context as first argument
- - [ ] Deprecate collection with extraction of HTML in favor of metadata-only?
-   - Think about this. We need the metadata. Could lead to only splitting the same functionality.
- - [x] Remove `getPageHtml` from API and strategies
- - [x] Find out + fix why config middleware isn't working
- - [x] Remove legacy crap from context
- - [x] Finalize how middleware can append to context
- - [x] Use API to render JSON
- - [x] Use common API for client+server in its own module
- - [x] HTTP strategy caching
- - [x] Scrap Browserify for Webpack
- - [x] Scrap react-transmit
- - [x] Enable recompiling for Airbags webpack plugin
- - [ ] Implement hot reloading of content
+ - [ ] Support hot reloading of content
+ - [ ] Support style loaders in generating phase
