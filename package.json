@@ -37,8 +37,10 @@
     "lodash.indexby": "^3.1.1",
     "lodash.omit": "^3.1.0",
     "marked": "^0.3.3",
+    "merge-stream": "^1.0.0",
     "strip-outer": "^1.0.0",
     "vinyl": "^1.0.0",
+    "vinyl-fs": "^2.2.1",
     "yaml-front-matter": "^3.2.3"
   },
   "browserify": {

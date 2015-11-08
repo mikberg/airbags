@@ -1,8 +1,8 @@
 import mergeStream from 'merge-stream';
 import vinylFs from 'vinyl-fs';
-import collect from '../src/collect';
-import markdownExtractor from '../src/extractors/markdown';
-import { createContext } from '../src/context';
+import collect from '../collect';
+import markdownExtractor from '../extractors/markdown';
+import { createContext } from '../context';
 
 export default class AirbagsPlugin {
   constructor(options) {

@@ -1,7 +1,7 @@
 /* eslint no-var:0 vars-on-top:0 */
 var path = require('path');
 var webpack = require('webpack');
-var AirbagsPlugin = require('./AirbagsPlugin');
+var AirbagsPlugin = require('../src/webpack/AirbagsPlugin');
 var airbagsApi = require('./airbagsApi');
 var renderPath = require('./renderPath');
 var renderJson = require('../src/render/json').default;
